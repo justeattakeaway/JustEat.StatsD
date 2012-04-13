@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.setup :default, :build
 require 'cocaine'
- include Cocaine
+include Cocaine
 require 'rake'
 require 'rake/clean'
 require 'albacore'
