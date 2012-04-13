@@ -19,12 +19,12 @@ namespace JustEat.Aop
 			_udpClient.Dispose();
 		}
 
-		public bool Timing(string key, int value)
+		public bool Timing(string key, long value)
 		{
 			return Timing(key, value, 1.0);
 		}
 
-		public bool Timing(string key, int value, double sampleRate)
+		public bool Timing(string key, long value, double sampleRate)
 		{
 			return Send(sampleRate, String.Format("{0}:{1:d}|ms", key, value));
 		}
