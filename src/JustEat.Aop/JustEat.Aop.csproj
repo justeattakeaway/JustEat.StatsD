@@ -37,7 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppression.cs" />
+    <Compile Include="IUdpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatsDPipe.cs" />
+    <Compile Include="TestableUdpClient.cs" />
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <Target Name="BeforeBuild" Condition="!Exists('Properties\AssemblyInfo.cs')">
