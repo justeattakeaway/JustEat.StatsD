@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<NDependProLicense>
+  <LicenseId>RUQEA2HBO</LicenseId>
+  <LicenseKind>1</LicenseKind>
+  <CompanyName>Just-Eat</CompanyName>
+  <CompanyAddress1>Grosvenor House</CompanyAddress1>
+  <CompanyAddress2 />
+  <City>London</City>
+  <StateProvince />
+  <ZipPostalCode>HA8 7TA</ZipPostalCode>
+  <Country>uk (United Kingdom)</Country>
+  <ContactFirstName>Carlos</ContactFirstName>
+  <ContactLastName>Morgado</ContactLastName>
+  <ContactEmail>mr@just-eat.com</ContactEmail>
+  <ContactAlternativeEmail />
+  <ContactPhone>02087312631</ContactPhone>
+  <LicenseQuantity>1</LicenseQuantity>
+  <NDependVersion>3</NDependVersion>
+  <OrderDate>26/01/2011 08:47:00</OrderDate>
+  <Signature>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+      <SignedInfo>
+         <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+         <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+         <Reference URI="">
+           <Transforms>
+             <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+           </Transforms>
+           <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+           <DigestValue>jGdL9GuTYxmyKchvrw7lO2M8rMw=</DigestValue>
+         </Reference>
+       </SignedInfo>
+       <SignatureValue>iaiMtrDY7QIFYcuOXjhhqROjdke5enEb6ey7ylT6UdlivIIVovbrdGewF0+fmRzw8RE2gEqwcwbW4cdmm8lzUv7ImouyMbqEZ1S9XzHJSWxRlBmSuxDURagOypoh/n21nFs2hQCgv6qMUsb4gGiAdFEJj2s07Y20tpETm6umGz8=2</SignatureValue>
+      </Signature>
+</Signature>
+</NDependProLicense>

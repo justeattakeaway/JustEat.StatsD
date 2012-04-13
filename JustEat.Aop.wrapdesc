@@ -1,5 +1,5 @@
 ﻿name: JustEat.Aop
-build: msbuild; profile=net40
+build: msbuild; profile=net35
 use-symlinks: false
 depends: openwrap = 2.0.2 anchored content
 depends: nlog

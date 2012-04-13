@@ -1,0 +1,10 @@
+*.log
+*.suo
+*.user
+_ReSharper*
+AssemblyInfo.cs
+bin
+obj
+wraps
+*.sublime-workspace
+
