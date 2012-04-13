@@ -6,3 +6,4 @@ depends: nlog
 depends: nlog.schema
 directory-structure: {source: src}
 directory-structure: {scope: testing=tests}
+depends: postsharp
