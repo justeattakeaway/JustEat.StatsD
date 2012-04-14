@@ -20,7 +20,7 @@ name = 'JustEat.Aop'
 cmd_opts = {logger: @log}
 
 setup_openwrap_dependencies
-setup_nunit configuration: configuration
+setup_nunit configuration: configuration, depend_on: [:compile]
 setup_ndepend configuration: configuration
 
 desc 'Bootstrap all build-dependencies'
@@ -35,7 +35,7 @@ end
 CLEAN.include 'bin', '**/obj'
 CLOBBER.include 'wraps'
 
-AssemblyInfoGenerator.new(log: @log).generate 
+AssemblyInfoGenerator.new(log: @log).generate
 task :assembly_info => [:bootstrap]
 
 namespace :wrap do

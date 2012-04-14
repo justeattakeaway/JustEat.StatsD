@@ -1,6 +1,7 @@
 def setup_nunit(params={})
 	third_party_path = params[:third_party_path] || '3rdparty'
 	configuration = params[:configuration] || 'Release'
+	depend_on = ['test:default'].concat(params[:depend_on] || [])
 	namespace :test do
 		desc 'Run all nunit-tests'
 		nunit do |nunit|
@@ -12,5 +13,5 @@ def setup_nunit(params={})
 		CLEAN.include 'bin/TestResults.xml'
 	end
 	desc 'Run all tests'
-	task :test => 'test:default'
+	task :test => depend_on
 end
