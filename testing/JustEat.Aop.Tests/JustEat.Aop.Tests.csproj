@@ -38,7 +38,7 @@
   <ItemGroup>
     <Compile Include="GlobalSuppression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WhenPipedAtARealStatsDInstance.cs" />
+    <Compile Include="WhenMetricsHappen.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\JustEat.Aop\JustEat.Aop.csproj">

@@ -14,6 +14,10 @@ namespace JustEat.Aop
 			_udpClient = new TestableUdpClient(host, port);
 		}
 
+		public StatsDPipe(IUdpClient client) {
+			_udpClient = client;
+		}
+
 		public void Dispose()
 		{
 			_udpClient.Dispose();
