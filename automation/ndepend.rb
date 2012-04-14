@@ -20,7 +20,7 @@ def setup_ndepend(params={})
 			out_dir = File.expand_path('bin/ndependout/').gsub('/','\\')
 			in_dir = File.expand_path(File.join('bin','AnyCPU',dotnet_framework,configuration)).gsub('/','\\')
 			nd.project_file = project_file
-			nd.parameters << "/outdir #{out_dir} /concurrent /indirs #{in_dir}"
+			nd.parameters << "/outdir #{out_dir} /concurrent /indirs #{in_dir} c:\\windows\\microsoft.net\\framework64\\v4.0.30319"
 			nd.log_level = :verbose
 		end
 		task :default => :ndepend

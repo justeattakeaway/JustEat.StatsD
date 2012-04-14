@@ -1,17 +1,19 @@
 ﻿using System.Globalization;
+using JustEat.Aop;
 using JustEat.Testing;
+using Rhino.Mocks;
 using Shouldly;
 
 namespace JustEat.Aop.Tests
 {
 	public class WhenMetricsHappen : BehaviourTest<StatsDPipe>
 	{
-		private readonly IUdpClient _client;
-		private readonly string _metricName;
+		private IUdpClient _client;
+		private string _metricName;
 
-		protected override void CreateSystemUnderTest()
+		protected override StatsDPipe CreateSystemUnderTest()
 		{
-			SystemUnderTest = new StatsDPipe(_client);
+			return new StatsDPipe(_client);
 		}
 
 		protected override void Given()
@@ -28,13 +30,13 @@ namespace JustEat.Aop.Tests
 		[Then]
 		public void NoExceptionsShouldBeThrown()
 		{
-			ThrownException.ShouldBeNull();
+			ThrownException.ShouldBe(null);
 		}
 
 		[Then]
-		public void TransportShouldReceiveMetric() {
-			var data = string.Fromat("{0}|c", _metricName);
-			Mock<IUdpClient>().AssertWasCalled(x => x.Send(data))
+		public void TransportShouldReceiveMetric() 
+		{
+			Mock<IUdpClient>().AssertWasCalled(x => x.Send(Arg<byte[]>.Is.NotNull, Arg<int>.Is.Anything));
 		}
 	}
 }

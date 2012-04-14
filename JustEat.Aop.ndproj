@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <NDepend AppName="JustEat.Aop" Platform="DotNet">
-  <OutputDir KeepHistoric="True" KeepXmlFiles="True">C:\src\lib_aop.git\out\bin\NDependOut</OutputDir>
+  <OutputDir KeepHistoric="True" KeepXmlFiles="True">C:\src\lib_aop.git\bin\NDependOut</OutputDir>
   <Assemblies>
-    <Name>Aop</Name>
+    <Name>JustEat.Aop</Name>
     <Name>JustEat.Aop.Tests</Name>
   </Assemblies>
   <FrameworkAssemblies>
     <Name>JustEat.Testing</Name>
     <Name>mscorlib</Name>
     <Name>NLog</Name>
-    <Name>nunit.core.interfaces</Name>
     <Name>nunit.framework</Name>
     <Name>nunit.mocks</Name>
     <Name>pnunit.framework</Name>
@@ -23,7 +22,7 @@
   <Dirs>
     <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319</Dir>
     <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319\WPF</Dir>
-    <Dir>C:\src\branches\Ulrika_PD-17298\JustEat\components\JustEat.Aop\bin\AnyCPU\v4.0\Debug</Dir>
+    <Dir>C:\src\lib_aop.git\bin\AnyCPU\v4.0\Release</Dir>
   </Dirs>
   <Report Kind="0" SectionsEnabled="12287" XslPath="" Flags="64512">
     <Section Enabled="True">Application Metrics</Section>

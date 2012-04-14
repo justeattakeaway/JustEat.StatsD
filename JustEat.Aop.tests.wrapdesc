@@ -1,4 +1,2 @@
-﻿depends: nunit
-depends: rhinomocks
-depends: shouldly
+﻿depends: Shouldly
 depends: JustEat.Testing = 4.0
