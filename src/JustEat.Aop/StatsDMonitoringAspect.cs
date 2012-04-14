@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using PostSharp.Aspects;
@@ -10,17 +9,20 @@ namespace JustEat.Aop
 	public class StatsDMonitoringAspect : OnMethodBoundaryAspect
 	{
 		private readonly string _metricName;
-		private readonly StatsDPipe _pipe;
+		private StatsDPipe _pipe;
 
 		public StatsDMonitoringAspect(string metricName)
 		{
 			// TODO: handle figuring out country/tenant prefix
 			// TODO: supply the component name
 			_metricName = metricName;
-			// TODO: better way of dealing with configuration?  Pass in a Configuration instance instead...?
-			var host = ConfigurationManager.AppSettings["StatsDHostName"];
-			var port = Convert.ToInt32(ConfigurationManager.AppSettings["StatsDPort"]);
+		}
+		public override bool CompileTimeValidate(System.Reflection.MethodBase method)
+		{
+			var host = "monitor.je-labs.com";
+			var port = 8125;
 			_pipe = new StatsDPipe(host, port);
+			return true;
 		}
 
 		public override void OnEntry(MethodExecutionArgs args)

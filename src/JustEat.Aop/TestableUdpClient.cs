@@ -1,7 +1,9 @@
+using System;
 using System.Net.Sockets;
 
 namespace JustEat.Aop
 {
+	[Serializable]
 	public class TestableUdpClient : IUdpClient
 	{
 		private readonly UdpClient _actual;

@@ -4,6 +4,7 @@ using System.Text;
 
 namespace JustEat.Aop
 {
+	[Serializable]
 	public class StatsDPipe : IDisposable
 	{
 		private readonly Random _random = new Random();
@@ -14,7 +15,8 @@ namespace JustEat.Aop
 			_udpClient = new TestableUdpClient(host, port);
 		}
 
-		public StatsDPipe(IUdpClient client) {
+		public StatsDPipe(IUdpClient client)
+		{
 			_udpClient = client;
 		}
 
@@ -126,7 +128,7 @@ namespace JustEat.Aop
 		private bool DoSend(string stat)
 		{
 			var data = Encoding.Default.GetBytes(stat + "\n");
-
+			// TODO: trap exceptions
 			_udpClient.Send(data, data.Length);
 			return true;
 		}

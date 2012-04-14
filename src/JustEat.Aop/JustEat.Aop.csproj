@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JustEat.Aop</RootNamespace>
     <AssemblyName>JustEat.Aop</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <OutputPath>..\..\bin\$(Platform)\$(TargetFrameworkVersion)\$(Configuration)\</OutputPath>

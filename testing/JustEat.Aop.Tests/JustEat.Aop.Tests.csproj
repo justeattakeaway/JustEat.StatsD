@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JustEat.Aop.Tests</RootNamespace>
     <AssemblyName>JustEat.Aop.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <OutputPath>..\..\bin\$(Platform)\$(TargetFrameworkVersion)\$(Configuration)\</OutputPath>
@@ -39,6 +39,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WhenIntegratingAgainstARealStatsD.cs" />
     <Compile Include="WhenMetricsHappen.cs" />
+    <Compile Include="WhenSentViaNLog.cs" />
+    <Compile Include="WhenTriggeredViaAop.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\JustEat.Aop\JustEat.Aop.csproj">

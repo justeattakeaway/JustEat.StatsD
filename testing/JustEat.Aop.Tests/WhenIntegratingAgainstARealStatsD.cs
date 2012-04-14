@@ -2,10 +2,12 @@
 using System.Threading;
 using JustEat.Testing;
 using JustEat.Aop;
+using NUnit.Framework;
 using Shouldly;
 
 namespace JustEat.Aop.Tests
 {
+	[Ignore]
 	public class WhenIntegratingAgainstARealStatsD : BehaviourTest<StatsDPipe>
 	{
 		protected override StatsDPipe CreateSystemUnderTest()

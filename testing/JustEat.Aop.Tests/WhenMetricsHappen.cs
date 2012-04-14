@@ -34,7 +34,7 @@ namespace JustEat.Aop.Tests
 		}
 
 		[Then]
-		public void TransportShouldReceiveMetric() 
+		public void TransportShouldReceiveMetric()
 		{
 			Mock<IUdpClient>().AssertWasCalled(x => x.Send(Arg<byte[]>.Is.NotNull, Arg<int>.Is.Anything));
 		}
