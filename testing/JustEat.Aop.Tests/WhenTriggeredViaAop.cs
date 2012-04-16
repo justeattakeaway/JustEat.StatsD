@@ -32,11 +32,11 @@ namespace JustEat.Aop.Tests
 
 		protected override void Given()
 		{
-			NLog.LogLevel minLevel = NLog.LogLevel.Info;
+			NLog.LogLevel minLevel = NLog.LogLevel.Trace;
 			_memoryTarget = new MemoryTarget();
 			_memoryTarget.Layout = (Layout)"${message}";
 			SimpleConfigurator.ConfigureForTargetLogging((Target)_memoryTarget, minLevel);
-			_log = LogManager.GetCurrentClassLogger();
+			_log = LogManager.GetLogger(string.Format("{0}-StatsD", typeof(MonitoredViaAop).FullName));
 		}
 
 		protected override void When()

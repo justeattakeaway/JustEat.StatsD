@@ -23,10 +23,13 @@ namespace JustEat.Aop
 
 		public override void OnEntry(MethodExecutionArgs args)
 		{
+			var loggerName = string.Format("{0}-StatsD", args.Method.DeclaringType.FullName);
+			Console.WriteLine(loggerName);
+			var logger = LogManager.GetLogger(loggerName);
 			args.MethodExecutionTag = new Dictionary<string, object>
 			{
 				{ "Stopwatch", Stopwatch.StartNew() },
-				{"Logger", LogManager.GetLogger(string.Format("{0}-StatsD", args.Method.DeclaringType.FullName))}
+				{"Logger", logger}
 			};
 			logger.Trace(_statsD.Increment(string.Format(CultureInfo.CurrentCulture, "{0}.attempts", _metricName)));
 		}
