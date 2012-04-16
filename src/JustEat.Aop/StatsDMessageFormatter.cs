@@ -17,7 +17,7 @@ namespace JustEat.Aop
 
 		public string Timing(long milliseconds, double sampleRate, string statBucket)
 		{
-			return Format(sampleRate, String.Format("{0}:{1:d}|ms", statBucket, milliseconds));
+			return Format(sampleRate, string.Format(CultureInfo.CurrentCulture, "{0}:{1:d}|ms", statBucket, milliseconds));
 		}
 
 		public string Decrement(string statBucket)
@@ -65,13 +65,13 @@ namespace JustEat.Aop
 
 		public string Increment(long magnitude, double sampleRate, string statBucket)
 		{
-			var stat = String.Format("{0}:{1}|c", statBucket, magnitude);
+			var stat = string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", statBucket, magnitude);
 			return Format(stat, sampleRate);
 		}
 
 		public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
 		{
-			return Format(sampleRate, statBuckets.Select(key => String.Format("{0}:{1}|c", key, magnitude)).ToArray());
+			return Format(sampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
 		}
 
 		public string Gauge(long magnitude, string statBucket)

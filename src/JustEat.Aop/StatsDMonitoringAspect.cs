@@ -28,7 +28,7 @@ namespace JustEat.Aop
 				{ "Stopwatch", Stopwatch.StartNew() },
 				{"Logger", LogManager.GetLogger(string.Format("{0}-StatsD", args.Method.DeclaringType.FullName))}
 			};
-			_statsD.Increment(string.Format(CultureInfo.CurrentCulture, "{0}.attempts", _metricName));
+			logger.Trace(_statsD.Increment(string.Format(CultureInfo.CurrentCulture, "{0}.attempts", _metricName)));
 		}
 
 		public override void OnExit(MethodExecutionArgs args)

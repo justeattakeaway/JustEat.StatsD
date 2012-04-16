@@ -42,8 +42,8 @@ namespace JustEat.Aop.Tests
 		protected override void When()
 		{
 			var random = new Random();
-			for (var i = 0; i < 1000; i++)
-			{
+			//for (var i = 0; i < 1000; i++)
+			//{
 				try
 				{
 					SystemUnderTest.InterestingMethod();
@@ -53,7 +53,7 @@ namespace JustEat.Aop.Tests
 					var foo = ex.Message;
 					// intentionally swallow; the aspect should log some errors
 				}
-			}
+			//}
 		}
 
 		[Then]
