@@ -2,6 +2,10 @@
 using System.Threading;
 using JustEat.Testing;
 using JustEat.Aop;
+using NLog;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
 using Shouldly;
 
 namespace JustEat.Aop.Tests
@@ -10,7 +14,7 @@ namespace JustEat.Aop.Tests
 	{
 		private readonly Random _random = new Random();
 		
-		//[StatsDMonitoringAspect("unit-test.aop")]
+		[StatsDMonitoringAspect("unit-test.aop")]
 		public void InterestingMethod()
 		{
 			Thread.Sleep(TimeSpan.FromMilliseconds(_random.Next(1000)));
@@ -23,9 +27,16 @@ namespace JustEat.Aop.Tests
 
 	public class WhenTriggeredViaAop : BehaviourTest<MonitoredViaAop>
 	{
+		private Logger _log;
+		private MemoryTarget _memoryTarget;
+
 		protected override void Given()
 		{
-			
+			NLog.LogLevel minLevel = NLog.LogLevel.Info;
+			_memoryTarget = new MemoryTarget();
+			_memoryTarget.Layout = (Layout)"${message}";
+			SimpleConfigurator.ConfigureForTargetLogging((Target)_memoryTarget, minLevel);
+			_log = LogManager.GetCurrentClassLogger();
 		}
 
 		protected override void When()
@@ -49,6 +60,12 @@ namespace JustEat.Aop.Tests
 		public void NoExceptionsShouldBeThrown()
 		{
 			ThrownException.ShouldBe(null);
+		}
+
+		[Then]
+		public void LoggingShouldHaveOccurred()
+		{
+			_memoryTarget.Logs.Count.ShouldBeGreaterThan(0);
 		}
 	}
 }

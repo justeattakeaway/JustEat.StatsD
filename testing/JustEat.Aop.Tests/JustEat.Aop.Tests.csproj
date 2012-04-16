@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppression.cs" />
@@ -47,6 +48,12 @@
       <Project>{2D18345A-D528-4075-AC11-4E70C100BB3D}</Project>
       <Name>JustEat.Aop</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nlog.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="..\..\wraps\openwrap\build\OpenWrap.CSharp.targets" />
   <Target Name="BeforeBuild" Condition="!Exists('Properties\AssemblyInfo.cs')">

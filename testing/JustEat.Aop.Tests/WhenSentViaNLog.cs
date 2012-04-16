@@ -9,26 +9,31 @@ using NUnit.Framework;
 
 namespace JustEat.Aop.Tests
 {
+	[Ignore]
+	[TestFixture]
 	public class WhenSentViaNLog
 	{
 		[Test]
 		public void Firehose()
 		{
-			var networkTarget = new NLog.Targets.NetworkTarget() {NewLine=true,Address="udp://monitor.je-labs.com:8125",Layout="${message}"};
-			SimpleConfigurator.ConfigureForTargetLogging((Target)networkTarget, NLog.LogLevel.Info);
-			var logger = LogManager.GetCurrentClassLogger();
+			LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration("nlog.config", false) {AutoReload=true};
+			var logger = LogManager.GetLogger("Firehose-StatsD");
 			var r = new Random();
 			var sw = Stopwatch.StartNew();
+			var metric = string.Format("nlog-config-test.{0:HH-mm-ss}", DateTime.UtcNow);
 			for (var i = 0; i < 1000; i++)
 			{
 				var n = r.Next(1000);
-				logger.Info("nlog-test.foo:1|c\n");
-				logger.Info(string.Format("nlog-test.bar:{0}|c\n", n));
+				Trace.Write(string.Format("trace: {0}", n));
+				Debug.Write(string.Format("debug: {0}", n));
+				Console.WriteLine(string.Format("console: {0}", n));
+				logger.Info("{0}.foo:1|c\n", metric);
+				logger.Info(string.Format("{0}.bar:{1}|c\n", metric, n));
 				Thread.Sleep(TimeSpan.FromMilliseconds(n));
-				logger.Info(string.Format("nlog-test.iteration:{0}|ms\n", n));
+				logger.Info(string.Format("{0}.iteration:{1}|ms\n", metric, n));
 			}
 			sw.Stop();
-			logger.Info(string.Format("nlog-test.whole-test:{0}|ms\n", sw.ElapsedMilliseconds));
+			logger.Info(string.Format("{0}.whole-test:{1}|ms\n", metric, sw.ElapsedMilliseconds));
 		}
 	}
 }

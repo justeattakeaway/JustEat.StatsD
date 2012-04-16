@@ -8,11 +8,11 @@ using Shouldly;
 namespace JustEat.Aop.Tests
 {
 	[Ignore]
-	public class WhenIntegratingAgainstARealStatsD : BehaviourTest<StatsDPipe>
+	public class WhenIntegratingAgainstARealStatsD : BehaviourTest<StatsDMessageFormatter>
 	{
-		protected override StatsDPipe CreateSystemUnderTest()
+		protected override StatsDMessageFormatter CreateSystemUnderTest()
 		{
-			return new StatsDPipe("monitor.je-labs.com", 8125);
+			return new StatsDMessageFormatter();
 		}
 
 		protected override void Given()
@@ -27,9 +27,9 @@ namespace JustEat.Aop.Tests
 			{
 				var n = random.Next(100);
 				SystemUnderTest.Increment("unit-test.bare.orders-inc");
-				SystemUnderTest.Increment("unit-test.bare.orders-count", n);
+				SystemUnderTest.Increment(n, "unit-test.bare.orders-count");
 				Thread.Sleep(TimeSpan.FromMilliseconds(n));
-				SystemUnderTest.Timing("unit-test.bare.orders-timing", n);
+				SystemUnderTest.Timing(n, "unit-test.bare.orders-timing");
 			}
 		}
 

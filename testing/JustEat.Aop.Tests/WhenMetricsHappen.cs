@@ -6,25 +6,24 @@ using Shouldly;
 
 namespace JustEat.Aop.Tests
 {
-	public class WhenMetricsHappen : BehaviourTest<StatsDPipe>
+	public class WhenMetricsHappen : BehaviourTest<StatsDMessageFormatter>
 	{
-		private IUdpClient _client;
 		private string _metricName;
+		private string _increment;
 
-		protected override StatsDPipe CreateSystemUnderTest()
+		protected override StatsDMessageFormatter CreateSystemUnderTest()
 		{
-			return new StatsDPipe(_client);
+			return new StatsDMessageFormatter();
 		}
 
 		protected override void Given()
 		{
-			_client = Mock<IUdpClient>();
 			_metricName = string.Format(CultureInfo.CurrentCulture, "unit-test.{0}", GetType().Name);
 		}
 
 		protected override void When()
 		{
-			SystemUnderTest.Increment(_metricName);
+			_increment = SystemUnderTest.Increment(_metricName);
 		}
 
 		[Then]
@@ -34,9 +33,9 @@ namespace JustEat.Aop.Tests
 		}
 
 		[Then]
-		public void TransportShouldReceiveMetric()
+		public void Increment1ShouldBeCorrectlyFormatted()
 		{
-			Mock<IUdpClient>().AssertWasCalled(x => x.Send(Arg<byte[]>.Is.NotNull, Arg<int>.Is.Anything));
+			//_increment.ShouldMatch("unit-test.")
 		}
 	}
 }
