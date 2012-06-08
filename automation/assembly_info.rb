@@ -11,6 +11,7 @@ class AssemblyInfoGenerator
 		@svn = params[:svn] || "3rdparty/svn/bin/svn.exe"
 		@log = params[:log] || Logger.new(STDOUT)
 		@checkout_root = params[:checkout_root] || '.'
+		@version = params[:version]
 	end
 
 	def generate
@@ -26,7 +27,7 @@ class AssemblyInfoGenerator
 		output = File.join dir, "AssemblyInfo.cs"
 		desc "Generate AssemblyInfo.cs for #{name}"
 		assemblyinfo :assembly_info => [dir] do |asm|
-			asm.version = Pathname.new('version').read.chomp
+			asm.version = @version
 			asm.company_name = "Just-Eat Holding Ltd"
 			asm.title = name
 			asm.copyright = "copyright #{Time.now.year}, by Just-Eat Holding Ltd"

@@ -6,11 +6,11 @@ def setup_nunit(params={})
 		desc 'Run all nunit-tests'
 		nunit do |nunit|
 			nunit.command = "#{third_party_path}/nunit/bin/net-2.0/nunit-console.exe"
-			nunit.assemblies = FileList.new "bin/**/#{configuration}/*.Tests.dll"
-			nunit.options = ['/xml=bin\\TestResults.xml']
+			nunit.assemblies = FileList.new "out/**/#{configuration}/*.Tests.dll"
+			nunit.options = ['/xml=out\\TestResults.xml']
 		end
 		task :default => 'test:nunit'
-		CLEAN.include 'bin/TestResults.xml'
+		CLEAN.include 'out/TestResults.xml'
 	end
 	desc 'Run all tests'
 	task :test => depend_on

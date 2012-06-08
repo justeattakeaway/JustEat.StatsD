@@ -1,10 +1,14 @@
+*.cache
 *.log
+*.orig
+*.sublime-workspace
 *.suo
 *.user
 _ReSharper*
 AssemblyInfo.cs
 bin
 obj
-wraps
-*.sublime-workspace
+out
+packages
 
+!3rdparty/*/bin
