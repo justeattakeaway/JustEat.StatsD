@@ -27,7 +27,7 @@ desc 'Bootstrap all build-dependencies'
 task :bootstrap => ['nuget:restore', :assembly_info]
 
 desc "Compile solution"
-msbuild :compile => [:assembly_info, 'nuget:restore'] do |m|
+msbuild :compile => [:bootstrap, 'nuget:restore'] do |m|
 	m.properties :configuration => configuration
 	m.targets :Build
 	m.solution = "#{name}.sln"

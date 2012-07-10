@@ -5,8 +5,9 @@ def setup_nuget opts={}
 	nuget = opts[:nuget_exe] || ".nuget/nuget.exe"
 
 	namespace :nuget do
+		directory 'packages'
 		desc "restore packages"
-		task :restore do
+		task :restore => ['packages'] do
 			FileList.new("**/packages.config").map{|pc|Pathname.new(pc)}.each do |pc|
 				CommandLine.new(nuget, "install \"#{pc.to_s.gsub('/', '\\')}\" -source http://ci.dev/guestAuth/app/nuget/v1/FeedService.svc -source http://nuget.org/api/v2/ -o packages").run
 			end
@@ -38,11 +39,11 @@ def setup_nuget opts={}
 			nuspec.description = "JustEat.StatsD is our library for interacting with StatsD event-tracking"
 			nuspec.summary = "JustEat.StatsD provides helpers for publishing events into statsd"
 			nuspec.language = "en-GB"
-			nuspec.licenseUrl = "https://github.je-labs.com/PlatformOps/#{name}/blob/master/LICENSE"
-			nuspec.projectUrl = "https://github.je-labs.com/PlatformOps/#{name}"
+			nuspec.licenseUrl = "https://github.je-labs.com/PaaS/#{name}/blob/master/LICENSE.txt"
+			nuspec.projectUrl = "https://github.je-labs.com/PaaS/#{name}"
 			nuspec.working_directory = package_dir
 			nuspec.output_file = "#{name}.nuspec"
-			nuspec.tags = "justeat events statsd paas"
+			nuspec.tags = "justeat library events statsd paas"
 		end
 
 		nupkg = "out/#{name}.#{version}.nupkg"

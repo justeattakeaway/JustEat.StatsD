@@ -7,9 +7,11 @@ class NDepend
 end
 
 def setup_ndepend(params={})
+	configuration = params[:configuration] || 'Release'
 	third_party_path = params[:third_party_path] || '3rdparty'
 	project_file = params[:project_file] || FileList.new('*.ndproj').first
-	in_dirs = params[:in_dirs] || [File.join('out', 'AnyCPU', 'v4.0', 'Release')]
+	dotnet_framework = params[:dotnet_framework] || 'v4.0'
+	in_dirs = params[:in_dirs] || [File.join('out', 'AnyCPU' ,dotnet_framework, configuration)]
 	previous_analysis = params[:previous_analysis] || 'previous_ndepend'
 	namespace :analysis do
 		report_dir = "out/ndependout"
@@ -27,10 +29,15 @@ def setup_ndepend(params={})
 		end
 
 		task :publish do
-			xml = Pathname.new('out/ndependout/CQLRuleCriticalResult.xml').read
+			xml = Pathname.new('out/ndependout/CQLRuleCriticalResult.xml')
+			if xml.exist?
+				raw = xml.read
 			doc = Nokogiri::XML xml
 			violations = doc.css('RuleCritical').length
 			puts "##teamcity[buildStatisticValue key='NDepend-Critical-Rule-Violations' value='#{violations}']"
+			else
+				puts "##teamcity[buildStatisticValue key='NDepend-Critical-Rule-Violations' value='0']"
+			end
 		end
 		task :default => [:ndepend, :publish]
 	end
