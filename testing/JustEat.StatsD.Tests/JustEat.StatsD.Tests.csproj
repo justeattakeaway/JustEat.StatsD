@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JustEat.StatsD.Tests</RootNamespace>
     <AssemblyName>JustEat.StatsD.Tests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <OutputPath>..\..\out\$(Platform)\$(TargetFrameworkVersion)\$(Configuration)\</OutputPath>
@@ -35,19 +35,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JustEat.Testing">
-      <HintPath>..\..\packages\JustEat.Testing.5.0.0\lib\JustEat.Testing.dll</HintPath>
-    </Reference>
-    <Reference Include="JustEat.Testing.Tests">
-      <HintPath>..\..\packages\JustEat.Testing.5.0.0\lib\JustEat.Testing.Tests.dll</HintPath>
+      <HintPath>..\..\packages\JustEat.Testing.5.0.1.36\lib\JustEat.Testing.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.2.0.0.2000\lib\net35\NLog.dll</HintPath>
+      <HintPath>..\..\packages\JustEat.Testing.5.0.1.36\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="PostSharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PostSharp.2.1.6.17\lib\net20\PostSharp.dll</HintPath>
+      <HintPath>..\..\packages\PostSharp.2.1.7.18\lib\net20\PostSharp.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
@@ -62,6 +59,7 @@
   <ItemGroup>
     <Compile Include="GlobalSuppression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequiresPostSharp.cs" />
     <Compile Include="WhenIntegratingAgainstARealStatsD.cs" />
     <Compile Include="WhenMetricsHappen.cs" />
     <Compile Include="WhenSentViaNLog.cs" />
@@ -88,7 +86,7 @@
     <Exec Command="bundle exec rake bootstrap" WorkingDirectory="..\.." />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Import Project="..\..\packages\PostSharp.2.1.6.17\tools\PostSharp.targets" />
+  <Import Project="..\..\packages\PostSharp.2.1.7.18\tools\PostSharp.targets" Condition="Exists('..\..\packages\PostSharp.2.1.7.18\tools\PostSharp.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -12,7 +12,7 @@ namespace JustEat.StatsD.Tests
     {
         private readonly Random _random = new Random();
 
-        [StatsDMonitoringAspect("unit-test.StatsD")]
+		[StatsDMonitoringAspect("unit-test.StatsD")]
         public void InterestingMethod()
         {
             Thread.Sleep(TimeSpan.FromMilliseconds(_random.Next(1000)));
@@ -39,19 +39,15 @@ namespace JustEat.StatsD.Tests
 
         protected override void When()
         {
-            var random = new Random();
-            //for (var i = 0; i < 1000; i++)
-            //{
             try
             {
                 SystemUnderTest.InterestingMethod();
             }
             catch (Exception ex)
             {
-                var foo = ex.Message;
-                // intentionally swallow; the aspect should log some errors
+            	var message = ex.Message;
+            	// intentionally swallow; the aspect should log some errors
             }
-            //}
         }
 
         [Then]
