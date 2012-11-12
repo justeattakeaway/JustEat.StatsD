@@ -17,8 +17,13 @@ namespace JustEat.StatsD
 
         public string Timing(long milliseconds, double sampleRate, string statBucket)
         {
-            return Format(sampleRate, string.Format(CultureInfo.CurrentCulture, "{0}:{1:d}|ms", statBucket, milliseconds));
+			return Format(CultureInfo.CurrentCulture, sampleRate, string.Format(CultureInfo.CurrentCulture, "{0}:{1:d}|ms", statBucket, milliseconds));
         }
+
+		public string Timing(long milliseconds, double sampleRate, string statBucketn, CultureInfo culture)
+		{
+			return Format(culture, sampleRate, string.Format(culture, "{0}:{1:d}|ms", statBucketn, milliseconds));
+		}
 
         public string Decrement(string statBucket)
         {
@@ -69,9 +74,15 @@ namespace JustEat.StatsD
             return Format(stat, sampleRate);
         }
 
+		public string Increment(long magnitude, double sampleRate, string statBucket,  CultureInfo culture)
+		{
+			var stat = string.Format(culture, "{0}:{1}|c", statBucket, magnitude);
+			return Format(stat, sampleRate);
+		}
+
         public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
         {
-            return Format(sampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
+			return Format(CultureInfo.CurrentCulture, sampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
         }
 
         public string Gauge(long magnitude, string statBucket)
@@ -80,12 +91,23 @@ namespace JustEat.StatsD
             return Format(stat, 1.0);
         }
 
+		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo)
+		{
+			var stat = string.Format(cultureInfo, "{0}:{1}|g", statBucket, magnitude);
+			return Format(stat, 1.0);
+		}
+		
+		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo, DateTime timeStamp)
+		{
+			var stat = string.Format(cultureInfo, "{0}:{1}|g|@{2}", statBucket, magnitude, timeStamp.AsUnixTime());
+			return Format(stat, 1.0);
+		}
         private string Format(String stat, double sampleRate)
         {
-            return Format(sampleRate, stat);
+            return Format(CultureInfo.CurrentCulture, sampleRate, stat);
         }
 
-        private string Format(double sampleRate, params string[] stats)
+        private string Format(IFormatProvider cultureInfo, double sampleRate, params string[] stats)
         {
             var formatted = new StringBuilder();
             if (sampleRate < 1.0)
@@ -94,7 +116,7 @@ namespace JustEat.StatsD
                 {
                     if (_random.NextDouble() <= sampleRate)
                     {
-                        formatted.AppendFormat(CultureInfo.CurrentCulture, "{0}|@{1:f}\n", stat, sampleRate);
+						formatted.AppendFormat(cultureInfo, "{0}|@{1:f}\n", stat, sampleRate);
                     }
                 }
             }
@@ -102,7 +124,7 @@ namespace JustEat.StatsD
             {
                 foreach (var stat in stats)
                 {
-                    formatted.AppendFormat(CultureInfo.CurrentCulture, "{0}\n", stat);
+					formatted.AppendFormat(cultureInfo, "{0}\n", stat);
                 }
             }
 
