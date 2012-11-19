@@ -35,10 +35,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JustEat.Testing">
-      <HintPath>..\..\packages\JustEat.Testing.5.0.1.36\lib\JustEat.Testing.dll</HintPath>
+      <HintPath>..\..\packages\JustEat.Testing.5.0.1.48\lib\JustEat.Testing.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\JustEat.Testing.5.0.1.36\lib\NLog.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\JustEat.Testing.5.0.1.48\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
