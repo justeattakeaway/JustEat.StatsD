@@ -20,9 +20,9 @@ namespace JustEat.StatsD
 			return Timing(milliseconds,sampleRate,statBucket,CultureInfo.CurrentCulture);
         }
 
-		public string Timing(long milliseconds, double sampleRate, string statBucketn, CultureInfo culture)
+		public string Timing(long milliseconds, double sampleRate, string statBucket, CultureInfo culture)
 		{
-			return Format(culture, sampleRate, string.Format(culture, "{0}:{1:d}|ms", statBucketn, milliseconds));
+			return Format(culture, sampleRate, string.Format(culture, "{0}:{1:d}|ms", statBucket, milliseconds));
 		}
 
         public string Decrement(string statBucket)
@@ -95,9 +95,9 @@ namespace JustEat.StatsD
 			return Format(stat, 1.0);
 		}
 		
-		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo, DateTime timeStamp)
+		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo, DateTime timestamp)
 		{
-			var stat = string.Format(cultureInfo, "{0}:{1}|g|@{2}", statBucket, magnitude, timeStamp.AsUnixTime());
+			var stat = string.Format(cultureInfo, "{0}:{1}|g|@{2}", statBucket, magnitude, timestamp.AsUnixTime());
 			return Format(stat, 1.0);
 		}
 
