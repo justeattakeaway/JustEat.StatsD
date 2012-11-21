@@ -14,7 +14,7 @@ namespace JustEat.StatsD.Tests
 
 		protected override StatsDMessageFormatter CreateSystemUnderTest()
 		{
-			return new StatsDMessageFormatter();
+			return new StatsDMessageFormatter(_someCulture);
 		}
 
 		protected override void Given()
@@ -41,9 +41,14 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenFormattingAGaugeMetricWithACulture : WhenTestingGauges
+		public class WhenFormattingAGaugeMetricWithABadCulture : WhenTestingGauges
 		{
 			private string _badFormatValueInMetric;
+			
+			protected override StatsDMessageFormatter CreateSystemUnderTest()
+			{
+				return new StatsDMessageFormatter(_someCulture);
+			}
 
 			protected override void Given()
 			{
@@ -58,7 +63,7 @@ namespace JustEat.StatsD.Tests
 
 			protected override void When()
 			{
-				_result = SystemUnderTest.Gauge(_someValueToSend, _someBucketName, _someCulture);
+				_result = SystemUnderTest.Gauge(_someValueToSend, _someBucketName);
 			}
 
 
@@ -87,7 +92,7 @@ namespace JustEat.StatsD.Tests
 
 			protected override void When()
 			{
-				_result = SystemUnderTest.Gauge(_someValueToSend, _someBucketName, _someCulture, _timeStamp);
+				_result = SystemUnderTest.Gauge(_someValueToSend, _someBucketName, _timeStamp);
 			}
 
 			[Then]
