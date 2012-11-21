@@ -51,16 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WhenAddingASampleRateToTimings.cs" />
-    <Compile Include="WhenDecrementingMultipleMetrics.cs" />
-    <Compile Include="WhenAddingASampleRateToCounters.cs" />
-    <Compile Include="WhenIncrementingCountersWithAValue.cs" />
-    <Compile Include="WhenDecrementingCountersWithAValue.cs" />
-    <Compile Include="WhenIncrementingCounters.cs" />
-    <Compile Include="WhenAddingTimestampsToGauges.cs" />
-    <Compile Include="WhenFormattingMetricsToTimers.cs" />
-    <Compile Include="WhenDecrementingCounters.cs" />
-    <Compile Include="WhenFormattingMetricsToGauges.cs" />
+    <Compile Include="WhenTestingTimers.cs" />
+    <Compile Include="WhenTestingGauges.cs" />
+    <Compile Include="WhenTestingCounters.cs" />
     <Compile Include="GlobalSuppression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
