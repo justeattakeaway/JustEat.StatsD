@@ -66,7 +66,7 @@ namespace JustEat.StatsD
 		public string Decrement(long magnitude, double sampleRate, CultureInfo culture, params string[] statBuckets)
 		{
 			magnitude = magnitude < 0 ? magnitude : -magnitude;
-			return Increment(magnitude, sampleRate, statBuckets);
+			return Increment(magnitude, sampleRate, culture, statBuckets);
 		}
 
         public string Increment(string statBucket)
