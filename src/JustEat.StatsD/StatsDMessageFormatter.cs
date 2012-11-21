@@ -18,7 +18,7 @@ namespace JustEat.StatsD
 
         public string Timing(long milliseconds, double sampleRate, string statBucket)
         {
-			return Timing(milliseconds,sampleRate,statBucket,CultureInfo.CurrentCulture);
+			return Timing(milliseconds, sampleRate, statBucket, CultureInfo.CurrentCulture);
         }
 
 		public string Timing(long milliseconds, double sampleRate, string statBucket, CultureInfo culture)
@@ -38,9 +38,14 @@ namespace JustEat.StatsD
 
         public string Decrement(long magnitude, double sampleRate, string statBucket)
         {
-            magnitude = magnitude < 0 ? magnitude : -magnitude;
-            return Increment(magnitude, sampleRate, statBucket);
+            return Decrement(magnitude, sampleRate, statBucket, CultureInfo.CurrentCulture);
         }
+
+		public string Decrement(long magnitude, double sampleRate, string statBucket, CultureInfo culture)
+		{
+			magnitude = magnitude < 0 ? magnitude : -magnitude;
+			return Increment(magnitude, sampleRate, statBucket, culture);
+		}
 
         public string Decrement(params string[] statBuckets)
         {
@@ -55,9 +60,14 @@ namespace JustEat.StatsD
 
         public string Decrement(long magnitude, double sampleRate, params string[] statBuckets)
         {
-            magnitude = magnitude < 0 ? magnitude : -magnitude;
-            return Increment(magnitude, sampleRate, statBuckets);
+        	return Decrement(magnitude, sampleRate, CultureInfo.CurrentCulture, statBuckets);
         }
+
+		public string Decrement(long magnitude, double sampleRate, CultureInfo culture, params string[] statBuckets)
+		{
+			magnitude = magnitude < 0 ? magnitude : -magnitude;
+			return Increment(magnitude, sampleRate, statBuckets);
+		}
 
         public string Increment(string statBucket)
         {
@@ -82,12 +92,17 @@ namespace JustEat.StatsD
 
 		public string Increment(long magnitude, params string[] statBuckets)
 		{
-			return Format(CultureInfo.CurrentCulture, DefaultSampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
+			return Increment(magnitude, DefaultSampleRate, statBuckets);
 		}
 
-        public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
+		public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
+		{
+			return Increment(magnitude, sampleRate, CultureInfo.CurrentCulture, statBuckets);
+		}
+
+        public string Increment(long magnitude, double sampleRate, CultureInfo culture, params string[] statBuckets)
         {
-			return Format(CultureInfo.CurrentCulture, sampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
+			return Format(CultureInfo.CurrentCulture, sampleRate, statBuckets.Select(key => string.Format(culture, "{0}:{1}|c", key, magnitude)).ToArray());
         }
 
         public string Gauge(long magnitude, string statBucket)
