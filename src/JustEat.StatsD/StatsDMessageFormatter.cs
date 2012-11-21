@@ -9,10 +9,11 @@ namespace JustEat.StatsD
     public class StatsDMessageFormatter
     {
         private readonly Random _random = new Random();
+    	private const double DefaultSampleRate = 1.0;
 
-        public string Timing(long milliseconds, string statBucket)
+    	public string Timing(long milliseconds, string statBucket)
         {
-            return Timing(milliseconds, 1.0, statBucket);
+            return Timing(milliseconds, DefaultSampleRate, statBucket);
         }
 
         public string Timing(long milliseconds, double sampleRate, string statBucket)
@@ -27,12 +28,12 @@ namespace JustEat.StatsD
 
         public string Decrement(string statBucket)
         {
-            return Increment(-1, 1.0, statBucket);
+            return Increment(-1, DefaultSampleRate, statBucket);
         }
 
         public string Decrement(long magnitude, string statBucket)
         {
-            return Decrement(magnitude, 1.0, statBucket);
+            return Decrement(magnitude, DefaultSampleRate, statBucket);
         }
 
         public string Decrement(long magnitude, double sampleRate, string statBucket)
@@ -43,13 +44,13 @@ namespace JustEat.StatsD
 
         public string Decrement(params string[] statBuckets)
         {
-            return Increment(-1, 1.0, statBuckets);
+            return Increment(-1, DefaultSampleRate, statBuckets);
         }
 
         public string Decrement(long magnitude, params string[] statBuckets)
         {
             magnitude = magnitude < 0 ? magnitude : -magnitude;
-            return Increment(magnitude, 1.0, statBuckets);
+            return Increment(magnitude, DefaultSampleRate, statBuckets);
         }
 
         public string Decrement(long magnitude, double sampleRate, params string[] statBuckets)
@@ -60,12 +61,12 @@ namespace JustEat.StatsD
 
         public string Increment(string statBucket)
         {
-            return Increment(1, 1.0, statBucket);
+            return Increment(1, DefaultSampleRate, statBucket);
         }
 
         public string Increment(long magnitude, string statBucket)
         {
-            return Increment(magnitude, 1.0, statBucket);
+            return Increment(magnitude, DefaultSampleRate, statBucket);
         }
 
         public string Increment(long magnitude, double sampleRate, string statBucket)
@@ -77,6 +78,11 @@ namespace JustEat.StatsD
 		{
 			var stat = string.Format(culture, "{0}:{1}|c", statBucket, magnitude);
 			return Format(stat, sampleRate);
+		}
+
+		public string Increment(long magnitude, params string[] statBuckets)
+		{
+			return Format(CultureInfo.CurrentCulture, DefaultSampleRate, statBuckets.Select(key => string.Format(CultureInfo.CurrentCulture, "{0}:{1}|c", key, magnitude)).ToArray());
 		}
 
         public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
@@ -92,13 +98,13 @@ namespace JustEat.StatsD
 		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo)
 		{
 			var stat = string.Format(cultureInfo, "{0}:{1}|g", statBucket, magnitude);
-			return Format(stat, 1.0);
+			return Format(stat, DefaultSampleRate);
 		}
 		
 		public string Gauge(long magnitude, string statBucket, CultureInfo cultureInfo, DateTime timestamp)
 		{
 			var stat = string.Format(cultureInfo, "{0}:{1}|g|@{2}", statBucket, magnitude, timestamp.AsUnixTime());
-			return Format(stat, 1.0);
+			return Format(stat, DefaultSampleRate);
 		}
 
         private string Format(String stat, double sampleRate)
@@ -109,7 +115,7 @@ namespace JustEat.StatsD
         private string Format(IFormatProvider cultureInfo, double sampleRate, params string[] stats)
         {
             var formatted = new StringBuilder();
-            if (sampleRate < 1.0)
+            if (sampleRate < DefaultSampleRate)
             {
                 foreach (var stat in stats)
                 {
