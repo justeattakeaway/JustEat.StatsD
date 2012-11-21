@@ -15,7 +15,7 @@ namespace JustEat.StatsD.Tests
 
 		protected override StatsDMessageFormatter CreateSystemUnderTest()
 		{
-			return new StatsDMessageFormatter();
+			return new StatsDMessageFormatter(_someCulture);
 		}
 
 		protected override void Given()
