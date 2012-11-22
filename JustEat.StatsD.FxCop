@@ -21,8 +21,8 @@
   <IgnoreGeneratedCode>True</IgnoreGeneratedCode>
  </ProjectOptions>
  <Targets>
-  <Target Name="$(ProjectDir)/out/AnyCPU/v3.5/Release/JustEat.StatsD.dll" Analyze="True" AnalyzeAllChildren="True" />
-  <Target Name="$(ProjectDir)/out/AnyCPU/v3.5/Release/JustEat.StatsD.Tests.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/out/AnyCPU/v4.0/Release/JustEat.StatsD.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/out/AnyCPU/v4.0/Release/JustEat.StatsD.Tests.dll" Analyze="True" AnalyzeAllChildren="True" />
  </Targets>
  <Rules>
   <RuleFiles>
