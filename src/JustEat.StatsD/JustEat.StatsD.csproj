@@ -42,8 +42,11 @@
   <ItemGroup>
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="GlobalSuppression.cs" />
+    <Compile Include="IStatsDUdpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatsDMessageFormatter.cs" />
+    <Compile Include="StatsDUdpClient.cs" />
+    <Compile Include="TestableUdpClient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Condition="!Exists('Properties\AssemblyInfo.cs')">
