@@ -25,7 +25,7 @@ namespace JustEat.StatsD.Tests
 			_someCulture = new CultureInfo("en-US");
         }
 
-		public class WhenFormattingATimingMetric : WhenTestingTimers
+		private class WhenFormattingATimingMetric : WhenTestingTimers
 		{
 			protected override void When()
 			{
@@ -38,7 +38,8 @@ namespace JustEat.StatsD.Tests
 				_result.ShouldBe(string.Format(_someCulture, "{0}:{1:d}|ms\n", _someBucketName, _someValueToSend));
 			}
 		}
-		public class WhenAddingASampleRateToATiming : WhenTestingTimers
+
+		private class WhenAddingASampleRateToATiming : WhenTestingTimers
 		{
 			private double _sampleRate;
 

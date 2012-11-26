@@ -25,7 +25,7 @@ namespace JustEat.StatsD.Tests
 			_someCulture = new CultureInfo("en-US");
 		}
 
-		public  class WhenFormattingAGaugeMetric : WhenTestingGauges
+		private class WhenFormattingAGaugeMetric : WhenTestingGauges
 		{
 			
 			protected override void When()
@@ -41,7 +41,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenFormattingAGaugeMetricWithABadCulture : WhenTestingGauges
+		private class WhenFormattingAGaugeMetricWithABadCulture : WhenTestingGauges
 		{
 			private string _badFormatValueInMetric;
 			
@@ -80,7 +80,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenFormattingAGaugeMetricWithATimestamp : WhenTestingGauges
+		private class WhenFormattingAGaugeMetricWithATimestamp : WhenTestingGauges
 		{
 			private DateTime _timeStamp;
 			

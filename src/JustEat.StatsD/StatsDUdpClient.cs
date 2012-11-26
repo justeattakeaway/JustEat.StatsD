@@ -29,6 +29,7 @@ namespace JustEat.StatsD
 				if (_udpClient != null)
 				{
 					_udpClient.Close();
+					GC.SuppressFinalize(this);
 				}
 			}
 			catch (Exception)
