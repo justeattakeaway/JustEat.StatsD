@@ -26,7 +26,7 @@ namespace JustEat.StatsD.Tests
 			_someCulture = new CultureInfo("en-US");
 		}
 
-		public class WhenIncrementingCounters : WhenTestingCounters
+		private class WhenIncrementingCounters : WhenTestingCounters
 		{
 			protected override void When()
 			{
@@ -41,7 +41,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenDecrementingCounters : WhenTestingCounters
+		private class WhenDecrementingCounters : WhenTestingCounters
 		{
 			protected override void When()
 			{
@@ -56,7 +56,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenIncrementingCountersWithAValue : WhenTestingCounters
+		private class WhenIncrementingCountersWithAValue : WhenTestingCounters
 		{
 			protected override void When()
 			{
@@ -70,7 +70,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenDecrementingCountersWithAValue : WhenTestingCounters
+		private class WhenDecrementingCountersWithAValue : WhenTestingCounters
 		{
 			protected override void When()
 			{
@@ -84,7 +84,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenAddingASampleRateToACounter : WhenTestingCounters
+		private class WhenAddingASampleRateToACounter : WhenTestingCounters
 		{
 			private double _sampleRate;
 
@@ -107,7 +107,7 @@ namespace JustEat.StatsD.Tests
 			//}
 		}
 
-		public class WhenIncrementingMultipleMetrics : WhenTestingCounters
+		private class WhenIncrementingMultipleMetrics : WhenTestingCounters
 		{
 			private new string[] _someBucketName;
 
@@ -136,7 +136,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		public class WhenDecrementingMultipleMetrics : WhenTestingCounters
+		private class WhenDecrementingMultipleMetrics : WhenTestingCounters
 		{
 			private new string[] _someBucketName;
 
