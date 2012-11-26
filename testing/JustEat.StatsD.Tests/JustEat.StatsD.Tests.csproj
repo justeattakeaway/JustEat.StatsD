@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WhenSendingMetricsToStatsD.cs" />
     <Compile Include="WhenTestingTimers.cs" />
     <Compile Include="WhenTestingGauges.cs" />
     <Compile Include="WhenTestingCounters.cs" />

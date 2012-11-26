@@ -8,10 +8,19 @@ namespace JustEat.StatsD
 	[Serializable]
 	public class StatsDMessageFormatter
 	{
-		private readonly Random _random = new Random();
+		[ThreadStatic]
+		private static Random _random;
+		private static Random Random
+		{
+			get
+			{
+				return _random ?? (_random = new Random());
+			}
+		}
+		
 		private readonly CultureInfo _cultureInfo;
 		private const double DefaultSampleRate = 1.0;
-
+		
 		public StatsDMessageFormatter() : this(new CultureInfo("en-US")) { }
 
 		public StatsDMessageFormatter(CultureInfo ci)
@@ -113,7 +122,7 @@ namespace JustEat.StatsD
 			{
 				foreach (var stat in stats)
 				{
-					if (_random.NextDouble() <= sampleRate)
+					if (Random.NextDouble() <= sampleRate)
 					{
 						formatted.AppendFormat(_cultureInfo, "{0}|@{1:f}\n", stat, sampleRate);
 					}
