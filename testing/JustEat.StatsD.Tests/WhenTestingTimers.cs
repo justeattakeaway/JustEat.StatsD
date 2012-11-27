@@ -35,7 +35,7 @@ namespace JustEat.StatsD.Tests
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
-				_result.ShouldBe(string.Format(_someCulture, "{0}:{1:d}|ms\n", _someBucketName, _someValueToSend));
+				_result.ShouldBe(string.Format(_someCulture, "{0}:{1:d}|ms", _someBucketName, _someValueToSend));
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace JustEat.StatsD.Tests
 			//[Then]
 			//public void FormattedStringShouldBeCorrectlyFormatted()
 			//{
-			//    _result.ShouldBe(string.Format(_someCulture, "{0}:{1}|ms|@{2:f}\n", _someBucketName, _someValueToSend, _sampleRate));
+			//    _result.ShouldBe(string.Format(_someCulture, "{0}:{1}|ms|@{2:f}", _someBucketName, _someValueToSend, _sampleRate));
 			//}
 		}
 

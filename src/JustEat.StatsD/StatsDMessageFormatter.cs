@@ -124,7 +124,7 @@ namespace JustEat.StatsD
 				{
 					if (Random.NextDouble() <= sampleRate)
 					{
-						formatted.AppendFormat(_cultureInfo, "{0}|@{1:f}\n", stat, sampleRate);
+						formatted.AppendFormat(_cultureInfo, "{0}|@{1:f}", stat, sampleRate);
 					}
 				}
 			}
@@ -132,7 +132,7 @@ namespace JustEat.StatsD
 			{
 				foreach (var stat in stats)
 				{
-					formatted.AppendFormat(_cultureInfo, "{0}\n", stat);
+					formatted.AppendFormat(_cultureInfo, "{0}", stat);
 				}
 			}
 

@@ -37,7 +37,7 @@ namespace JustEat.StatsD.Tests
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
-				_result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c\n", _someBucketName, 1));
+				_result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c", _someBucketName, 1));
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace JustEat.StatsD.Tests
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
-				_result.ShouldBe(string.Format(_someCulture, "{0}:-{1}|c\n", _someBucketName, 1));
+				_result.ShouldBe(string.Format(_someCulture, "{0}:-{1}|c", _someBucketName, 1));
 			}
 		}
 
@@ -66,7 +66,7 @@ namespace JustEat.StatsD.Tests
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
-				_result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c\n", _someBucketName, _someValueToSend));
+				_result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c", _someBucketName, _someValueToSend));
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace JustEat.StatsD.Tests
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
-				_result.ShouldBe(string.Format(_someCulture, "{0}:-{1}|c\n", _someBucketName, _someValueToSend));
+				_result.ShouldBe(string.Format(_someCulture, "{0}:-{1}|c", _someBucketName, _someValueToSend));
 			}
 		}
 
@@ -103,7 +103,7 @@ namespace JustEat.StatsD.Tests
 			//[Then]
 			//public void FormattedStringShouldBeCorrectlyFormatted()
 			//{
-			//    _result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c|@{2:f}\n", _someBucketName, _someValueToSend, _sampleRate));
+			//    _result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c|@{2:f}", _someBucketName, _someValueToSend, _sampleRate));
 			//}
 		}
 
@@ -129,7 +129,7 @@ namespace JustEat.StatsD.Tests
 
 				foreach (var stat in _someBucketName)
 				{
-					expectedString.AppendFormat(_someCulture, "{0}:{1}|c\n", stat, _someValueToSend);
+					expectedString.AppendFormat(_someCulture, "{0}:{1}|c", stat, _someValueToSend);
 				}
 
 				_result.ShouldBe(expectedString.ToString());
@@ -158,7 +158,7 @@ namespace JustEat.StatsD.Tests
 
 				foreach (var stat in _someBucketName)
 				{
-					expectedString.AppendFormat(_someCulture, "{0}:-{1}|c\n", stat, _someValueToSend);
+					expectedString.AppendFormat(_someCulture, "{0}:-{1}|c", stat, _someValueToSend);
 				}
 
 				_result.ShouldBe(expectedString.ToString());
