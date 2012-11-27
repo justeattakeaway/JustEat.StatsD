@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JustEat.StatsD.Net;
 using JustEat.Testing;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -8,7 +7,7 @@ using Shouldly;
 namespace JustEat.StatsD.Tests
 {
 	[Ignore]
-	public class WhenSendingMetricsToStatsD : BehaviourTest<IStatsDUdpClient>
+	public class WhenSendingMetricsToStatsD : BehaviourTest<StatsDUdpClient>
 	{
 		private IEnumerable<string> _metricToSend;
 		private bool _result;

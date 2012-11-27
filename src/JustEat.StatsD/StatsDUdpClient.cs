@@ -4,8 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using JustEat.StatsD.Collections;
-using JustEat.StatsD.Net;
 
 namespace JustEat.StatsD
 {
