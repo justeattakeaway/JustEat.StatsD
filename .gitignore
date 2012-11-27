@@ -14,4 +14,3 @@ packages
 !3rdparty/*/bin
 
 lint.db
-*.StatsD

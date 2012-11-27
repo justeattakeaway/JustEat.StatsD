@@ -73,7 +73,6 @@
     <Exec Command="bundle exec rake bootstrap" WorkingDirectory="..\.." />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Import Project="..\..\packages\PostSharp.2.1.7.18\tools\PostSharp.targets" Condition="Exists('..\..\packages\PostSharp.2.1.7.18\tools\PostSharp.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
