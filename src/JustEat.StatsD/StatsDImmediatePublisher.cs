@@ -4,7 +4,7 @@ using System.Globalization;
 namespace JustEat.StatsD
 {
 	/// <summary>
-	/// Will synchronously publish stats at statsd as you make calls; will not batch sends.
+	///     Will synchronously publish stats at statsd as you make calls; will not batch sends.
 	/// </summary>
 	public class StatsDImmediatePublisher : IStatsDPublisher
 	{
@@ -16,6 +16,8 @@ namespace JustEat.StatsD
 			_formatter = new StatsDMessageFormatter(cultureInfo);
 			_transport = new StatsDUdpClient(hostNameOrAddress, port);
 		}
+
+		public StatsDImmediatePublisher(string hostNameOrAddress, int port) : this(new CultureInfo(StatsDMessageFormatter.SAFE_DEFAULT_ISO_CULTURE_ID), hostNameOrAddress, port) {}
 
 		public void Increment(string bucket)
 		{

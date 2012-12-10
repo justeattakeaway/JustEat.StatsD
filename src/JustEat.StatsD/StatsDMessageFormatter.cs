@@ -8,6 +8,8 @@ namespace JustEat.StatsD
 	[Serializable]
 	public class StatsDMessageFormatter
 	{
+		public const string SAFE_DEFAULT_ISO_CULTURE_ID = "en-US";
+
 		[ThreadStatic]
 		private static Random _random;
 		private static Random Random
@@ -21,7 +23,7 @@ namespace JustEat.StatsD
 		private readonly CultureInfo _cultureInfo;
 		private const double DefaultSampleRate = 1.0;
 		
-		public StatsDMessageFormatter() : this(new CultureInfo("en-US")) { }
+		public StatsDMessageFormatter() : this(new CultureInfo(SAFE_DEFAULT_ISO_CULTURE_ID)) { }
 
 		public StatsDMessageFormatter(CultureInfo ci)
 		{
