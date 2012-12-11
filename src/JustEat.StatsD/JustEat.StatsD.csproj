@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="GlobalSuppression.cs" />
+    <Compile Include="IStatsDPublisher.cs" />
     <Compile Include="IStatsDUdpClient.cs" />
     <Compile Include="PacketBuilder.cs" />
     <Compile Include="PoolAwareSocketAsyncEventArgs.cs" />
