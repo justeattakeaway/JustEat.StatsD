@@ -16,6 +16,5 @@ namespace JustEat.StatsD
 		void Gauge(long value, string bucket, DateTime timeStamp);
 		void Timing(TimeSpan duration, string bucket);
 		void Timing(TimeSpan duration, double sampleRate, string bucket);
-		string Flush();
 	}
 }
