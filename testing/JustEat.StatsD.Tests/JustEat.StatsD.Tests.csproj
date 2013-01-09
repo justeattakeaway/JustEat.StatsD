@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JustEat.Testing">
-      <HintPath>..\..\packages\JustEat.Testing.5.0.1.48\lib\JustEat.Testing.dll</HintPath>
+      <HintPath>..\..\packages\JustEat.Testing.5.0.1.52\lib\JustEat.Testing.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
