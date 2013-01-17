@@ -2,7 +2,7 @@
 
 namespace JustEat.StatsD
 {
-	public interface IStatsDPublisher
+	public interface IStatsDPublisher : IDisposable
 	{
 		void Increment(string bucket);
 		void Increment(long value, string bucket);

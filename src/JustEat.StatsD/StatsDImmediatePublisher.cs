@@ -10,6 +10,7 @@ namespace JustEat.StatsD
 	{
 		private readonly StatsDMessageFormatter _formatter;
 		private readonly IStatsDUdpClient _transport;
+		private bool _disposed;
 
 		public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port)
 		{
@@ -77,6 +78,30 @@ namespace JustEat.StatsD
 		public void Timing(TimeSpan duration, double sampleRate, string bucket)
 		{
 			_transport.Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
+		}
+		
+		/// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
+		public void Dispose()
+		{
+			if (!_disposed)
+			{
+				Dispose(true);
+				GC.SuppressFinalize(this);
+			}
+		}
+
+		/// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
+		/// <param name="disposing">	true if resources should be disposed, false if not. </param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (null != _transport)
+				{
+					_transport.Dispose();
+				}
+				_disposed = true;
+			}
 		}
 	}
 }
