@@ -3,10 +3,10 @@ using JustEat.Testing;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace JustEat.StatsD.Tests.CachedDnsEndpointMapper
+namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
 {
     [TestFixture]
-    public class WhenCacheIsEmpty : BehaviourTest<EndpointLookups.CachedDnsEndpointMapper>
+    public class WhenCacheIsEmpty : BehaviourTest<StatsD.EndpointLookups.CachedDnsEndpointMapper>
 	{
 	    private int _port;
 	    private string _hostName;
