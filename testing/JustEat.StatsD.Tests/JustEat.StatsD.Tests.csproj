@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EndpointLookups\CachedDnsEndpointMapper\WhenSendingMetricsToStatsD.cs" />
     <Compile Include="PacketBuilderTests.cs" />
     <Compile Include="WhenSendingMetricsToStatsD.cs" />
     <Compile Include="WhenTestingTimers.cs" />

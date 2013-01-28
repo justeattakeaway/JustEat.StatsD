@@ -35,13 +35,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EndpointLookups\CachedDnsEndpointMapper.cs" />
     <Compile Include="DateTimeExtensions.cs" />
+    <Compile Include="EndpointLookups\DnsEndpointProvider.cs" />
     <Compile Include="GlobalSuppression.cs" />
+    <Compile Include="EndpointLookups\IDnsEndpointMapper.cs" />
     <Compile Include="IStatsDPublisher.cs" />
     <Compile Include="IStatsDUdpClient.cs" />
     <Compile Include="PacketBuilder.cs" />
@@ -52,6 +54,7 @@
     <Compile Include="StatsDMessageFormatter.cs" />
     <Compile Include="StatsDUdpClient.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" Condition="!Exists('Properties\AssemblyInfo.cs')">
     <Exec Command="bundle exec rake bootstrap" WorkingDirectory="..\.." />
