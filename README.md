@@ -1,6 +1,9 @@
 # lib_statsd
 
 StatsD Library
+## Installation
+
+* To add Lib_StatsD to your c# project you can follow wiki documentation found [here](http://wiki.just-eat.com:8080/display/ops/How+to+instrument+an+application+to+send+metrics+to+StatsD) under the *Using Lib_StatsD to send metrics to StatsD* section.
 
 ## Contributing:
  
