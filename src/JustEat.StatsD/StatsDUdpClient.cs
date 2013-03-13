@@ -76,6 +76,7 @@ namespace JustEat.StatsD
 				
 				_udpClient.Client.SendPacketsAsync(data);
 
+				_log.Trace("Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
 				return true;
 			}
 			//fire and forget, so just eat intermittent failures / exceptions
