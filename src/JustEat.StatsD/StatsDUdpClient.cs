@@ -5,11 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
+using NLog;
 
 namespace JustEat.StatsD
 {
 	public class StatsDUdpClient : IStatsDUdpClient
 	{
+		private static readonly Logger _log = LogManager.GetCurrentClassLogger();	
 		private readonly UdpClient _udpClient;
 		private bool _disposed;
 		private readonly string _hostNameOrAddress;
@@ -32,10 +34,18 @@ namespace JustEat.StatsD
             _endPointMapper = endpointMapper;
 			_hostNameOrAddress = hostNameOrAddress;
 			_port = port;
-			_udpClient = new UdpClient(_hostNameOrAddress, _port)
-			             {
-			             	Client = {SendBufferSize = 0}
-			             };
+
+			try
+			{
+				_udpClient = new UdpClient(_hostNameOrAddress, _port)
+				{
+					Client = { SendBufferSize = 0 }
+				};
+			}
+			catch (SocketException e)
+			{
+				_log.Error(string.Format("Error Creating udpClient :-  Message : {1}, Inner Exception {2}, StackTrace {3}.", e.Message, e.InnerException, e.StackTrace));
+			}
 
 			//if we were given an IP instead of a hostname, we can happily cache it off for the life of this class
 			IPAddress address;
