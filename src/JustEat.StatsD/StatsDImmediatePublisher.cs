@@ -12,13 +12,13 @@ namespace JustEat.StatsD
 		private readonly IStatsDUdpClient _transport;
 		private bool _disposed;
 
-		public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port)
+	    public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port, string prefix = "")
 		{
-			_formatter = new StatsDMessageFormatter(cultureInfo);
+			_formatter = new StatsDMessageFormatter(prefix, cultureInfo);
 			_transport = new StatsDUdpClient(hostNameOrAddress, port);
 		}
 
-		public StatsDImmediatePublisher(string hostNameOrAddress, int port) : this(new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureID), hostNameOrAddress, port) {}
+	    public StatsDImmediatePublisher(string hostNameOrAddress, int port) : this(new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureID), hostNameOrAddress, port) {}
 
 		public void Increment(string bucket)
 		{
