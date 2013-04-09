@@ -165,10 +165,37 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
+		private class AndWeHaveAPrefix : WhenTestingCounters
+		{
+			private string _prefix;
+
+			protected override void Given()
+			{
+				_prefix = "foo";
+				base.Given();
+			}
+			protected override StatsDMessageFormatter CreateSystemUnderTest()
+			{
+				return new StatsDMessageFormatter(_prefix, new CultureInfo("en-US"));
+			}
+			protected override void When()
+			{
+				_result = SystemUnderTest.Increment(_someBucketName);
+			}
+
+			[Then]
+			public void ResultShouldBeCorrectlyPrefixed()
+			{
+				_result.ShouldStartWith(_prefix + ".");
+			}
+		}
+
 		[Then]
 		public void NoExceptionsShouldHaveBeenThrown()
 		{
 			ThrownException.ShouldBe(null);
 		}
 	}
+
+	
 }

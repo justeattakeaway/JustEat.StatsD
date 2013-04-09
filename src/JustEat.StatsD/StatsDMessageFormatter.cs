@@ -21,13 +21,21 @@ namespace JustEat.StatsD
 		}
 		
 		private readonly CultureInfo _cultureInfo;
+		private readonly string _prefix;
 		private const double DefaultSampleRate = 1.0;
 		
-		public StatsDMessageFormatter() : this(new CultureInfo(SafeDefaultIsoCultureID)) { }
+		public StatsDMessageFormatter() : this("", new CultureInfo(SafeDefaultIsoCultureID)) { }
 
-		public StatsDMessageFormatter(CultureInfo ci)
+		public StatsDMessageFormatter(CultureInfo ci) : this("", ci) {}
+
+		public StatsDMessageFormatter(string prefix, CultureInfo ci)
 		{
 			_cultureInfo = ci;
+			_prefix = prefix ?? "";
+			if (!string.IsNullOrWhiteSpace(_prefix))
+			{
+				_prefix = _prefix + "."; // if we have something, then append a . to it to make concatenations easy.
+			}
 		}
 
 		public string Timing(long milliseconds, string statBucket)
@@ -37,7 +45,7 @@ namespace JustEat.StatsD
 
 		public string Timing(long milliseconds, double sampleRate, string statBucket)
 		{
-			return Format(sampleRate, string.Format(_cultureInfo, "{0}:{1:d}|ms", statBucket, milliseconds));
+			return Format(sampleRate, string.Format(_cultureInfo, "{0}{1}:{2:d}|ms", _prefix, statBucket, milliseconds));
 		}
 
 		public string Decrement(string statBucket)
@@ -86,7 +94,7 @@ namespace JustEat.StatsD
 
 		public string Increment(long magnitude, double sampleRate, string statBucket)
 		{
-			var stat = string.Format(_cultureInfo, "{0}:{1}|c", statBucket, magnitude);
+			var stat = string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
 			return Format(stat, sampleRate);
 		}
 
@@ -97,18 +105,18 @@ namespace JustEat.StatsD
 
 		public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
 		{
-			return Format(sampleRate, statBuckets.Select(key => string.Format(_cultureInfo, "{0}:{1}|c", key, magnitude)).ToArray());
+			return Format(sampleRate, statBuckets.Select(key => string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, key, magnitude)).ToArray());
 		}
 
 		public string Gauge(long magnitude, string statBucket)
 		{
-			var stat = string.Format(_cultureInfo, "{0}:{1}|g", statBucket, magnitude);
+			var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
 			return Format(stat, DefaultSampleRate);
 		}
 
 		public string Gauge(long magnitude, string statBucket, DateTime timestamp)
 		{
-			var stat = string.Format(_cultureInfo, "{0}:{1}|g|@{2}", statBucket, magnitude, timestamp.AsUnixTime());
+			var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
 			return Format(stat, DefaultSampleRate);
 		}
 

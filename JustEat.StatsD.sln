@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD", "src\JustEat.StatsD\JustEat.StatsD.csproj", "{2D18345A-D528-4075-AC11-4E70C100BB3D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD.Tests", "testing\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj", "{A9055BE9-CB9C-468B-9395-8E1EBB012BFD}"
