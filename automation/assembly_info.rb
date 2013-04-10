@@ -54,7 +54,7 @@ class AssemblyInfoGenerator
 
 	def read_branch
 		case source_control
-			when :git then `git status`.match(/# On branch (.*)$/i)[1]
+			when :git then `git branch`.match(/\* (.*)$/i)[1]
 			when :svn_post17, :svn_pre17 then svn_branch
 			else raise "Unsupported source control #{scm}"
 		end
@@ -90,7 +90,7 @@ class AssemblyInfoGenerator
 
 	def read_revision
 		case source_control
-			when :git then `git log -1`.match(/commit (.*)$/i)[1]
+			when :git then `git log -1 --no-color`.match(/commit (.*)$/i)[1]
 			when :svn_post17, :svn_pre17 then svn_info.match(/Revision: (\d+)/i)[1]
 			else raise "Unsupported source control #{scm}"
 		end
