@@ -83,12 +83,7 @@ namespace JustEat.StatsD
 
         public void Event(string name)
         {
-            Event(name, DateTime.UtcNow);
-        }
-
-        public void Event(string name, DateTime when)
-        {
-            _transport.Send(_formatter.Event(name, when));
+            _transport.Send(_formatter.Event(name));
         }
 		
 		/// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>

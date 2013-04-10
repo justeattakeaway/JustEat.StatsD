@@ -53,25 +53,19 @@ namespace JustEat.StatsD.Tests
 
             protected override void When()
             {
-                _result = SystemUnderTest.Event("foo", _timestamp);
+                _result = SystemUnderTest.Event("foo");
             }
 
             [Then]
-            public void ShouldReturnGaugeLikeString()
+            public void ShouldReturncounterLikeString()
             {
-                _result.ShouldContain("|g");
+                _result.ShouldEndWith("|c");
             }
 
             [Then]
             public void ShouldHaveTimeStampAsValue()
             {
                 Regex.IsMatch(_result, @":" + _timestamp.AsUnixTime().ToString() + "|").ShouldBe(true);
-            }
-
-            [Then]
-            public void ShouldHaveTimestamp()
-            {
-                _result.ShouldEndWith("@" + _timestamp.AsUnixTime().ToString());
             }
         }
 

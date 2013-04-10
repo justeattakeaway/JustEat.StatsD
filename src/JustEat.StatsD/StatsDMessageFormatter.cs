@@ -122,12 +122,7 @@ namespace JustEat.StatsD
 
         public string Event(string name)
         {
-            return Event(name, DateTime.UtcNow);
-        }
-
-        public string Event(string name, DateTime timestamp)
-        {
-            return Gauge((long) timestamp.AsUnixTime(), name, timestamp);
+            return Increment(name);
         }
 
 		private string Format(String stat, double sampleRate)
