@@ -8,17 +8,18 @@ namespace JustEat.StatsD
 	/// </summary>
 	public class StatsDImmediatePublisher : IStatsDPublisher
 	{
+	    static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureID );
 		private readonly StatsDMessageFormatter _formatter;
 		private readonly IStatsDUdpClient _transport;
 		private bool _disposed;
 
-	    public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port, string prefix = "")
+	    public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port = 8125, string prefix = "")
 		{
-			_formatter = new StatsDMessageFormatter(prefix, cultureInfo);
+			_formatter = new StatsDMessageFormatter(cultureInfo, prefix);
 			_transport = new StatsDUdpClient(hostNameOrAddress, port);
 		}
 
-	    public StatsDImmediatePublisher(string hostNameOrAddress, int port) : this(new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureID), hostNameOrAddress, port) {}
+	    public StatsDImmediatePublisher(string hostNameOrAddress, int port = 8125, string prefix = "") : this(SafeDefaultCulture, hostNameOrAddress, port, prefix) {}
 
 		public void Increment(string bucket)
 		{
@@ -79,6 +80,11 @@ namespace JustEat.StatsD
 		{
 			_transport.Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
 		}
+
+        public void Event(string name)
+        {
+            _transport.Send(_formatter.Event(name));
+        }
 		
 		/// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
 		public void Dispose()

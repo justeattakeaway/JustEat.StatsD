@@ -24,14 +24,14 @@ namespace JustEat.StatsD
 		private readonly string _prefix;
 		private const double DefaultSampleRate = 1.0;
 		
-		public StatsDMessageFormatter() : this("", new CultureInfo(SafeDefaultIsoCultureID)) { }
+		public StatsDMessageFormatter() : this(new CultureInfo(SafeDefaultIsoCultureID), prefix: "") { }
 
-		public StatsDMessageFormatter(CultureInfo ci) : this("", ci) {}
+        public StatsDMessageFormatter(string prefix = "") : this(new CultureInfo(SafeDefaultIsoCultureID), prefix) {}
 
-		public StatsDMessageFormatter(string prefix, CultureInfo ci)
+		public StatsDMessageFormatter(CultureInfo ci, string prefix = "")
 		{
 			_cultureInfo = ci;
-			_prefix = prefix ?? "";
+		    _prefix = prefix;
 			if (!string.IsNullOrWhiteSpace(_prefix))
 			{
 				_prefix = _prefix + "."; // if we have something, then append a . to it to make concatenations easy.
@@ -119,6 +119,11 @@ namespace JustEat.StatsD
 			var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
 			return Format(stat, DefaultSampleRate);
 		}
+
+        public string Event(string name)
+        {
+            return Increment(name);
+        }
 
 		private string Format(String stat, double sampleRate)
 		{

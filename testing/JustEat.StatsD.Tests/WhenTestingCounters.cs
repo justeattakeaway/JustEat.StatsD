@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using JustEat.Testing;
 using Shouldly;
 
@@ -32,8 +33,7 @@ namespace JustEat.StatsD.Tests
 			{
 				_result = SystemUnderTest.Increment(_someBucketName);
 			}
-
-
+            
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
@@ -41,12 +41,26 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
+        private class WhenRegisteringEvent : WhenTestingCounters
+        {
+            protected override void When()
+            {
+                _result = SystemUnderTest.Event("foo");
+            }
+
+            [Then]
+            public void ShouldReturncounterLikeString()
+            {
+                _result.ShouldEndWith("|c");
+            }
+        }
+
 		private class WhenDecrementingCounters : WhenTestingCounters
 		{
 			protected override void When()
 			{
 				_result = SystemUnderTest.Decrement(_someBucketName);
-			}
+            }
 
 
 			[Then]
@@ -165,7 +179,7 @@ namespace JustEat.StatsD.Tests
 			}
 		}
 
-		private class AndWeHaveAPrefix : WhenTestingCounters
+		private abstract class AndWeHaveAPrefix : WhenTestingCounters
 		{
 			private string _prefix;
 
@@ -176,11 +190,7 @@ namespace JustEat.StatsD.Tests
 			}
 			protected override StatsDMessageFormatter CreateSystemUnderTest()
 			{
-				return new StatsDMessageFormatter(_prefix, new CultureInfo("en-US"));
-			}
-			protected override void When()
-			{
-				_result = SystemUnderTest.Increment(_someBucketName);
+				return new StatsDMessageFormatter(new CultureInfo("en-US"), _prefix);
 			}
 
 			[Then]
@@ -188,7 +198,40 @@ namespace JustEat.StatsD.Tests
 			{
 				_result.ShouldStartWith(_prefix + ".");
 			}
-		}
+
+            private class WhenIncrementingCounter : AndWeHaveAPrefix
+            {
+                protected override void When()
+                {
+                    _result = SystemUnderTest.Increment(_someBucketName);
+                }
+            }
+
+            private class WhenDecrementingCounter : AndWeHaveAPrefix
+            {
+                protected override void When()
+                {
+                    _result = SystemUnderTest.Decrement(_someBucketName);
+                }
+            }
+
+            private class WhenAdjustingGauge : AndWeHaveAPrefix
+            {
+                protected override void When()
+                {
+                    _result = SystemUnderTest.Gauge(234, _someBucketName);
+                }
+            }
+
+            private class WhenSubmittingTiming : AndWeHaveAPrefix
+            {
+                protected override void When()
+                {
+                    _result = SystemUnderTest.Timing(234, _someBucketName);
+                }
+            }
+
+        }
 
 		[Then]
 		public void NoExceptionsShouldHaveBeenThrown()
@@ -196,6 +239,4 @@ namespace JustEat.StatsD.Tests
 			ThrownException.ShouldBe(null);
 		}
 	}
-
-	
 }
