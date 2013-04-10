@@ -43,14 +43,6 @@ namespace JustEat.StatsD.Tests
 
         private class WhenRegisteringEvent : WhenTestingCounters
         {
-            private DateTime _timestamp;
-
-            protected override void Given()
-            {
-                _timestamp = DateTime.UtcNow;
-                base.Given();
-            }
-
             protected override void When()
             {
                 _result = SystemUnderTest.Event("foo");
@@ -61,12 +53,6 @@ namespace JustEat.StatsD.Tests
             {
                 _result.ShouldEndWith("|c");
             }
-
-            [Then]
-            public void ShouldHaveTimeStampAsValue()
-            {
-                Regex.IsMatch(_result, @":" + _timestamp.AsUnixTime().ToString() + "|").ShouldBe(true);
-            }
         }
 
 		private class WhenDecrementingCounters : WhenTestingCounters
@@ -74,7 +60,7 @@ namespace JustEat.StatsD.Tests
 			protected override void When()
 			{
 				_result = SystemUnderTest.Decrement(_someBucketName);
-			}
+            }
 
 
 			[Then]
