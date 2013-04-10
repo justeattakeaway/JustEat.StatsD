@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -44,7 +45,7 @@ namespace JustEat.StatsD
             }
             catch (SocketException e)
             {
-                _log.Error(string.Format("Error Creating udpClient :-  Message : {1}, Inner Exception {2}, StackTrace {3}.", e.Message, e.InnerException, e.StackTrace));
+                _log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {1}, Inner Exception {2}, StackTrace {3}.", e.Message, e.InnerException, e.StackTrace));
             }
 
             //if we were given an IP instead of a hostname, we can happily cache it off for the life of this class
@@ -72,14 +73,14 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIpEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                                                   .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                                                   .ToArray();
 
                 _udpClient.Client.SendPacketsAsync(data);
 
-                _log.Trace("Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
+                _log.Trace(CultureInfo.InvariantCulture, "Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
                 return true;
             }
                 //fire and forget, so just eat intermittent failures / exceptions

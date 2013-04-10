@@ -4,6 +4,6 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public interface IDnsEndpointMapper
     {
-        IPEndPoint GetIpEndPoint(string hostName, int port);
+        IPEndPoint GetIPEndPoint(string hostName, int port);
     }
 }
