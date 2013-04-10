@@ -72,7 +72,7 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIpEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                                                   .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                                                   .ToArray();

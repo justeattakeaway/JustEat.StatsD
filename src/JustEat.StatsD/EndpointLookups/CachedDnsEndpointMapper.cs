@@ -28,13 +28,13 @@ namespace JustEat.StatsD.EndpointLookups
         /// <param name="hostName"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        public IPEndPoint GetIpEndPoint(string hostName, int port)
+        public IPEndPoint GetIPEndPoint(string hostName, int port)
         {
             lock (this)
             {
                 if (_cachedEndPoint == null || _cachedEndPoint.IsExpired(_secondsCacheDuration))
                 {
-                    _cachedEndPoint = new CachedEndPoint(_baseMapper.GetIpEndPoint(hostName, port));
+                    _cachedEndPoint = new CachedEndPoint(_baseMapper.GetIPEndPoint(hostName, port));
                 }
             }
             return _cachedEndPoint.IpEndPoint;

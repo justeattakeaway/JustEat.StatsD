@@ -8,7 +8,7 @@ namespace JustEat.StatsD.EndpointLookups
     /// </summary>
     public class DnsEndpointProvider : IDnsEndpointMapper
     {
-        public IPEndPoint GetIpEndPoint(string hostName, int port)
+        public IPEndPoint GetIPEndPoint(string hostName, int port)
         {
             return new IPEndPoint(Dns.GetHostAddresses(hostName)[0], port);
         }

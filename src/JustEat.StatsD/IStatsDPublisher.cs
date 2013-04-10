@@ -13,7 +13,7 @@ namespace JustEat.StatsD
         void Decrement(long value, double sampleRate, string bucket);
         void Decrement(long value, double sampleRate, params string[] buckets);
         void Gauge(long value, string bucket);
-        void Gauge(long value, string bucket, DateTime timeStamp);
+        void Gauge(long value, string bucket, DateTime timestamp);
         void Timing(TimeSpan duration, string bucket);
         void Timing(TimeSpan duration, double sampleRate, string bucket);
         void MarkEvent(string name);

@@ -15,12 +15,12 @@ namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
         {
             _port = 0;
             _hostName = "host";
-            Mock<IDnsEndpointMapper>().Expect(x => x.GetIpEndPoint(_hostName, _port)).Return(null);
+            Mock<IDnsEndpointMapper>().Expect(x => x.GetIPEndPoint(_hostName, _port)).Return(null);
         }
 
         protected override void When()
         {
-            SystemUnderTest.GetIpEndPoint(_hostName, _port);
+            SystemUnderTest.GetIPEndPoint(_hostName, _port);
         }
 
         [Then]

@@ -8,7 +8,7 @@ namespace JustEat.StatsD
     /// </summary>
     public class StatsDImmediatePublisher : IStatsDPublisher
     {
-        private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureID);
+        private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDUdpClient _transport;
         private bool _disposed;
@@ -66,9 +66,9 @@ namespace JustEat.StatsD
             _transport.Send(_formatter.Gauge(value, bucket));
         }
 
-        public void Gauge(long value, string bucket, DateTime timeStamp)
+        public void Gauge(long value, string bucket, DateTime timestamp)
         {
-            _transport.Send(_formatter.Gauge(value, bucket, timeStamp));
+            _transport.Send(_formatter.Gauge(value, bucket, timestamp));
         }
 
         public void Timing(TimeSpan duration, string bucket)
