@@ -6,9 +6,9 @@ using JustEat.StatsD;
 
 namespace PerfTestHarness
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var iterations = Enumerable.Range(1, 500000);
             var client = new StatsDUdpClient(10, "localhost", 3128);
@@ -21,7 +21,7 @@ namespace PerfTestHarness
             watch.Start();
 
             Parallel.ForEach(iterations, x => client.Send(formatter.Gauge(x, "bucket_sample" + "number-of-messages-to-be-sent")));
-        
+
             watch.Stop();
             Console.WriteLine("end - " + watch.ElapsedMilliseconds);
             Console.ReadLine();
