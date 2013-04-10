@@ -26,6 +26,8 @@ namespace JustEat.StatsD
 		
 		public StatsDMessageFormatter() : this(new CultureInfo(SafeDefaultIsoCultureID), prefix: "") { }
 
+        public StatsDMessageFormatter(string prefix = "") : this(new CultureInfo(SafeDefaultIsoCultureID), prefix) {}
+
 		public StatsDMessageFormatter(CultureInfo ci, string prefix = "")
 		{
 			_cultureInfo = ci;
