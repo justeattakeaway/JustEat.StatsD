@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using JustEat.Testing;
 using Shouldly;
 
@@ -32,14 +33,47 @@ namespace JustEat.StatsD.Tests
 			{
 				_result = SystemUnderTest.Increment(_someBucketName);
 			}
-
-
+            
 			[Then]
 			public void FormattedStringShouldBeCorrectlyFormatted()
 			{
 				_result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c", _someBucketName, 1));
 			}
 		}
+
+        private class WhenRegisteringEvent : WhenTestingCounters
+        {
+            private DateTime _timestamp;
+
+            protected override void Given()
+            {
+                _timestamp = DateTime.UtcNow;
+                base.Given();
+            }
+
+            protected override void When()
+            {
+                _result = SystemUnderTest.Event("foo", _timestamp);
+            }
+
+            [Then]
+            public void ShouldReturnGaugeLikeString()
+            {
+                _result.ShouldContain("|g");
+            }
+
+            [Then]
+            public void ShouldHaveTimeStampAsValue()
+            {
+                Regex.IsMatch(_result, @":" + _timestamp.AsUnixTime().ToString() + "|").ShouldBe(true);
+            }
+
+            [Then]
+            public void ShouldHaveTimestamp()
+            {
+                _result.ShouldEndWith("@" + _timestamp.AsUnixTime().ToString());
+            }
+        }
 
 		private class WhenDecrementingCounters : WhenTestingCounters
 		{

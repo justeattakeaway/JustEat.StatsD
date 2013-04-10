@@ -120,6 +120,16 @@ namespace JustEat.StatsD
 			return Format(stat, DefaultSampleRate);
 		}
 
+        public string Event(string name)
+        {
+            return Event(name, DateTime.UtcNow);
+        }
+
+        public string Event(string name, DateTime timestamp)
+        {
+            return Gauge((long) timestamp.AsUnixTime(), name, timestamp);
+        }
+
 		private string Format(String stat, double sampleRate)
 		{
 			return Format(sampleRate, stat);
