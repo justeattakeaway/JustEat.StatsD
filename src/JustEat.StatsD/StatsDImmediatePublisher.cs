@@ -81,7 +81,7 @@ namespace JustEat.StatsD
 			_transport.Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
 		}
 
-        public void Event(string name)
+        public void MarkEvent(string name)
         {
             _transport.Send(_formatter.Event(name));
         }

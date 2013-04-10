@@ -1521,7 +1521,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="Log4JXmlEventLayout">
+  <xs:complexType name="Log4JXmlMarkEventLayout">
     <xs:complexContent>
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
@@ -1980,7 +1980,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="EventLog">
+  <xs:complexType name="MarkEventLog">
     <xs:complexContent>
       <xs:extension base="Target">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -2004,7 +2004,7 @@
         </xs:attribute>
         <xs:attribute name="machineName" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the machine on which Event Log service is running.</xs:documentation>
+            <xs:documentation>Name of the machine on which MarkEvent Log service is running.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="source" type="xs:string">
@@ -2024,7 +2024,7 @@
         </xs:attribute>
         <xs:attribute name="log" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the Event Log to write to. This can be System, Application or any user-defined name.</xs:documentation>
+            <xs:documentation>Name of the MarkEvent Log to write to. This can be System, Application or any user-defined name.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2547,7 +2547,7 @@
           <xs:element name="useBinaryEncoding" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="clientId" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeMarkEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -2574,7 +2574,7 @@
             <xs:documentation>Client ID.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="includeEventProperties" type="xs:boolean">
+        <xs:attribute name="includeMarkEventProperties" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include per-event properties in the payload sent to the server.</xs:documentation>
           </xs:annotation>
