@@ -45,7 +45,7 @@ namespace JustEat.StatsD
             }
             catch (SocketException e)
             {
-                _log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {1}, Inner Exception {2}, StackTrace {3}.", e.Message, e.InnerException, e.StackTrace));
+                _log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
             }
 
             //if we were given an IP instead of a hostname, we can happily cache it off for the life of this class
