@@ -21,7 +21,6 @@ namespace JustEat.StatsD
         private readonly string _hostNameOrAddress;
         private readonly IPEndPoint _ipBasedEndpoint;
         private readonly int _port;
-        private readonly UdpClient _udpClient;
         private bool _disposed;
 
         public StatsDUdpClient(string hostNameOrAddress, int port)
@@ -35,18 +34,6 @@ namespace JustEat.StatsD
             _endPointMapper = endpointMapper;
             _hostNameOrAddress = hostNameOrAddress;
             _port = port;
-
-            try
-            {
-                _udpClient = new UdpClient(_hostNameOrAddress, _port)
-                {
-                    Client = {SendBufferSize = 0}
-                };
-            }
-            catch (SocketException e)
-            {
-                _log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
-            }
 
             //if we were given an IP instead of a hostname, we can happily cache it off for the life of this class
             IPAddress address;
@@ -73,21 +60,44 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
-                data.SendPacketsElements = metrics.ToMaximumBytePackets()
-                                                  .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
-                                                  .ToArray();
+	            data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+	            data.SendPacketsElements = metrics.ToMaximumBytePackets()
+	                                              .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
+	                                              .ToArray();
 
-                _udpClient.Client.SendPacketsAsync(data);
+				using (var udpClient = GetUdpClient())
+				{
+					udpClient.Client.SendPacketsAsync(data);
+				}
 
-                _log.Trace(CultureInfo.InvariantCulture, "Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
-                return true;
+	            _log.Trace(CultureInfo.InvariantCulture, "Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
+	            return true;
             }
-                //fire and forget, so just eat intermittent failures / exceptions
-            catch (Exception) {}
+	            //fire and forget, so just eat intermittent failures / exceptions
+            catch (Exception e)
+            {
+				_log.Trace("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
+            }
 
             return false;
         }
+
+		public UdpClient GetUdpClient()
+		{
+			UdpClient client = null;
+			try
+			{
+				client = new UdpClient(_hostNameOrAddress, _port)
+				{
+					Client = { SendBufferSize = 0 }
+				};
+			}
+			catch (SocketException e)
+			{
+				_log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
+			}
+			return client;
+		}
 
         /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
         public void Dispose()
@@ -105,10 +115,6 @@ namespace JustEat.StatsD
         {
             if (disposing)
             {
-                if (null != _udpClient)
-                {
-                    _udpClient.Close();
-                }
                 _disposed = true;
             }
         }
