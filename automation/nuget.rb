@@ -23,7 +23,7 @@ def setup_nuget opts={}
 
 		task :harvest => [package_lib] do
 			lib_files = FileList.new("out/**/#{configuration}/*.{exe,config,dll,pdb,xml}")
-			lib_files.exclude /(Shouldly|Rhino|nunit|Test)/
+			lib_files.exclude /(Shouldly|Rhino|nunit|Test|NLog|Ploeh)/
 			lib_files.map{|f|Pathname.new f}.each do |f|
 				harvested = "#{package_lib}/#{f.basename}"
 				FileUtils.cp_r f, harvested
@@ -44,6 +44,7 @@ def setup_nuget opts={}
 			nuspec.working_directory = package_dir
 			nuspec.output_file = "#{name}.nuspec"
 			nuspec.tags = "justeat library events statsd paas"
+      nuspec.dependency "NLog", "2.0.1"
 		end
 
 		nupkg = "out/#{name}.#{version}.nupkg"
