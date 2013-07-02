@@ -1,6 +1,8 @@
 ﻿using JustEat.StatsD.EndpointLookups;
 using JustEat.Testing;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoRhinoMock;
 using Rhino.Mocks;
 
 namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
@@ -10,12 +12,20 @@ namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
     {
         private int _port;
         private string _hostName;
+        private IDnsEndpointMapper _mapper;
+
+        protected override void CustomizeAutoFixture(Fixture fixture)
+        {
+            fixture.Customize(new AutoRhinoMockCustomization());
+            base.CustomizeAutoFixture(fixture);
+        }
 
         protected override void Given()
         {
             _port = 0;
             _hostName = "host";
-            Mock<IDnsEndpointMapper>().Expect(x => x.GetIPEndPoint(_hostName, _port)).Return(null);
+            _mapper = Fixture.Freeze<IDnsEndpointMapper>();
+            _mapper.Expect(x => x.GetIPEndPoint(_hostName, _port)).Return(null);
         }
 
         protected override void When()
@@ -26,7 +36,7 @@ namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
         [Then]
         public void EndpointIsProvidedByInnerService()
         {
-            Mock<IDnsEndpointMapper>().VerifyAllExpectations();
+            _mapper.VerifyAllExpectations();
         }
     }
 }

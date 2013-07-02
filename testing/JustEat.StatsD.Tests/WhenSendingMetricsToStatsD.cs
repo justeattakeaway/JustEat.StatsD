@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using JustEat.Testing;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using Shouldly;
 
@@ -17,7 +18,7 @@ namespace JustEat.StatsD.Tests
         {
             _metricToSend = new string[1] {"test-bucket:100|c"};
 
-            Mock<IStatsDUdpClient>().Expect(x => x.Send(Arg<IEnumerable<string>>.Is.NotNull)).Return(true);
+            Fixture.Freeze<IStatsDUdpClient>().Expect(x => x.Send(Arg<IEnumerable<string>>.Is.NotNull)).Return(true);
         }
 
         protected override void When()
