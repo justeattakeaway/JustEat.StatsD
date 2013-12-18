@@ -44,7 +44,7 @@ def setup_nuget opts={}
 			nuspec.working_directory = package_dir
 			nuspec.output_file = "#{name}.nuspec"
 			nuspec.tags = "justeat library events statsd paas"
-      nuspec.dependency "NLog", "2.0.1"
+      nuspec.dependency "NLog", "2.1.0"
 		end
 
 		nupkg = "out/#{name}.#{version}.nupkg"
