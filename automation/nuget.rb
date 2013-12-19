@@ -9,7 +9,7 @@ def setup_nuget opts={}
 		desc "restore packages"
 		task :restore => ['packages'] do
 			FileList.new("**/packages.config").map{|pc|Pathname.new(pc)}.each do |pc|
-				CommandLine.new(nuget, "install \"#{pc.to_s.gsub('/', '\\')}\" -source http://ci.je-labs.com/guestAuth/app/nuget/v1/FeedService.svc/ -source http://nuget.org/api/v2/ -o packages", logger: Logger.new(STDOUT)).run
+				CommandLine.new(nuget, "install \"#{pc.to_s.gsub('/', '\\')}\" -source http://packages.je-labs.com/nuget/Default/ -source http://nuget.org/api/v2/ -o packages", logger: Logger.new(STDOUT)).run
 			end
 		end
 
@@ -44,7 +44,7 @@ def setup_nuget opts={}
 			nuspec.working_directory = package_dir
 			nuspec.output_file = "#{name}.nuspec"
 			nuspec.tags = "justeat library events statsd paas"
-      nuspec.dependency "NLog", "2.0.1"
+      nuspec.dependency "NLog", "2.1.0"
 		end
 
 		nupkg = "out/#{name}.#{version}.nupkg"
