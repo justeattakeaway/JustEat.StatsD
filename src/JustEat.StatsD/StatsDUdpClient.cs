@@ -70,7 +70,7 @@ namespace JustEat.StatsD
 					udpClient.Client.SendPacketsAsync(data);
 				}
 
-	            _log.Trace(CultureInfo.InvariantCulture, "Libs-StatsD Sent Metrics Packet :- {0}", String.Join("\n", metrics));
+	            _log.Trace(CultureInfo.InvariantCulture, "statsd: {0}", String.Join(",", metrics));
 	            return true;
             }
 	            //fire and forget, so just eat intermittent failures / exceptions
