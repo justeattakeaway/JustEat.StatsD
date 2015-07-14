@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://github.com/justeat/JE.Feature.Library/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/justeat/JE.Feature.Library</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>http://github.com/justeat/JE.Feature.Library/CHANGELOG.md</releaseNotes>
+    <copyright>Copyright JUSTEAT 2015</copyright>
+    <tags>tag tag</tags>
+  </metadata>
+</package>

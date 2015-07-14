@@ -1,18 +1,21 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD", "src\JustEat.StatsD\JustEat.StatsD.csproj", "{2D18345A-D528-4075-AC11-4E70C100BB3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD.Tests", "testing\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj", "{A9055BE9-CB9C-468B-9395-8E1EBB012BFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD.Tests", "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj", "{A9055BE9-CB9C-468B-9395-8E1EBB012BFD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{35F90AC0-B118-49A2-90B0-44851C429067}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfTestHarness", "src\PerfTestHarness\PerfTestHarness.csproj", "{6EFBE2CD-D07F-4F64-83FA-BDD1E59E9360}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{06BE4D4A-B0DF-465D-9BAC-6CC3C9779A37}"
 	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
+		appveyor.yml = appveyor.yml
+		CHANGELOG.md = CHANGELOG.md
+		CONTRIBUTING.md = CONTRIBUTING.md
+		nuget.config = nuget.config
+		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfTestHarness", "testing\PerfTestHarness\PerfTestHarness.csproj", "{6EFBE2CD-D07F-4F64-83FA-BDD1E59E9360}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

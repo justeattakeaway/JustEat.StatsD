@@ -4,8 +4,9 @@
 *.sublime-workspace
 *.suo
 *.user
+*_NCrunch*
+*_ReSharper*
 _ReSharper*
-AssemblyInfo.cs
 bin
 obj
 out
@@ -14,3 +15,9 @@ packages
 !3rdparty/*/bin
 
 lint.db
+# Do not include these specfic configuration files as they will be generated
+src/*/[W|w]eb.config
+src/*/[N|n]log.config
+src/*/[C|c]onnectionstrings.config
+
+!nuget.exe
