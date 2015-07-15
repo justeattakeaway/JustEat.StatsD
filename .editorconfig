@@ -7,9 +7,13 @@ end_of_line = crlf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
-
-[**/*.{config,csproj,dotsettings,feature,fxcop,js,json,markdown,md,ncrunch*,ndepend,rb,targets,xml,xsd}]
 indent_size = 2
 
-[**/*.cs]
+[*.cs]
 indent_size = 4
+
+[*.lock]
+end_of_line = lf
+
+[*.sln]
+indent_style = tab
