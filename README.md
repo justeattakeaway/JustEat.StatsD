@@ -10,6 +10,8 @@ We use this within our components to publish [statsd](http://github.com/etsy/sta
 
 There's really not much else to say :-)
 
+We've been using this in most of our things, mostly unchanged, since around 2013.
+
 ### Features
 
 * statsd metrics formatter
