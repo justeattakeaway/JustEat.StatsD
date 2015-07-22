@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "version": 1
+  },
+  "feature": {
+    "name": "justeat-statsd",
+    "role": "library"
+  },
+  "build": {
+    "solution": "JustEat.StatsD.sln",
+    "mainproject": "JustEat.StatsD\\JustEat.StatsD.csproj"
+  }
+}
