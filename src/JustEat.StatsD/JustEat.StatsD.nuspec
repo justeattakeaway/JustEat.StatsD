@@ -12,6 +12,6 @@
     <description>$description$</description>
     <releaseNotes>http://github.com/justeat/JE.Feature.Library/CHANGELOG.md</releaseNotes>
     <copyright>Copyright JUSTEAT 2015</copyright>
-    <tags>tag tag</tags>
+    <tags>statsd graphite metrics monitoring</tags>
   </metadata>
 </package>
