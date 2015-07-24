@@ -6,11 +6,11 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>http://github.com/justeat/JE.Feature.Library/LICENSE</licenseUrl>
-    <projectUrl>http://github.com/justeat/JE.Feature.Library</projectUrl>
+    <licenseUrl>http://github.com/justeat/JustEat.StatsD/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/justeat/JustEat.StatsD</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>http://github.com/justeat/JE.Feature.Library/CHANGELOG.md</releaseNotes>
+    <releaseNotes>http://github.com/justeat/JustEat.StatsD/CHANGELOG.md</releaseNotes>
     <copyright>Copyright JUSTEAT 2015</copyright>
     <tags>statsd graphite metrics monitoring</tags>
   </metadata>

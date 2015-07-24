@@ -1,3 +1,7 @@
+# 1.0.3
+## Change
+Nuget metadata
+
 # 1.0.2
 ## Change
 * Move to Sys.Diag.Trace for logs to remove NLog dependency (so as to not force that on dependents)
