@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
-using NLog;
 
 namespace JustEat.StatsD
 {
     public class StatsDUdpClient : IStatsDUdpClient
     {
-        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
 
@@ -70,13 +68,13 @@ namespace JustEat.StatsD
 					udpClient.Client.SendPacketsAsync(data);
 				}
 
-	            _log.Trace(CultureInfo.InvariantCulture, "statsd: {0}", String.Join(",", metrics));
+	            Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
 	            return true;
             }
 	            //fire and forget, so just eat intermittent failures / exceptions
             catch (Exception e)
             {
-				_log.Trace("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
+				Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
             }
 
             return false;
@@ -94,7 +92,7 @@ namespace JustEat.StatsD
 			}
 			catch (SocketException e)
 			{
-				_log.Error(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
+                Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
 			}
 			return client;
 		}
