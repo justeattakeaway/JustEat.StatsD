@@ -21,7 +21,7 @@ namespace JustEat.StatsD.Tests
         protected override void Given()
         {
             var random = new Random();
-            _someValueToSend = random.Next(100);
+            _someValueToSend = random.Next(1,100);
             _someBucketName = "counter-bucket";
             _someCulture = new CultureInfo("en-US");
         }
@@ -31,8 +31,6 @@ namespace JustEat.StatsD.Tests
         {
             ThrownException.ShouldBe(null);
         }
-
-        #region Nested type: AndWeHaveAPrefix
 
         private abstract class AndWeHaveAPrefix : WhenTestingCounters
         {
@@ -55,8 +53,6 @@ namespace JustEat.StatsD.Tests
                 _result.ShouldStartWith(_prefix + ".");
             }
 
-            #region Nested type: WhenAdjustingGauge
-
             private class WhenAdjustingGauge : AndWeHaveAPrefix
             {
                 protected override void When()
@@ -64,10 +60,6 @@ namespace JustEat.StatsD.Tests
                     _result = SystemUnderTest.Gauge(234, _someBucketName);
                 }
             }
-
-            #endregion
-
-            #region Nested type: WhenDecrementingCounter
 
             private class WhenDecrementingCounter : AndWeHaveAPrefix
             {
@@ -77,10 +69,6 @@ namespace JustEat.StatsD.Tests
                 }
             }
 
-            #endregion
-
-            #region Nested type: WhenIncrementingCounter
-
             private class WhenIncrementingCounter : AndWeHaveAPrefix
             {
                 protected override void When()
@@ -89,10 +77,6 @@ namespace JustEat.StatsD.Tests
                 }
             }
 
-            #endregion
-
-            #region Nested type: WhenSubmittingTiming
-
             private class WhenSubmittingTiming : AndWeHaveAPrefix
             {
                 protected override void When()
@@ -100,13 +84,7 @@ namespace JustEat.StatsD.Tests
                     _result = SystemUnderTest.Timing(234, _someBucketName);
                 }
             }
-
-            #endregion
         }
-
-        #endregion
-
-        #region Nested type: WhenAddingASampleRateToACounter
 
         private class WhenAddingASampleRateToACounter : WhenTestingCounters
         {
@@ -131,10 +109,6 @@ namespace JustEat.StatsD.Tests
             //}
         }
 
-        #endregion
-
-        #region Nested type: WhenDecrementingCounters
-
         private class WhenDecrementingCounters : WhenTestingCounters
         {
             protected override void When()
@@ -150,10 +124,6 @@ namespace JustEat.StatsD.Tests
             }
         }
 
-        #endregion
-
-        #region Nested type: WhenDecrementingCountersWithAValue
-
         private class WhenDecrementingCountersWithAValue : WhenTestingCounters
         {
             protected override void When()
@@ -167,10 +137,6 @@ namespace JustEat.StatsD.Tests
                 _result.ShouldBe(string.Format(_someCulture, "{0}:-{1}|c", _someBucketName, _someValueToSend));
             }
         }
-
-        #endregion
-
-        #region Nested type: WhenDecrementingMultipleMetrics
 
         private class WhenDecrementingMultipleMetrics : WhenTestingCounters
         {
@@ -201,10 +167,6 @@ namespace JustEat.StatsD.Tests
             }
         }
 
-        #endregion
-
-        #region Nested type: WhenIncrementingCounters
-
         private class WhenIncrementingCounters : WhenTestingCounters
         {
             protected override void When()
@@ -219,10 +181,6 @@ namespace JustEat.StatsD.Tests
             }
         }
 
-        #endregion
-
-        #region Nested type: WhenIncrementingCountersWithAValue
-
         private class WhenIncrementingCountersWithAValue : WhenTestingCounters
         {
             protected override void When()
@@ -236,10 +194,6 @@ namespace JustEat.StatsD.Tests
                 _result.ShouldBe(string.Format(_someCulture, "{0}:{1}|c", _someBucketName, _someValueToSend));
             }
         }
-
-        #endregion
-
-        #region Nested type: WhenIncrementingMultipleMetrics
 
         private class WhenIncrementingMultipleMetrics : WhenTestingCounters
         {
@@ -270,10 +224,6 @@ namespace JustEat.StatsD.Tests
             }
         }
 
-        #endregion
-
-        #region Nested type: WhenRegisteringEvent
-
         private class WhenRegisteringEvent : WhenTestingCounters
         {
             protected override void When()
@@ -287,7 +237,5 @@ namespace JustEat.StatsD.Tests
                 _result.ShouldEndWith("|c");
             }
         }
-
-        #endregion
     }
 }
