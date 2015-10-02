@@ -36,32 +36,32 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=1.25.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FakeItEasy.1.25.2\lib\net40\FakeItEasy.dll</HintPath>
+    <Reference Include="FakeItEasy, Version=1.25.3.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JustBehave, Version=1.1.63.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\JustBehave.0.63\lib\net451\JustBehave.dll</HintPath>
+    <Reference Include="JustBehave, Version=1.1.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\JustBehave.0.76\lib\net451\JustBehave.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog, Version=2.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.1.2\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=3.16.5.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AutoFixture.3.16.5\lib\net40\Ploeh.AutoFixture.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture, Version=3.34.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoFixture.3.34.2\lib\net40\Ploeh.AutoFixture.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture.AutoFakeItEasy, Version=3.16.5.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AutoFixture.AutoFakeItEasy.3.16.5\lib\net40\Ploeh.AutoFixture.AutoFakeItEasy.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture.AutoFakeItEasy, Version=3.34.2.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoFixture.AutoFakeItEasy.3.34.2\lib\net40\Ploeh.AutoFixture.AutoFakeItEasy.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shouldly, Version=2.5.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Shouldly.2.5.0\lib\net40\Shouldly.dll</HintPath>
+    <Reference Include="Shouldly, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.2.6.0\lib\net40\Shouldly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
