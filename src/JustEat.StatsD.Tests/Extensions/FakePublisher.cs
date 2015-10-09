@@ -5,9 +5,11 @@ namespace JustEat.StatsD.Tests.Extensions
     class FakePublisher : IStatsDPublisher
     {
         public int CallCount { get; set; }
+        public int DisposeCount { get; set; }
 
         public void Dispose()
         {
+            DisposeCount++;
         }
 
         public void Increment(string bucket)

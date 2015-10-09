@@ -18,6 +18,7 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -36,6 +37,7 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -49,6 +51,26 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task CanRecordTwoStatsAsync()
+        {
+            var publisher = new FakePublisher();
+
+            using (publisher.StartTimer("stat1"))
+            {
+                await DelayAsync();
+            }
+
+            using (publisher.StartTimer("stat2"))
+            {
+                await DelayAsync();
+            }
+
+            Assert.That(publisher.CallCount, Is.EqualTo(2));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -58,6 +80,7 @@ namespace JustEat.StatsD.Tests.Extensions
             publisher.Time("stat", () => Delay());
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -68,11 +91,38 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(answer, Is.EqualTo(42));
             Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task CanRecordStatInAsyncAction()
+        {
+            var publisher = new FakePublisher();
+            await publisher.Time("stat", async () => await DelayAsync());
+
+            Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+        }
+
+        [Test]
+        public async Task CanRecordStatInAsyncFunction()
+        {
+            var publisher = new FakePublisher();
+            var answer = await publisher.Time("stat", async () => await DelayedAnswerAsync());
+
+            Assert.That(answer, Is.EqualTo(42));
+            Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         private void Delay()
         {
             Thread.Sleep(100);
+        }
+
+        private async Task DelayAsync()
+        {
+            await Task.Delay(100);
         }
 
         private int DelayedAnswer()
@@ -81,9 +131,10 @@ namespace JustEat.StatsD.Tests.Extensions
             return 42;
         }
 
-        private async Task DelayAsync()
+        private async Task<int> DelayedAnswerAsync()
         {
             await Task.Delay(100);
+            return 42;
         }
     }
 }
