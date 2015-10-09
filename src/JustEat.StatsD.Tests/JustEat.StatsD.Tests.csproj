@@ -74,7 +74,7 @@
     </Compile>
     <Compile Include="EndpointLookups\CachedDnsEndpointMapper\WhenSendingMetricsToStatsD.cs" />
     <Compile Include="Extensions\ExtensionsTests.cs" />
-    <Compile Include="Extensions\FakePublisher.cs" />
+    <Compile Include="Extensions\FakeStatsPublisher.cs" />
     <Compile Include="PacketBuilderTests.cs" />
     <Compile Include="WhenSendingMetricsToStatsD.cs" />
     <Compile Include="WhenTestingTimers.cs" />
