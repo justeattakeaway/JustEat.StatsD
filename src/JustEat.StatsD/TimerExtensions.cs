@@ -2,21 +2,6 @@
 
 namespace JustEat.StatsD
 {
-    /// <summary>
-    /// Usage:
-    /// 
-    ///  timing a block of code in a using statment:
-    ///  using (stats.StartTimer("someStat"))
-    ///  {
-    ///     DoSomething();
-    ///  }
-    /// 
-    ///  timing a lambda without a return value:
-    /// stats.Time("someStat", () => DoSomething());
-    /// 
-    ///  timing a lambda with a return value:
-    /// var result = stats.Time("someStat", () => GetSomething());
-    /// </summary>
     public static class TimerExtensions
     {
         public static IDisposable StartTimer(this IStatsDPublisher publisher, string bucket)
