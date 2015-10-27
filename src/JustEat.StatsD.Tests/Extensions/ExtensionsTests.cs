@@ -10,7 +10,6 @@ namespace JustEat.StatsD.Tests.Extensions
     public class ExtensionsTests
     {
         private const int StandardDelayMillis = 200;
-        private readonly TimeSpan _standardDelay =  TimeSpan.FromMilliseconds(StandardDelayMillis);
 
         [Test]
         public void CanRecordStat()
@@ -24,8 +23,9 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -45,8 +45,8 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -61,8 +61,8 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -82,8 +82,8 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -94,8 +94,8 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -107,8 +107,8 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.That(answer, Is.EqualTo(42));
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace JustEat.StatsD.Tests.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayAsync());
 
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace JustEat.StatsD.Tests.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
-            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
+            AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
 
         private void Delay()
@@ -172,6 +172,16 @@ namespace JustEat.StatsD.Tests.Extensions
         {
             await Task.Delay(StandardDelayMillis);
             return 42;
+        }
+
+        private void AssertDurationIsInExpectedRange(TimeSpan duration)
+        {
+            var expectedDelayLower = TimeSpan.FromMilliseconds(StandardDelayMillis);
+            var expectedDelayUpper = TimeSpan.FromMilliseconds(StandardDelayMillis * 2);
+
+            Assert.That(duration, Is.GreaterThanOrEqualTo(expectedDelayLower));
+            Assert.That(duration, Is.LessThanOrEqualTo(expectedDelayUpper));
+
         }
     }
 }
