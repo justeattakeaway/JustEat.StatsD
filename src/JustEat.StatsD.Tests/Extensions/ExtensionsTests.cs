@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -8,6 +9,9 @@ namespace JustEat.StatsD.Tests.Extensions
     [TestFixture]
     public class ExtensionsTests
     {
+        private const int StandardDelayMillis = 200;
+        private readonly TimeSpan _standardDelay =  TimeSpan.FromMilliseconds(StandardDelayMillis);
+
         [Test]
         public void CanRecordStat()
         {
@@ -20,6 +24,7 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -40,7 +45,8 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2"}));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
+            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
         }
 
         [Test]
@@ -55,6 +61,7 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -75,6 +82,7 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
         }
 
@@ -86,6 +94,7 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -98,6 +107,7 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.That(answer, Is.EqualTo(42));
             Assert.That(publisher.CallCount, Is.EqualTo(1));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -113,6 +123,15 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
         [Test]
+        public async Task CorrectDurationForStatInAsyncAction()
+        {
+            var publisher = new FakeStatsPublisher();
+            await publisher.Time("stat", async () => await DelayAsync());
+
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
+        }
+
+        [Test]
         public async Task CanRecordStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
@@ -124,25 +143,34 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
+        [Test]
+        public async Task CorrectDurationForStatInAsyncFunction()
+        {
+            var publisher = new FakeStatsPublisher();
+            await publisher.Time("stat", async () => await DelayedAnswerAsync());
+
+            Assert.That(publisher.LastDuration, Is.GreaterThanOrEqualTo(_standardDelay));
+        }
+
         private void Delay()
         {
-            Thread.Sleep(100);
+            Thread.Sleep(StandardDelayMillis);
         }
 
         private async Task DelayAsync()
         {
-            await Task.Delay(100);
+            await Task.Delay(StandardDelayMillis);
         }
 
         private int DelayedAnswer()
         {
-            Thread.Sleep(100);
+            Thread.Sleep(StandardDelayMillis);
             return 42;
         }
 
         private async Task<int> DelayedAnswerAsync()
         {
-            await Task.Delay(100);
+            await Task.Delay(StandardDelayMillis);
             return 42;
         }
     }

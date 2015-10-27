@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace JustEat.StatsD
 {
@@ -17,6 +18,14 @@ namespace JustEat.StatsD
             }
         }
 
+        public static async Task Time(this IStatsDPublisher publisher, string bucket, Func<Task> action)
+        {
+            using (StartTimer(publisher, bucket))
+            {
+                await action();
+            }
+        }
+
         public static T Time<T>(this IStatsDPublisher publisher, string bucket, Func<T> func)
         {
             using (StartTimer(publisher, bucket))
@@ -24,5 +33,14 @@ namespace JustEat.StatsD
                 return func();
             }
         }
+
+        public static async Task<T> Time<T>(this IStatsDPublisher publisher, string bucket, Func<Task<T>> func)
+        {
+            using (StartTimer(publisher, bucket))
+            {
+                return await func();
+            }
+        }
+
     }
 }

@@ -7,6 +7,8 @@ namespace JustEat.StatsD.Tests.Extensions
     {
         public int CallCount { get; set; }
         public int DisposeCount { get; set; }
+        public TimeSpan LastDuration { get; set; }
+
         public List<string> BucketNames { get; private set; }
 
         public FakeStatsPublisher()
@@ -82,12 +84,14 @@ namespace JustEat.StatsD.Tests.Extensions
         public void Timing(TimeSpan duration, string bucket)
         {
             CallCount++;
+            LastDuration = duration;
             BucketNames.Add(bucket);
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
             CallCount++;
+            LastDuration = duration;
             BucketNames.Add(bucket);
         }
 
