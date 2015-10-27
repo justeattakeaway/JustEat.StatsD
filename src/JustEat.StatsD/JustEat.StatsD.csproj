@@ -57,6 +57,8 @@
     <Compile Include="StatsDImmediatePublisher.cs" />
     <Compile Include="StatsDMessageFormatter.cs" />
     <Compile Include="StatsDUdpClient.cs" />
+    <Compile Include="DisposableTimer.cs" />
+    <Compile Include="TimerExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="JustEat.StatsD.nuspec" />
