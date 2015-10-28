@@ -1,3 +1,35 @@
+# 1.0.4
+## Change
+
+Easy to use timers. Time a block of code with a `using` statement or time a lambda, with or without a return value. `async ... await` is also supported.
+
+usage: given an existing instance of `IStatsDPublisher` called `stats` you can do:
+
+```csharp
+    //  timing a block of code in a using statement:
+   using (stats.StartTimer("someStat"))
+   {
+      DoSomething();
+   }
+ 
+   //  timing a lambda without a return value:
+   stats.Time("someStat", () => DoSomething());
+
+    //  timing a lambda with a return value:
+    var result = stats.Time("someStat", () => GetSomething());
+
+    // works with async
+    using (stats.StartTimer("someStat"))
+    {
+        await DoSomethingAsync();
+    }
+
+    // and correctly times async lambdas using the usual syntax:
+    var result = await stats.Time("someStat", async () => await GetSomethingAsync());
+    
+```
+The idea of "disposable timers" comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
+
 # 1.0.3
 ## Change
 Nuget metadata
