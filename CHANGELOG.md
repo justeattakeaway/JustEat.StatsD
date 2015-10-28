@@ -6,7 +6,7 @@ Easy to use timers. Time a block of code with a `using` statement or time a lamb
 
 usage: given an existing instance of `IStatsDPublisher` called `stats` you can do:
 
-```
+```csharp
     //  timing a block of code in a using statement:
    using (stats.StartTimer("someStat"))
    {
