@@ -1,6 +1,5 @@
 # 1.0.4
 ## Change
-Easy to use timers
 
 Easy to use timers. Time a block of code with a `using` statement or time a lambda, with or without a return value. `async ... await` is also supported.
 
