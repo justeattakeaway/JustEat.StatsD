@@ -29,7 +29,7 @@ usage: given an existing instance of `IStatsDPublisher` called `stats` you can d
     var result = await stats.Time("someStat", async () => await GetSomethingAsync());
     
 ```
-The idea of "disposable timers" comes from [this stats client](https://github.com/Pereingo/statsd-csharp-client) by Anthony, Goncalo and Darrell.
+The idea of "disposable timers" comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client) by Anthony, Goncalo and Darrell.
 
 # 1.0.3
 ## Change
