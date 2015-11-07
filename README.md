@@ -13,13 +13,15 @@ We've been using this in most of our things, since around 2013.
 * statsd metrics formatter
 * UDP client handling
 
-####
+#### Publishing statistics
 
-`IStatsDPublisher` is the interface that you will use in most circumstances. You can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
+`IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements is `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need to statsd server host name. You can also append a prefix to all stats. Often one of both of these values vary between test and producion environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also append a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
-example of Ioc in NInject for statsd publisher with values from config:
+#### Example of setting up a StatsDPublisher
+
+An example of Ioc in NInject for statsd publisher with values from configuration:
 ```csharp
 	string statsdHostName =  ConfigurationManager.AppSettings["statsd.hostname"];
 	int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
@@ -32,26 +34,25 @@ example of Ioc in NInject for statsd publisher with values from config:
         .WithConstructorArgument("prefix", statsdPrefix);
 
 ```
-####
-Timing with the interface. Given an existing instance of `IStatsDPublisher` you can do:
+
+#### Example of using the interface. 
+Given an existing instance of `IStatsDPublisher` called `stats` you can do for e.g.:
 
 ```csharp
-		stats.Increment("DoSomething.Attempt");
+		stats.Increment("DoSomething-Attempt");
 		var stopWatch = Stopwatch.StartNew();
-
         var success = DoSomething();
 
 		stopWatch.Stop();
 		if (success)
         {
-			stats.Timing("DoSomething.Success", stopWatch.Elapsed);
+			stats.Timing("DoSomething-Success", stopWatch.Elapsed);
 		}
 ```
 
-####
-Simple timers. 
+#### Simple timers. 
 
-This syntax for timers is simpler. It is useful in cases where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
+This syntax for timers less typing in simple cases, where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
 
 ```csharp
     //  timing a block of code in a using statement:
@@ -59,6 +60,8 @@ This syntax for timers is simpler. It is useful in cases where you always want t
    {
       DoSomething();
    }
+ 
+The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the using statement.
  
    //  timing a lambda without a return value:
    stats.Time("someStat", () => DoSomething());
