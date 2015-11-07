@@ -4,13 +4,9 @@
 
 ### TL;DR
 
-We use this within our components to publish [statsd](http://github.com/etsy/statsd) metrics.
+We use this within our components to publish [statsd](http://github.com/etsy/statsd) metrics from .Net code.
 
-### In detail
-
-There's really not much else to say :-)
-
-We've been using this in most of our things, mostly unchanged, since around 2013.
+We've been using this in most of our things, since around 2013.
 
 ### Features
 
@@ -19,15 +15,15 @@ We've been using this in most of our things, mostly unchanged, since around 2013
 
 ####
 
-`IStatsDPublisher` is the interface that you will use in most circumstances. Use an instance of this in order to send events, timers and gauges.
+`IStatsDPublisher` is the interface that you will use in most circumstances. You can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
 The concrete class that implements is `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need to statsd server host name. You can also append a prefix to all stats. Often one of both of these values vary between test and producion environments.
 
 example of Ioc in NInject for statsd publisher with values from config:
 ```csharp
-	string statsdHostName = GetConfigValue("statsd.hostname");
-	int statsdPort = GetConfigValueInt("statsd.hostname");
-	string statsdPrefix = GetConfigValue("statsd.hostname");
+	string statsdHostName =  ConfigurationManager.AppSettings["statsd.hostname"];
+	int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
+	string statsdPrefix =  ConfigurationManager.AppSettings["statsd.prefix"];
 		
 	Bind<IStatsDPublisher>().To<StatsDImmediatePublisher>()
         .WithConstructorArgument("cultureInfo", CultureInfo.InvariantCulture)
@@ -40,6 +36,7 @@ example of Ioc in NInject for statsd publisher with values from config:
 Timing with the interface. Given an existing instance of `IStatsDPublisher` you can do:
 
 ```csharp
+		stats.Increment("DoSomething.Attempt");
 		var stopWatch = Stopwatch.StartNew();
 
         var success = DoSomething();
@@ -54,7 +51,7 @@ Timing with the interface. Given an existing instance of `IStatsDPublisher` you 
 ####
 Simple timers. 
 
-This syntax is simpler; for cases where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
+This syntax for timers is simpler. It is useful in cases where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
 
 ```csharp
     //  timing a block of code in a using statement:
