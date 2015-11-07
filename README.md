@@ -63,7 +63,7 @@ This syntax for timers less typing in simple cases, where you always want to tim
    }
 ```
  
-The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the using statement.
+The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the `using` statement.
  
 ```csharp
    //  timing a lambda without a return value:
