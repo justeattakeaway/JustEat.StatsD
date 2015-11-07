@@ -4,9 +4,7 @@
 
 ### TL;DR
 
-We use this within our components to publish [statsd](http://github.com/etsy/statsd) metrics from .Net code.
-
-We've been using this in most of our things, since around 2013.
+We use this within our components to publish [statsd](http://github.com/etsy/statsd) metrics from .NET code. We've been using this in most of our things, since around 2013.
 
 ### Features
 
@@ -17,7 +15,7 @@ We've been using this in most of our things, since around 2013.
 
 `IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also append a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
 #### Example of setting up a StatsDPublisher
 
@@ -40,14 +38,14 @@ An example of Ioc in NInject for statsd publisher with values from configuration
 Given an existing instance of `IStatsDPublisher` called `stats` you can do for e.g.:
 
 ```csharp
-		stats.Increment("DoSomething-Attempt");
+		stats.Increment("DoSomething.Attempt");
 		var stopWatch = Stopwatch.StartNew();
         var success = DoSomething();
 
 		stopWatch.Stop();
 		if (success)
         {
-			stats.Timing("DoSomething-Success", stopWatch.Elapsed);
+			stats.Timing("DoSomething.Success", stopWatch.Elapsed);
 		}
 ```
 
