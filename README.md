@@ -35,7 +35,8 @@ An example of Ioc in NInject for statsd publisher with values from configuration
 
 ```
 
-#### Example of using the interface. 
+#### Example of using the interface
+
 Given an existing instance of `IStatsDPublisher` called `stats` you can do for e.g.:
 
 ```csharp
@@ -50,7 +51,7 @@ Given an existing instance of `IStatsDPublisher` called `stats` you can do for e
 		}
 ```
 
-#### Simple timers. 
+#### Simple timers
 
 This syntax for timers less typing in simple cases, where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
 
@@ -60,9 +61,11 @@ This syntax for timers less typing in simple cases, where you always want to tim
    {
       DoSomething();
    }
+```
  
 The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the using statement.
  
+```csharp
    //  timing a lambda without a return value:
    stats.Time("someStat", () => DoSomething());
 
