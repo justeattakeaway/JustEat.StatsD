@@ -59,22 +59,24 @@ This syntax for timers less typing in simple cases, where you always want to tim
    {
       DoSomething();
    }
+
+   // also works with async
+    using (stats.StartTimer("someStat"))
+    {
+        await DoSomethingAsync();
+    }
 ```
  
 The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the `using` statement.
- 
+
+##### Functional style
+
 ```csharp
    //  timing a lambda without a return value:
    stats.Time("someStat", () => DoSomething());
 
     //  timing a lambda with a return value:
     var result = stats.Time("someStat", () => GetSomething());
-
-    // works with async
-    using (stats.StartTimer("someStat"))
-    {
-        await DoSomethingAsync();
-    }
 
     // and correctly times async lambdas using the usual syntax:
     await stats.Time("someStat", async () => await DoSomethingAsync());
