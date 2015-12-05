@@ -39,6 +39,22 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
         [Test]
+        public void StatNameCanBeAppended()
+        {
+            var publisher = new FakeStatsPublisher();
+
+            using (var timer = publisher.StartTimer("Some."))
+            {
+                Delay();
+                timer.StatName += "More";
+            }
+
+            Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "Some.More" }));
+        }
+
+        [Test]
         public void CanSetStatNameDuringOperation()
         {
             var publisher = new FakeStatsPublisher();
