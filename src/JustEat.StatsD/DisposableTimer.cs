@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace JustEat.StatsD
 {
-    internal class DisposableTimer : IDisposable
+    internal class DisposableTimer : IDisposableTimer
     {
         private bool _disposed;
         private IStatsDPublisher _publisher;
@@ -35,7 +35,7 @@ namespace JustEat.StatsD
                 _stopwatch.Stop();
 
                 _publisher.Timing(_stopwatch.Elapsed, _bucket);
-                
+
                 _stopwatch = null;
                 _publisher = null;
             }
