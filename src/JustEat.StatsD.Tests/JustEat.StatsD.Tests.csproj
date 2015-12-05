@@ -73,7 +73,9 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="EndpointLookups\CachedDnsEndpointMapper\WhenSendingMetricsToStatsD.cs" />
+    <Compile Include="Extensions\ExtensionsStatNameTests.cs" />
     <Compile Include="Extensions\ExtensionsTests.cs" />
+    <Compile Include="Extensions\ExtensionsCancelTests.cs" />
     <Compile Include="Extensions\FakeStatsPublisher.cs" />
     <Compile Include="PacketBuilderTests.cs" />
     <Compile Include="WhenSendingMetricsToStatsD.cs" />

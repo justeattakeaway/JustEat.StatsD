@@ -6,24 +6,21 @@ namespace JustEat.StatsD
     internal class DisposableTimer : IDisposableTimer
     {
         private bool _disposed;
+
         private IStatsDPublisher _publisher;
         private Stopwatch _stopwatch;
-        private readonly string _bucket;
 
-        public DisposableTimer(IStatsDPublisher publisher, string bucket)
+        public string StatName { get; set; }
+
+        public DisposableTimer(IStatsDPublisher publisher, string statName)
         {
             if (publisher == null)
             {
                 throw new ArgumentNullException("publisher");
             }
 
-            if (string.IsNullOrEmpty(bucket))
-            {
-                throw new ArgumentNullException("bucket");
-            }
-
             _publisher = publisher;
-            _bucket = bucket;
+            StatName = statName;
             _stopwatch = Stopwatch.StartNew();
         }
 
@@ -34,11 +31,19 @@ namespace JustEat.StatsD
                 _disposed = true;
                 _stopwatch.Stop();
 
-                _publisher.Timing(_stopwatch.Elapsed, _bucket);
+                if (!string.IsNullOrEmpty(StatName))
+                {
+                    _publisher.Timing(_stopwatch.Elapsed, StatName);
+                }
 
                 _stopwatch = null;
                 _publisher = null;
             }
+        }
+
+        public void Cancel()
+        {
+            StatName = null;
         }
     }
 }
