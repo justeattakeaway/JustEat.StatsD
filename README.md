@@ -84,6 +84,31 @@ The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch 
     
 ```
 
+##### Advanced simple timers
+
+Sometimes the descisions about sending the stat can't be taken before the operation completes. e.g. When you are timing http operations and want different status codes to be logged under different stats.
+
+The timer has a `StatName` property to set or change the name of the stat, and a method `Cancel` to not send the timer at all. To use these you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
+
+The stat name can be blank initially since it can be set later. The stat will only be sent if the stat name is not blank at the end of the `using` block.
+
+```csharp
+   using (var timer = stats.StartTimer())
+   {
+      var response = DoSomeHttpOperation();
+	  timer.StatName = "HttpOperation." + response.StatusCode;
+   }
+   
+   using (var timer = stats.StartTimer("DoSomething.Success"))
+   {
+		var success = DoSomething();
+		if (! success)
+		{
+			timer.Cancel();
+		}		
+   }
+```
+
 The idea of "disposable timers" for using statements comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
 
 
