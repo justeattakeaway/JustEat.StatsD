@@ -40,10 +40,5 @@ namespace JustEat.StatsD
                 _publisher = null;
             }
         }
-
-        public void Cancel()
-        {
-            StatName = null;
-        }
     }
 }

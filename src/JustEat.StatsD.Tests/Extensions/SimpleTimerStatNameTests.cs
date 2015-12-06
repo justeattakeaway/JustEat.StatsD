@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace JustEat.StatsD.Tests.Extensions
 {
     [TestFixture]
-    public class ExtensionsStatNameTests
+    public class SimpleTimerStatNameTests
     {
         [Test]
         public void DefaultIsToKeepStatName()
