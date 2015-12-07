@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 
@@ -59,7 +60,7 @@ namespace JustEat.StatsD.Tests.Extensions
         {
             var publisher = new FakeStatsPublisher();
 
-            using (var timer = publisher.StartTimer())
+            using (var timer = publisher.StartTimer(string.Empty))
             {
                 Delay();
                 timer.StatName = "statNameAtEnd";
@@ -71,14 +72,17 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
         [Test]
-        public void StatWithoutNameIsNotSent()
+        public void StatWithoutNameThrows()
         {
             var publisher = new FakeStatsPublisher();
 
-            using (var timer = publisher.StartTimer())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Delay();
-            }
+                using (publisher.StartTimer(string.Empty))
+                {
+                    Delay();
+                }
+            });
 
             Assert.That(publisher.CallCount, Is.EqualTo(0));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
@@ -86,15 +90,18 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
         [Test]
-        public void ResettingStatNameCancelsStat()
+        public void ResettingStatNameThrows()
         {
             var publisher = new FakeStatsPublisher();
 
-            using (var timer = publisher.StartTimer("stat"))
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Delay();
-                timer.StatName = null;
-            }
+                using (var timer = publisher.StartTimer("valid.Stat"))
+                {
+                    Delay();
+                    timer.StatName = null;
+                }
+            });
 
             Assert.That(publisher.CallCount, Is.EqualTo(0));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));

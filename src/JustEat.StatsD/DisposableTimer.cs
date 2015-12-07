@@ -31,10 +31,12 @@ namespace JustEat.StatsD
                 _disposed = true;
                 _stopwatch.Stop();
 
-                if (!string.IsNullOrEmpty(StatName))
+                if (string.IsNullOrEmpty(StatName))
                 {
-                    _publisher.Timing(_stopwatch.Elapsed, StatName);
+                    throw new InvalidOperationException("StatName");
                 }
+
+                _publisher.Timing(_stopwatch.Elapsed, StatName);
 
                 _stopwatch = null;
                 _publisher = null;
