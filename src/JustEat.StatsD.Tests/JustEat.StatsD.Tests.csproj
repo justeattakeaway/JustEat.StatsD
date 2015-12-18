@@ -73,6 +73,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="EndpointLookups\CachedDnsEndpointMapper\WhenSendingMetricsToStatsD.cs" />
+    <Compile Include="Extensions\PublisherAssertions.cs" />
     <Compile Include="Extensions\SimpleTimerStatNameTests.cs" />
     <Compile Include="Extensions\ExtensionsTests.cs" />
     <Compile Include="Extensions\FakeStatsPublisher.cs" />

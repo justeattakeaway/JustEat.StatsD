@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -21,11 +20,21 @@ namespace JustEat.StatsD.Tests.Extensions
                 Delay();
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            PublisherAssertions.SingleStatNameIs(publisher, "stat");
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+        }
 
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+        [Test]
+        public void ShouldNotDisposePublisherAfterStatSent()
+        {
+            var publisher = new FakeStatsPublisher();
+
+            using (publisher.StartTimer("stat"))
+            {
+                Delay();
+            }
+
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -44,9 +53,8 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
@@ -54,15 +62,13 @@ namespace JustEat.StatsD.Tests.Extensions
         {
             var publisher = new FakeStatsPublisher();
 
-            using (publisher.StartTimer("stat"))
+            using (publisher.StartTimer("statWithAsync"))
             {
                 await DelayAsync();
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.SingleStatNameIs(publisher, "statWithAsync");
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
@@ -81,45 +87,38 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
         public void CanRecordStatInAction()
         {
             var publisher = new FakeStatsPublisher();
-            publisher.Time("stat", () => Delay());
+            publisher.Time("statOverAction", () => Delay());
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.SingleStatNameIs(publisher, "statOverAction");
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
         public void CanRecordStatInFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = publisher.Time("stat", () => DelayedAnswer());
+            var answer = publisher.Time("statOverFunc", () => DelayedAnswer());
 
             Assert.That(answer, Is.EqualTo(42));
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
         public async Task CanRecordStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("stat", async () => await DelayAsync());
+            await publisher.Time("statOverAsyncAction", async () => await DelayAsync());
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncAction");
         }
 
         [Test]
@@ -128,19 +127,17 @@ namespace JustEat.StatsD.Tests.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayAsync());
 
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         [Test]
         public async Task CanRecordStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = await publisher.Time("stat", async () => await DelayedAnswerAsync());
+            var answer = await publisher.Time("statOverAsyncFunc", async () => await DelayedAnswerAsync());
 
             Assert.That(answer, Is.EqualTo(42));
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
+            PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncFunc");
         }
 
         [Test]
@@ -149,7 +146,7 @@ namespace JustEat.StatsD.Tests.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
-            AssertDurationIsInExpectedRange(publisher.LastDuration);
+            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
         }
 
         private void Delay()
@@ -172,16 +169,6 @@ namespace JustEat.StatsD.Tests.Extensions
         {
             await Task.Delay(StandardDelayMillis);
             return 42;
-        }
-
-        private void AssertDurationIsInExpectedRange(TimeSpan duration)
-        {
-            var expectedDelayLower = TimeSpan.FromMilliseconds(StandardDelayMillis);
-            var expectedDelayUpper = TimeSpan.FromMilliseconds(StandardDelayMillis * 2);
-
-            Assert.That(duration, Is.GreaterThanOrEqualTo(expectedDelayLower));
-            Assert.That(duration, Is.LessThanOrEqualTo(expectedDelayUpper));
-
         }
     }
 }
