@@ -55,34 +55,13 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "Some.More" }));
         }
 
+
         [Test]
-        public void CanSetStatNameDuringOperation()
+        public void StatWithoutNameAtStartThrows()
         {
             var publisher = new FakeStatsPublisher();
 
-            using (var timer = publisher.StartTimer(string.Empty))
-            {
-                Delay();
-                timer.StatName = "statNameAtEnd";
-            }
-
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "statNameAtEnd" }));
-        }
-
-        [Test]
-        public void StatWithoutNameThrows()
-        {
-            var publisher = new FakeStatsPublisher();
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                using (publisher.StartTimer(string.Empty))
-                {
-                    Delay();
-                }
-            });
+            Assert.Throws<ArgumentNullException>(() => publisher.StartTimer(string.Empty));
 
             Assert.That(publisher.CallCount, Is.EqualTo(0));
             Assert.That(publisher.DisposeCount, Is.EqualTo(0));
@@ -90,7 +69,7 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
         [Test]
-        public void ResettingStatNameThrows()
+        public void StatWithoutNameAtEndThrows()
         {
             var publisher = new FakeStatsPublisher();
 

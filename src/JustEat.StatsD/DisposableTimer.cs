@@ -19,6 +19,11 @@ namespace JustEat.StatsD
                 throw new ArgumentNullException("publisher");
             }
 
+            if (string.IsNullOrEmpty(statName))
+            {
+                throw new ArgumentNullException("statName");
+            }
+
             _publisher = publisher;
             StatName = statName;
             _stopwatch = Stopwatch.StartNew();
