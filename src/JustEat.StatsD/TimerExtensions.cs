@@ -5,7 +5,7 @@ namespace JustEat.StatsD
 {
     public static class TimerExtensions
     {
-        public static IDisposable StartTimer(this IStatsDPublisher publisher, string bucket)
+        public static IDisposableTimer StartTimer(this IStatsDPublisher publisher, string bucket)
         {
             return new DisposableTimer(publisher, bucket);
         }

@@ -43,10 +43,9 @@ Given an existing instance of `IStatsDPublisher` called `stats` you can do for e
         var success = DoSomething();
 
 		stopWatch.Stop();
-		if (success)
-        {
-			stats.Timing("DoSomething.Success", stopWatch.Elapsed);
-		}
+		
+		var statName = "DoSomething." + success ? "Success" : "Failure";
+		stats.Timing(statName, stopWatch.Elapsed);
 ```
 
 #### Simple timers
@@ -82,6 +81,24 @@ The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch 
     await stats.Time("someStat", async () => await DoSomethingAsync());
     var result = await stats.Time("someStat", async () => await GetSomethingAsync());
     
+```
+
+##### Changing the name of simple timers
+
+Sometimes the decision of which stat to send should not be taken before the operation completes. e.g. When you are timing http operations and want different status codes to be logged under different stats.
+
+The timer has a `StatName` property to set or change the name of the stat. To use this you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
+
+The stat name must be set to a non-empty string at the end of the `using` block.
+
+```csharp
+   using (var timer = stats.StartTimer("SomeHttpOperation."))
+   {
+      var response = DoSomeHttpOperation();
+	  timer.StatName = timer.StatName + response.StatusCode;
+	  return response;
+   }
+
 ```
 
 The idea of "disposable timers" for using statements comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
