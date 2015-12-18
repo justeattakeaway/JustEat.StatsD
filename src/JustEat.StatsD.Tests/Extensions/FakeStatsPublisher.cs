@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JustEat.StatsD.Tests.Extensions
 {
-    class FakeStatsPublisher : IStatsDPublisher
+    public class FakeStatsPublisher : IStatsDPublisher
     {
         public int CallCount { get; set; }
         public int DisposeCount { get; set; }

@@ -17,7 +17,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 Delay();
             }
 
-            AssertStatNameIs(publisher, "initialStat");
+            PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 timer.StatName = "changedValue";
             }
 
-            AssertStatNameIs(publisher, "changedValue");
+            PublisherAssertions.SingleStatNameIs(publisher, "changedValue");
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 timer.StatName += "More";
             }
 
-            AssertStatNameIs(publisher, "Some.More");
+            PublisherAssertions.SingleStatNameIs(publisher, "Some.More");
         }
 
 
@@ -98,7 +98,7 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(failCount, Is.EqualTo(1));
-            AssertStatNameIs(publisher, "initialStat");
+            PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
         }
 
         private void Delay()
@@ -110,15 +110,6 @@ namespace JustEat.StatsD.Tests.Extensions
         private void Fail()
         {
             throw new Exception("Deliberate fail");
-        }
-
-        private void AssertStatNameIs(FakeStatsPublisher publisher, string statName)
-        {
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-
-            Assert.That(publisher.BucketNames.Count, Is.EqualTo(1));
-            Assert.That(publisher.BucketNames[0], Is.EqualTo(statName));
         }
     }
 }
