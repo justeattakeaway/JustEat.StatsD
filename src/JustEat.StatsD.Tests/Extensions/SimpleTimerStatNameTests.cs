@@ -87,10 +87,40 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.That(publisher.BucketNames, Is.Empty);
         }
 
+
+        [Test]
+        public void StatNameIsInitialValueWhenExceptionIsThrown()
+        {
+            var publisher = new FakeStatsPublisher();
+            var failCount = 0;
+            try
+            {
+                using (var timer = publisher.StartTimer("initialStat"))
+                {
+                    Fail();
+                    timer.StatName = "changedValue";
+                }
+            }
+            catch (Exception)
+            {
+                failCount++;
+            }
+
+            Assert.That(failCount, Is.EqualTo(1));
+            Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "initialStat" }));
+        }
+
         private void Delay()
         {
             const int standardDelayMillis = 200;
             Thread.Sleep(standardDelayMillis);
+        }
+
+        private void Fail()
+        {
+            throw new Exception("Deliberate fail");
         }
     }
 }
