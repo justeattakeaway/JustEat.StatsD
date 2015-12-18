@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 
@@ -18,9 +17,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 Delay();
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "initialStat" }));
+            AssertStatNameIs(publisher, "initialStat");
         }
 
         [Test]
@@ -34,9 +31,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 timer.StatName = "changedValue";
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "changedValue" }));
+            AssertStatNameIs(publisher, "changedValue");
         }
 
         [Test]
@@ -50,9 +45,7 @@ namespace JustEat.StatsD.Tests.Extensions
                 timer.StatName += "More";
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "Some.More" }));
+            AssertStatNameIs(publisher, "Some.More");
         }
 
 
@@ -64,7 +57,6 @@ namespace JustEat.StatsD.Tests.Extensions
             Assert.Throws<ArgumentNullException>(() => publisher.StartTimer(string.Empty));
 
             Assert.That(publisher.CallCount, Is.EqualTo(0));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.Empty);
         }
 
@@ -83,7 +75,6 @@ namespace JustEat.StatsD.Tests.Extensions
             });
 
             Assert.That(publisher.CallCount, Is.EqualTo(0));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.Empty);
         }
 
@@ -107,9 +98,7 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(failCount, Is.EqualTo(1));
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "initialStat" }));
+            AssertStatNameIs(publisher, "initialStat");
         }
 
         private void Delay()
@@ -121,6 +110,15 @@ namespace JustEat.StatsD.Tests.Extensions
         private void Fail()
         {
             throw new Exception("Deliberate fail");
+        }
+
+        private void AssertStatNameIs(FakeStatsPublisher publisher, string statName)
+        {
+            Assert.That(publisher.CallCount, Is.EqualTo(1));
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+
+            Assert.That(publisher.BucketNames.Count, Is.EqualTo(1));
+            Assert.That(publisher.BucketNames[0], Is.EqualTo(statName));
         }
     }
 }

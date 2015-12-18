@@ -22,10 +22,23 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
 
             AssertDurationIsInExpectedRange(publisher.LastDuration);
+        }
+
+
+        [Test]
+        public void ShouldNotDisposePublisherAfterStatSent()
+        {
+            var publisher = new FakeStatsPublisher();
+
+            using (publisher.StartTimer("stat"))
+            {
+                Delay();
+            }
+
+            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
         }
 
         [Test]
@@ -44,7 +57,6 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
             AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
@@ -60,7 +72,6 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
             AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
@@ -81,7 +92,6 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
             AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
@@ -93,7 +103,6 @@ namespace JustEat.StatsD.Tests.Extensions
             publisher.Time("stat", () => Delay());
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
             AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
@@ -106,7 +115,6 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(answer, Is.EqualTo(42));
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
             AssertDurationIsInExpectedRange(publisher.LastDuration);
         }
@@ -118,7 +126,6 @@ namespace JustEat.StatsD.Tests.Extensions
             await publisher.Time("stat", async () => await DelayAsync());
 
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -139,7 +146,6 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(answer, Is.EqualTo(42));
             Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
             Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat" }));
         }
 
@@ -181,7 +187,6 @@ namespace JustEat.StatsD.Tests.Extensions
 
             Assert.That(duration, Is.GreaterThanOrEqualTo(expectedDelayLower));
             Assert.That(duration, Is.LessThanOrEqualTo(expectedDelayUpper));
-
         }
     }
 }
