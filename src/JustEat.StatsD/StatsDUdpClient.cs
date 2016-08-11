@@ -58,7 +58,7 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+                data.RemoteEndPoint = GetIPEndPoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();
@@ -85,7 +85,7 @@ namespace JustEat.StatsD
             UdpClient client = null;
             try
             {
-                client = new UdpClient(_hostNameOrAddress, _port)
+                client = new UdpClient(GetIPEndPoint())
                 {
                     Client = { SendBufferSize = 0 }
                 };
@@ -115,6 +115,11 @@ namespace JustEat.StatsD
             {
                 _disposed = true;
             }
+        }
+
+        private IPEndPoint GetIPEndPoint()
+        {
+            return _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); // Only DNS resolve if we were given a hostname
         }
     }
 }

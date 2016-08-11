@@ -10,7 +10,8 @@ namespace JustEat.StatsD.EndpointLookups
     {
         public IPEndPoint GetIPEndPoint(string hostName, int port)
         {
-            return new IPEndPoint(Dns.GetHostAddresses(hostName)[0], port);
+            var endpoints = Dns.GetHostAddressesAsync(hostName).Result;
+            return new IPEndPoint(endpoints[0], port);
         }
     }
 }
