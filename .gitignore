@@ -11,6 +11,10 @@ bin
 obj
 out
 packages
+project.lock.json
+
+.vs
+.dotnetcli
 
 !3rdparty/*/bin
 

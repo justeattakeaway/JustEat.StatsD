@@ -5,7 +5,9 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
+#if NETDESKTOP
     [Serializable]
+#endif
     public class StatsDMessageFormatter
     {
         public const string SafeDefaultIsoCultureId = "en-US";

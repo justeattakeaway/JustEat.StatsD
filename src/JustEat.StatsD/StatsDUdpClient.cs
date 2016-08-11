@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
+
+#if NETDESKTOP
+using System.Diagnostics;
+using System.Globalization;
+#endif
 
 namespace JustEat.StatsD
 {
@@ -68,14 +71,24 @@ namespace JustEat.StatsD
                     udpClient.Client.SendPacketsAsync(data);
                 }
 
+#if NETDESKTOP
                 Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
+#endif
+
                 return true;
             }
-                //fire and forget, so just eat intermittent failures / exceptions
+            //fire and forget, so just eat intermittent failures / exceptions
+#if NETDESKTOP
             catch (Exception e)
             {
                 Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
             }
+#else
+            catch (Exception)
+            {
+                // TODO Log exception
+            }
+#endif
 
             return false;
         }
@@ -90,10 +103,17 @@ namespace JustEat.StatsD
                     Client = { SendBufferSize = 0 }
                 };
             }
+#if NETDESKTOP
             catch (SocketException e)
             {
                 Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
             }
+#else
+            catch (SocketException)
+            {
+                // TODO Log exception
+            }
+#endif
             return client;
         }
 
