@@ -9,11 +9,11 @@ $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
 $getDotNet     = Join-Path $solutionPath "tools\install.ps1"
-$dotnetVersion = $env.CLI_VERSION
+$dotnetVersion = $env:CLI_VERSION
 
 $env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
 
-if ($env:CI -ne $null -Or $env:TF_BUILD -ne $null) {
+if ($env:CI -ne $null) {
     $RestorePackages = $true
 }
 
