@@ -11,21 +11,29 @@ $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
 $getDotNet     = Join-Path $solutionPath "tools\install.ps1"
 $dotnetVersion = $env:CLI_VERSION
 
+if ($env:CI -eq $null) {
+    $dotnetVersion = "latest"
+}
+
 $env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
+$dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
 
 if ($env:CI -ne $null) {
     $RestorePackages = $true
 }
 
-if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
-    mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+if (!(Test-Path ($dotnet + ".exe"))) {
+
+    if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
+        mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+    }
+
     $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
     Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
     & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
 }
 
 $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-$dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
 
 function DotNetRestore { param([string]$Project)
     & $dotnet restore $Project --verbosity minimal
