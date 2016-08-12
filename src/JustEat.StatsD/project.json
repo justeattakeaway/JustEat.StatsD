@@ -54,8 +54,10 @@
     },
     "netstandard1.6": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0",
-        "System.Net.NameResolution": "4.0.0"
+        "System.Diagnostics.Tools": "4.0.1",
+        "System.Net.NameResolution": "4.0.0",
+        "System.Net.Sockets": "4.1.0",
+        "System.Runtime.InteropServices": "4.1.0"
       }
     }
   }
