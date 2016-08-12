@@ -52,7 +52,7 @@
       "frameworkAssemblies": {
       }
     },
-    "netstandard1.6": {
+    "netstandard1.3": {
       "dependencies": {
         "System.Diagnostics.Tools": "4.0.1",
         "System.Net.NameResolution": "4.0.0",
