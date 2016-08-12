@@ -5,7 +5,7 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
-#if NETDESKTOP
+#if NET45
     [Serializable]
 #endif
     public class StatsDMessageFormatter

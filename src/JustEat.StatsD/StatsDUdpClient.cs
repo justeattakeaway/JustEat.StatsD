@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
 
-#if NETDESKTOP
+#if NET45
 using System.Diagnostics;
 using System.Globalization;
 #endif
@@ -71,14 +71,14 @@ namespace JustEat.StatsD
                     udpClient.Client.SendPacketsAsync(data);
                 }
 
-#if NETDESKTOP
+#if NET45
                 Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
 #endif
 
                 return true;
             }
             //fire and forget, so just eat intermittent failures / exceptions
-#if NETDESKTOP
+#if NET45
             catch (Exception e)
             {
                 Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
@@ -103,7 +103,7 @@ namespace JustEat.StatsD
                     Client = { SendBufferSize = 0 }
                 };
             }
-#if NETDESKTOP
+#if NET45
             catch (SocketException e)
             {
                 Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
