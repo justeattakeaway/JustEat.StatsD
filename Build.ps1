@@ -14,6 +14,10 @@ $dotnetVersion = $env:CLI_VERSION
 if ($env:CI -eq $null) {
     $dotnetVersion = "latest"
 }
+elseif ($env:APPVEYOR_REPO_TAG -ne "true") {
+    $BuildNumber = [Int32]::Parse($env:APPVEYOR_BUILD_NUMBER)
+    $VersionSuffix = "beta" + $BuildNumber.ToString("0000")
+}
 
 $env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
 $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
@@ -93,12 +97,12 @@ if ($RestorePackages -eq $true) {
 
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration $PrereleaseSuffix
+    DotNetBuild $project $Configuration $VersionSuffix
 }
 
 Write-Host "Packaging $($packageProjects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $packageProjects) {
-    DotNetPack $project $Configuration $PrereleaseSuffix
+    DotNetPack $project $Configuration $VersionSuffix
 }
 
 if ($RunTests -eq $true) {
