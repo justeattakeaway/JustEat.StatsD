@@ -10,18 +10,15 @@
   },
 
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    },
     "dotnet-test-nunit": "3.4.0-beta-2",
     "JustEat.StatsD": "1.1.0-*",
-    "NUnit": "3.4.1"
+    "Moq": "4.6.38-alpha",
+    "NUnit": "3.5.0",
+    "Shouldly": "2.8.2"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": "dotnet5.6"
+    "net451": {
     }
   },
 

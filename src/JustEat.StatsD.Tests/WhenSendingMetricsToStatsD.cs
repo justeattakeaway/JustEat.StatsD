@@ -8,7 +8,7 @@ using Shouldly;
 
 namespace JustEat.StatsD.Tests
 {
-    [Ignore]
+    [Ignore("The reason for this test being ignored is lost in the mists of time.")]
     public class WhenSendingMetricsToStatsD : BehaviourTest<StatsDUdpClient>
     {
         private IEnumerable<string> _metricToSend;
