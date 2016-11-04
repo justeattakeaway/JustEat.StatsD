@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{06BE4D
 		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
 		LICENSE = LICENSE
-		nuget.config = nuget.config
 		README.md = README.md
 		release.ps1 = release.ps1
 	EndProjectSection
