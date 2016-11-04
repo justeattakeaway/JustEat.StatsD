@@ -52,6 +52,7 @@
     },
     "netstandard1.3": {
       "dependencies": {
+        "System.Collections.Concurrent": "4.0.12",
         "System.Diagnostics.Tools": "4.0.1",
         "System.Diagnostics.TraceSource": "4.0.0",
         "System.Net.NameResolution": "4.0.0",
