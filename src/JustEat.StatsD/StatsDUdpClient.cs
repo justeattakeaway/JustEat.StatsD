@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
-
-#if NET45
-using System.Diagnostics;
-using System.Globalization;
-#endif
 
 namespace JustEat.StatsD
 {
@@ -68,27 +65,19 @@ namespace JustEat.StatsD
 
                 using (var udpClient = GetUdpClient())
                 {
+                    udpClient.Client.Connect(data.RemoteEndPoint);
                     udpClient.Client.SendPacketsAsync(data);
                 }
 
-#if NET45
                 Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
-#endif
 
                 return true;
             }
             //fire and forget, so just eat intermittent failures / exceptions
-#if NET45
             catch (Exception e)
             {
                 Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
             }
-#else
-            catch (Exception)
-            {
-                // TODO Log exception
-            }
-#endif
 
             return false;
         }
@@ -98,22 +87,15 @@ namespace JustEat.StatsD
             UdpClient client = null;
             try
             {
-                client = new UdpClient(GetIPEndPoint())
+                client = new UdpClient()
                 {
                     Client = { SendBufferSize = 0 }
                 };
             }
-#if NET45
             catch (SocketException e)
             {
                 Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
             }
-#else
-            catch (SocketException)
-            {
-                // TODO Log exception
-            }
-#endif
             return client;
         }
 
