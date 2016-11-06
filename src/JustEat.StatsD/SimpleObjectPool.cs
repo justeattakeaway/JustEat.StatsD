@@ -8,7 +8,7 @@ namespace JustEat.StatsD
     public sealed class SimpleObjectPool<T>
         where T : class
     {
-        private readonly ConcurrentStack<T> _pool;
+        private readonly ConcurrentBag<T> _pool;
 
         /// <summary>	Constructor that populates a pool with the given number of items. </summary>
         /// <exception cref="ArgumentNullException">	Thrown when the constructor is null. </exception>
@@ -23,7 +23,7 @@ namespace JustEat.StatsD
                 throw new ArgumentNullException("constructor");
             }
 
-            _pool = new ConcurrentStack<T>();
+            _pool = new ConcurrentBag<T>();
             for (var i = 0; i < capacity; ++i)
             {
                 var instance = constructor(this);
@@ -32,7 +32,7 @@ namespace JustEat.StatsD
                     throw new ArgumentException("constructor produced null object", "constructor");
                 }
 
-                _pool.Push(instance);
+                _pool.Add(instance);
             }
         }
 
@@ -42,7 +42,7 @@ namespace JustEat.StatsD
         {
             T result;
 
-            if (!_pool.TryPop(out result))
+            if (!_pool.TryTake(out result))
             {
                 result = null;
             }
@@ -60,7 +60,7 @@ namespace JustEat.StatsD
                 throw new ArgumentNullException("item", "Items added to a SimpleObjectPool cannot be null");
             }
 
-            _pool.Push(item);
+            _pool.Add(item);
         }
     }
 }
