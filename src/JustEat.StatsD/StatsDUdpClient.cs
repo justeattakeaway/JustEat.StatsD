@@ -58,20 +58,22 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+                data.RemoteEndPoint = GetIPEndPoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();
 
                 using (var udpClient = GetUdpClient())
                 {
+                    udpClient.Client.Connect(data.RemoteEndPoint);
                     udpClient.Client.SendPacketsAsync(data);
                 }
 
                 Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
+
                 return true;
             }
-                //fire and forget, so just eat intermittent failures / exceptions
+            //fire and forget, so just eat intermittent failures / exceptions
             catch (Exception e)
             {
                 Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
@@ -85,7 +87,7 @@ namespace JustEat.StatsD
             UdpClient client = null;
             try
             {
-                client = new UdpClient(_hostNameOrAddress, _port)
+                client = new UdpClient()
                 {
                     Client = { SendBufferSize = 0 }
                 };
@@ -115,6 +117,11 @@ namespace JustEat.StatsD
             {
                 _disposed = true;
             }
+        }
+
+        private IPEndPoint GetIPEndPoint()
+        {
+            return _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); // Only DNS resolve if we were given a hostname
         }
     }
 }

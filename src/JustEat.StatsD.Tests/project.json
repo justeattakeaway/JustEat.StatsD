@@ -1,0 +1,33 @@
+{
+  "authors": [ "JUST EAT" ],
+  "copyright": "Copyright JUST EAT 2016",
+  "title": "JustEat.StatsD.Tests",
+  "version": "1.1.0-*",
+
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "xmlDoc": false
+  },
+
+  "dependencies": {
+    "AutoFixture": "3.50.2",
+    "AutoFixture.AutoFakeItEasy": "3.50.2",
+    "dotnet-test-nunit": "3.4.0-beta-3",
+    "FakeItEasy": "1.25.3",
+    "JustBehave": "1.0.0.12",
+    "JustEat.StatsD": "1.1.0-*",
+    "NLog": "5.0.0-beta03",
+    "NUnit": "3.5.0",
+    "Shouldly": "2.6.0"
+  },
+
+  "frameworks": {
+    "net452": {
+      "dependencies": {
+        "Microsoft.NETCore.Platforms": "1.0.1"
+      }
+    }
+  },
+
+  "testRunner": "nunit"
+}

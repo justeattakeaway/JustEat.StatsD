@@ -1,19 +1,19 @@
-version: 1.0.5.{build}
+os: Visual Studio 2015
+version: 1.1.0.{build}
 configuration: Release
 assembly_info:
   patch: true
   file: '**\*AssemblyInfo.*'
-  assembly_version: 1.0.0
+  assembly_version: 1.1.0
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-before_build:
-- nuget restore
-build:
-  publish_nuget: true
-  publish_nuget_symbols: true
-  include_nuget_references: true
-  parallel: true
-  verbosity: minimal
+environment:
+  CLI_VERSION: 1.0.0-preview2-003121
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_XMLDOC_MODE: skip
+build_script:
+  - ps: dotnet --info
+  - ps: .\Build.ps1
 artifacts:
 - path: '**\$(APPVEYOR_PROJECT_NAME)*.nupkg'
   name: Nuget
@@ -32,3 +32,4 @@ notifications:
   on_build_success: false
   on_build_failure: false
   on_build_status_changed: false
+test: off

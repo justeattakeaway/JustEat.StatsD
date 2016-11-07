@@ -8,8 +8,7 @@ namespace JustEat.StatsD.Tests
     {
         private byte[][] _bytes;
 
-
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         protected void SetBytes()
         {
             _bytes = new[] {Enumerable.Repeat("a", 512).ToString()}.ToMaximumBytePackets().ToArray();
