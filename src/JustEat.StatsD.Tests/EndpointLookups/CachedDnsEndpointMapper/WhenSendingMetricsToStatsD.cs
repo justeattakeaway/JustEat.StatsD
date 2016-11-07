@@ -2,12 +2,9 @@
 using FakeItEasy.ExtensionSyntax.Full;
 using JustBehave;
 using JustEat.StatsD.EndpointLookups;
-
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Ploeh.AutoFixture.AutoFakeItEasy;
-
-
 
 namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
 {
@@ -18,7 +15,7 @@ namespace JustEat.StatsD.Tests.EndpointLookups.CachedDnsEndpointMapper
         private string _hostName;
         private IDnsEndpointMapper _mapper;
 
-        protected override void CustomizeAutoFixture(Fixture fixture)
+        protected override void CustomizeAutoFixture(IFixture fixture)
         {
             fixture.Customize(new AutoFakeItEasyCustomization());
             base.CustomizeAutoFixture(fixture);

@@ -80,7 +80,7 @@ $projects = @(
 )
 
 $testProjects = @(
-    #(Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
+    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
 )
 
 $packageProjects = @(
@@ -89,7 +89,7 @@ $packageProjects = @(
 
 $restoreProjects = @(
     (Join-Path $solutionPath "src\JustEat.StatsD\project.json")
-    #(Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
+    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
 )
 
 if ($RestorePackages -eq $true) {

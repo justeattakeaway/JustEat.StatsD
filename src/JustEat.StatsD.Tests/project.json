@@ -10,17 +10,24 @@
   },
 
   "dependencies": {
-    "dotnet-test-nunit": "3.4.0-beta-2",
+    "AutoFixture": "3.50.2",
+    "AutoFixture.AutoFakeItEasy": "3.50.2",
+    "dotnet-test-nunit": "3.4.0-beta-3",
+    "FakeItEasy": "1.25.3",
+    "JustBehave": "1.0.0.12",
     "JustEat.StatsD": "1.1.0-*",
-    "Moq": "4.6.38-alpha",
+    "NLog": "5.0.0-beta03",
     "NUnit": "3.5.0",
-    "Shouldly": "2.8.2"
+    "Shouldly": "2.6.0"
   },
 
   "frameworks": {
-    "net451": {
+    "net452": {
+      "dependencies": {
+        "Microsoft.NETCore.Platforms": "1.0.1"
+      }
     }
   },
 
-  "testRunner": "xunit"
+  "testRunner": "nunit"
 }
