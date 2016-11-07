@@ -25,7 +25,7 @@ if ($env:CI -ne $null) {
 
     if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
         $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
-        $VersionSuffix = "beta-" + $ThisVersion.ToString("0000")
+        $VersionSuffix = "beta" + $ThisVersion.ToString("0000")
     }
 }
 
