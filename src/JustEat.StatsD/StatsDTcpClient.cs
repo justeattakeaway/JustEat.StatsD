@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace JustEat.StatsD
 {
-    public class StatsDTcpClient : StatsDClient, IStatsDTcpClient
+    public class StatsDTcpClient : StatsDClient
     {
         public StatsDTcpClient(string hostNameOrAddress, int port) : base(hostNameOrAddress, port)
         {
