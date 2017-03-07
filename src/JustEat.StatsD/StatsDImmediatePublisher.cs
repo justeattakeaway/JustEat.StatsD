@@ -6,7 +6,7 @@ namespace JustEat.StatsD
     /// <summary>
     ///     Will synchronously publish stats at statsd as you make calls; will not batch sends.
     /// </summary>
-    public partial class StatsDImmediatePublisher : IStatsDPublisher
+    public class StatsDImmediatePublisher : IStatsDPublisher
     {
         private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
         private readonly StatsDMessageFormatter _formatter;
