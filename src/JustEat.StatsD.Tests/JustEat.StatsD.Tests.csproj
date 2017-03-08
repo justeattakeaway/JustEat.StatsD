@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\JustEat.StatsD.Common.props" />
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="3.50.2" />
+    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="3.50.2" />
+    <PackageReference Include="dotnet-test-nunit" Version="3.4.0-beta-3" />
+    <PackageReference Include="FakeItEasy" Version="1.25.3" />
+    <PackageReference Include="JustBehave" Version="1.0.0.12" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="NLog" Version="5.0.0-beta03" />
+    <PackageReference Include="NUnit" Version="3.5.0" />
+    <PackageReference Include="Shouldly" Version="2.6.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+</Project>

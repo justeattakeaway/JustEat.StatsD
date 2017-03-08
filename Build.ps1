@@ -10,14 +10,12 @@ param(
 $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$getDotNet     = Join-Path $solutionPath "tools\install.ps1"
-$dotnetVersion = $env:CLI_VERSION
+$solutionFile  = Join-Path $solutionPath "JustEat.StatsD.sln"
+$dotnetVersion = "1.0.1"
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
 }
-
-$env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
 
 if ($env:CI -ne $null) {
 
@@ -29,15 +27,35 @@ if ($env:CI -ne $null) {
     }
 }
 
-if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
-    mkdir $env:DOTNET_INSTALL_DIR | Out-Null
-    $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
-    Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
-    & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+$installDotNetSdk = $false;
+
+if ((Get-Command "dotnet.exe" -ErrorAction SilentlyContinue) -eq $null)  {
+    Write-Host "The .NET Core SDK is not installed."
+    $installDotNetSdk = $true
+}
+else {
+    $installedDotNetVersion = (dotnet --version | Out-String).Trim()
+    if ($installedDotNetVersion -ne $dotnetVersion) {
+        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion but $installedDotNetVersion was found."
+        $installDotNetSdk = $true
+    }
 }
 
-$env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-$dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
+if ($installDotNetSdk -eq $true) {
+    $env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
+
+    if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
+        mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+        $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
+        Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
+        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+    }
+
+    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+    $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
+} else {
+    $dotnet   = "dotnet"
+}
 
 function DotNetRestore { param([string]$Project)
     & $dotnet restore $Project --verbosity minimal
@@ -46,11 +64,11 @@ function DotNetRestore { param([string]$Project)
     }
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
+function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
+        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --configuration $Configuration --version-suffix "$VersionSuffix"
     } else {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
+        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --configuration $Configuration
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
@@ -66,44 +84,30 @@ function DotNetTest { param([string]$Project)
 
 function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix"
     } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
 }
 
-$projects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD\project.json")
-)
-
 $testProjects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
+    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
 )
 
 $packageProjects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD\project.json")
-)
-
-$restoreProjects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD\project.json")
-    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\project.json")
+    (Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj")
 )
 
 if ($RestorePackages -eq $true) {
-    Write-Host "Restoring NuGet packages for $($restoreProjects.Count) projects..." -ForegroundColor Green
-    ForEach ($project in $restoreProjects) {
-        DotNetRestore $project
-    }
+    Write-Host "Restoring NuGet packages for solution..." -ForegroundColor Green
+    DotNetRestore $solutionFile
 }
 
-Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
-ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration "netstandard1.3" $VersionSuffix
-    DotNetBuild $project $Configuration "net451" $VersionSuffix
-}
+Write-Host "Building solution..." -ForegroundColor Green
+DotNetBuild $solutionFile $Configuration $VersionSuffix
 
 if ($RunTests -eq $true) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green

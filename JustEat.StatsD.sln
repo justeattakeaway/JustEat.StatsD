@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{06BE4D4A-B0DF-465D-9BAC-6CC3C9779A37}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,17 +13,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{06BE4D
 		build.sh = build.sh
 		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
-		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
 		release.ps1 = release.ps1
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "JustEat.StatsD", "src\JustEat.StatsD\JustEat.StatsD.xproj", "{6A338D71-E28B-455A-9E9D-3667EE659542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD", "src\JustEat.StatsD\JustEat.StatsD.csproj", "{6A338D71-E28B-455A-9E9D-3667EE659542}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PerfTestHarness", "src\PerfTestHarness\PerfTestHarness.xproj", "{8A601B6E-491C-4B97-92C3-75D399B0F023}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfTestHarness", "src\PerfTestHarness\PerfTestHarness.csproj", "{8A601B6E-491C-4B97-92C3-75D399B0F023}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "JustEat.StatsD.Tests", "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.xproj", "{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustEat.StatsD.Tests", "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj", "{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
