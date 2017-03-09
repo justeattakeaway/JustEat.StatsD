@@ -3,7 +3,7 @@ using System.Threading;
 using Shouldly;
 using Xunit;
 
-namespace JustEat.StatsD.Tests.Extensions
+namespace JustEat.StatsD.Extensions
 {
     public class SimpleTimerStatNameTests
     {
