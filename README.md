@@ -1,7 +1,7 @@
 # JustEat.StatsD
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.StatsD?includePreReleases=false)](http://www.nuget.org/packages/JustEat.StatsD)
-[![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/JustEat.StatsD)
+[![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/justeat-statsd)
 
 ## The point
 
