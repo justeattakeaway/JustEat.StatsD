@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="PacketBuilderTests.cs" />
-    <Compile Remove="WhenSendingMetricsToStatsD.cs" />
     <Compile Remove="WhenTestingCounters.cs" />
     <Compile Remove="WhenTestingGauges.cs" />
     <Compile Remove="WhenTestingTimers.cs" />
@@ -18,7 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="PacketBuilderTests.cs" />
-    <None Include="WhenSendingMetricsToStatsD.cs" />
     <None Include="WhenTestingCounters.cs" />
     <None Include="WhenTestingGauges.cs" />
     <None Include="WhenTestingTimers.cs" />
