@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$false)][bool]   $RestorePackages  = $false,
     [Parameter(Mandatory=$false)][string] $Configuration    = "Release",
     [Parameter(Mandatory=$false)][string] $VersionSuffix    = "",
@@ -64,11 +64,11 @@ function DotNetRestore { param([string]$Project)
     }
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
+function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --configuration $Configuration --version-suffix "$VersionSuffix"
+        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
     } else {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --configuration $Configuration
+        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
@@ -84,14 +84,18 @@ function DotNetTest { param([string]$Project)
 
 function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix"
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
     } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
 }
+
+$projects = @(
+    (Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj")
+)
 
 $testProjects = @(
     (Join-Path $solutionPath "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
@@ -106,8 +110,11 @@ if ($RestorePackages -eq $true) {
     DotNetRestore $solutionFile
 }
 
-Write-Host "Building solution..." -ForegroundColor Green
-DotNetBuild $solutionFile $Configuration $VersionSuffix
+Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
+ForEach ($project in $projects) {
+    DotNetBuild $project $Configuration "netstandard1.6" $VersionSuffix
+    DotNetBuild $project $Configuration "net451" $VersionSuffix
+}
 
 if ($RunTests -eq $true) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
