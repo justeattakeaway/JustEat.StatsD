@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading;
-using NUnit.Framework;
+using Shouldly;
+using Xunit;
 
-namespace JustEat.StatsD.Tests.Extensions
+namespace JustEat.StatsD.Extensions
 {
-    [TestFixture]
     public class SimpleTimerStatNameTests
     {
-        [Test]
-        public void DefaultIsToKeepStatName()
+        [Fact]
+        public static void DefaultIsToKeepStatName()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -20,8 +20,8 @@ namespace JustEat.StatsD.Tests.Extensions
             PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
         }
 
-        [Test]
-        public void CanChangeStatNameDuringOperation()
+        [Fact]
+        public static void CanChangeStatNameDuringOperation()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -34,8 +34,8 @@ namespace JustEat.StatsD.Tests.Extensions
             PublisherAssertions.SingleStatNameIs(publisher, "changedValue");
         }
 
-        [Test]
-        public void StatNameCanBeAppended()
+        [Fact]
+        public static void StatNameCanBeAppended()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -49,19 +49,19 @@ namespace JustEat.StatsD.Tests.Extensions
         }
 
 
-        [Test]
-        public void StatWithoutNameAtStartThrows()
+        [Fact]
+        public static void StatWithoutNameAtStartThrows()
         {
             var publisher = new FakeStatsPublisher();
 
             Assert.Throws<ArgumentNullException>(() => publisher.StartTimer(string.Empty));
 
-            Assert.That(publisher.CallCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.Empty);
+            publisher.CallCount.ShouldBe(0);
+            publisher.BucketNames.ShouldBeEmpty();
         }
 
-        [Test]
-        public void StatWithoutNameAtEndThrows()
+        [Fact]
+        public static void StatWithoutNameAtEndThrows()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -74,16 +74,17 @@ namespace JustEat.StatsD.Tests.Extensions
                 }
             });
 
-            Assert.That(publisher.CallCount, Is.EqualTo(0));
-            Assert.That(publisher.BucketNames, Is.Empty);
+            publisher.CallCount.ShouldBe(0);
+            publisher.BucketNames.ShouldBeEmpty();
         }
 
 
-        [Test]
-        public void StatNameIsInitialValueWhenExceptionIsThrown()
+        [Fact]
+        public static void StatNameIsInitialValueWhenExceptionIsThrown()
         {
             var publisher = new FakeStatsPublisher();
             var failCount = 0;
+
             try
             {
                 using (var timer = publisher.StartTimer("initialStat"))
@@ -97,17 +98,17 @@ namespace JustEat.StatsD.Tests.Extensions
                 failCount++;
             }
 
-            Assert.That(failCount, Is.EqualTo(1));
+            failCount.ShouldBe(1);
             PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
         }
 
-        private void Delay()
+        private static void Delay()
         {
             const int standardDelayMillis = 200;
             Thread.Sleep(standardDelayMillis);
         }
 
-        private void Fail()
+        private static void Fail()
         {
             throw new Exception("Deliberate fail");
         }

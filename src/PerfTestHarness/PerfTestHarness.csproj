@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\JustEat.StatsD.Common.props" />
+  <PropertyGroup>
+    <DebugType>portable</DebugType>
+    <OutputType>Exe</OutputType>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
+  </ItemGroup>
+</Project>
