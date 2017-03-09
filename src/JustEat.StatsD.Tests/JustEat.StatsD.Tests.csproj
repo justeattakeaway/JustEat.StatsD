@@ -4,21 +4,38 @@
     <TargetFramework>net452</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="PacketBuilderTests.cs" />
+    <Compile Remove="WhenSendingMetricsToStatsD.cs" />
+    <Compile Remove="WhenTestingCounters.cs" />
+    <Compile Remove="WhenTestingGauges.cs" />
+    <Compile Remove="WhenTestingTimers.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoFixture" Version="3.50.2" />
-    <PackageReference Include="AutoFixture.AutoFakeItEasy" Version="3.50.2" />
-    <PackageReference Include="dotnet-test-nunit" Version="3.4.0-beta-3" />
-    <PackageReference Include="FakeItEasy" Version="1.25.3" />
-    <PackageReference Include="JustBehave" Version="1.0.0.12" />
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PacketBuilderTests.cs" />
+    <None Include="WhenSendingMetricsToStatsD.cs" />
+    <None Include="WhenTestingCounters.cs" />
+    <None Include="WhenTestingGauges.cs" />
+    <None Include="WhenTestingTimers.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
-    <PackageReference Include="NLog" Version="5.0.0-beta03" />
-    <PackageReference Include="NUnit" Version="3.5.0" />
-    <PackageReference Include="Shouldly" Version="2.6.0" />
+    <PackageReference Include="Moq" Version="4.7.1" />
+    <PackageReference Include="Shouldly" Version="2.8.2" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.0.2" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>
