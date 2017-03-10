@@ -18,7 +18,7 @@ namespace JustEat.StatsD
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Necessary to nest generics to support passing a factory method")]
         public SimpleObjectPool(int capacity, Func<SimpleObjectPool<T>, T> constructor)
         {
-            if (null == constructor)
+            if (constructor == null)
             {
                 throw new ArgumentNullException("constructor");
             }
@@ -27,7 +27,7 @@ namespace JustEat.StatsD
             for (var i = 0; i < capacity; ++i)
             {
                 var instance = constructor(this);
-                if (null == instance)
+                if (instance == null)
                 {
                     throw new ArgumentException("constructor produced null object", "constructor");
                 }

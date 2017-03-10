@@ -48,7 +48,6 @@ namespace JustEat.StatsD.Extensions
             PublisherAssertions.SingleStatNameIs(publisher, "Some.More");
         }
 
-
         [Fact]
         public static void StatWithoutNameAtStartThrows()
         {
@@ -77,7 +76,6 @@ namespace JustEat.StatsD.Extensions
             publisher.CallCount.ShouldBe(0);
             publisher.BucketNames.ShouldBeEmpty();
         }
-
 
         [Fact]
         public static void StatNameIsInitialValueWhenExceptionIsThrown()

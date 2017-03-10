@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Sockets;
 
 namespace JustEat.StatsD
@@ -14,7 +14,7 @@ namespace JustEat.StatsD
         /// <param name="parentPool">	The pool that owns this instance. </param>
         public PoolAwareSocketAsyncEventArgs(SimpleObjectPool<SocketAsyncEventArgs> parentPool)
         {
-            if (null == parentPool)
+            if (parentPool == null)
             {
                 throw new ArgumentNullException("parentPool");
             }
