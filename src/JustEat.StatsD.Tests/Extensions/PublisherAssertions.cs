@@ -19,7 +19,7 @@ namespace JustEat.StatsD.Extensions
             DurationIsMoreOrLess(publisher.LastDuration, TimeSpan.FromMilliseconds(expectedMillis));
         }
 
-        private static readonly TimeSpan deltaMoreOrLess = TimeSpan.FromMilliseconds(100);
+        private static readonly TimeSpan deltaMoreOrLess = TimeSpan.FromMilliseconds(150);
 
         private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
         {

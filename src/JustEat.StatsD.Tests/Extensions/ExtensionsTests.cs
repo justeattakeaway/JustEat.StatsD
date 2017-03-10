@@ -7,7 +7,7 @@ namespace JustEat.StatsD.Extensions
 {
     public static class ExtensionsTests
     {
-        private const int StandardDelayInMilliseconds = 200;
+        private const int StandardDelayInMilliseconds = 300;
 
         [Fact]
         public static void CanRecordStat()
