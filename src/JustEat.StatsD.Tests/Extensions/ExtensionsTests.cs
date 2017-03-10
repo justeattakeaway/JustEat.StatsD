@@ -7,8 +7,6 @@ namespace JustEat.StatsD.Extensions
 {
     public static class ExtensionsTests
     {
-        private const int StandardDelayInMilliseconds = 200;
-
         [Fact]
         public static void CanRecordStat()
         {
@@ -20,7 +18,7 @@ namespace JustEat.StatsD.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "stat");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -53,7 +51,7 @@ namespace JustEat.StatsD.Extensions
 
             publisher.CallCount.ShouldBe(2);
             publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -67,7 +65,7 @@ namespace JustEat.StatsD.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "statWithAsync");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -87,7 +85,7 @@ namespace JustEat.StatsD.Extensions
 
             publisher.CallCount.ShouldBe(2);
             publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -97,7 +95,7 @@ namespace JustEat.StatsD.Extensions
             publisher.Time("statOverAction", () => Delay());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAction");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -108,7 +106,7 @@ namespace JustEat.StatsD.Extensions
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -126,7 +124,7 @@ namespace JustEat.StatsD.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -145,28 +143,28 @@ namespace JustEat.StatsD.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayInMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         private static void Delay()
         {
-            Thread.Sleep(StandardDelayInMilliseconds);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
         }
 
         private static async Task DelayAsync()
         {
-            await Task.Delay(StandardDelayInMilliseconds);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
         }
 
         private static int DelayedAnswer()
         {
-            Thread.Sleep(StandardDelayInMilliseconds);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
             return 42;
         }
 
         private static async Task<int> DelayedAnswerAsync()
         {
-            await Task.Delay(StandardDelayInMilliseconds);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
             return 42;
         }
     }

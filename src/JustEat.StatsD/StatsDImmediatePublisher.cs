@@ -10,12 +10,12 @@ namespace JustEat.StatsD
     {
         private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
         private readonly StatsDMessageFormatter _formatter;
-        private readonly IStatsDUdpClient _transport;
+        private readonly IStatsDTransport _transport;
 
         public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port = 8125, string prefix = "")
         {
             _formatter = new StatsDMessageFormatter(cultureInfo, prefix);
-            _transport = new StatsDUdpClient(hostNameOrAddress, port);
+            _transport = new StatsDUdpTransport(hostNameOrAddress, port);
         }
 
         public StatsDImmediatePublisher(string hostNameOrAddress, int port = 8125, string prefix = "") : this(SafeDefaultCulture, hostNameOrAddress, port, prefix) {}

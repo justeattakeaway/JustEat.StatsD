@@ -19,12 +19,11 @@ namespace JustEat.StatsD.Extensions
             DurationIsMoreOrLess(publisher.LastDuration, TimeSpan.FromMilliseconds(expectedMillis));
         }
 
-        private static readonly TimeSpan deltaMoreOrLess = TimeSpan.FromMilliseconds(100);
-
         private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
         {
-            var expectedLower = expected.Subtract(deltaMoreOrLess);
-            var expectedUpper = expected.Add(deltaMoreOrLess);
+            var expectedLower = expected.Subtract(TimingConstants.DeltaFast);
+            // build servers are often slow, there can be delay outliers
+            var expectedUpper = expected.Add(TimingConstants.DeltaSlow);
 
             actual.ShouldBeGreaterThanOrEqualTo(expectedLower);
             actual.ShouldBeLessThanOrEqualTo(expectedUpper);
