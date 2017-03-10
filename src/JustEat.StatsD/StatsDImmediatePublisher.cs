@@ -11,7 +11,6 @@ namespace JustEat.StatsD
         private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDUdpClient _transport;
-        private bool _disposed;
 
         public StatsDImmediatePublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port = 8125, string prefix = "")
         {
@@ -84,30 +83,6 @@ namespace JustEat.StatsD
         public void MarkEvent(string name)
         {
             _transport.Send(_formatter.Event(name));
-        }
-
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        /// <param name="disposing">	true if resources should be disposed, false if not. </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (null != _transport)
-                {
-                    _transport.Dispose();
-                }
-                _disposed = true;
-            }
         }
     }
 }
