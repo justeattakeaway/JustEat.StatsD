@@ -19,12 +19,12 @@ namespace JustEat.StatsD.Extensions
             DurationIsMoreOrLess(publisher.LastDuration, TimeSpan.FromMilliseconds(expectedMillis));
         }
 
-        private static void DurationIsMoreOrLess(TimeSpan expected, TimeSpan actual)
-        {
-            TimeSpan delta = TimeSpan.FromMilliseconds(100);
+        private static readonly TimeSpan deltaMoreOrLess = TimeSpan.FromMilliseconds(100);
 
-            var expectedLower = expected.Subtract(delta);
-            var expectedUpper = expected.Add(delta);
+        private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
+        {
+            var expectedLower = expected.Subtract(deltaMoreOrLess);
+            var expectedUpper = expected.Add(deltaMoreOrLess);
 
             actual.ShouldBeGreaterThanOrEqualTo(expectedLower);
             actual.ShouldBeLessThanOrEqualTo(expectedUpper);
