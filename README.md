@@ -22,7 +22,7 @@ We use this within our components to publish [statsd](http://github.com/etsy/sta
 
 `IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDImmediatePublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
 #### Example of setting up a StatsDPublisher
 
@@ -32,7 +32,7 @@ string statsdHostName =  ConfigurationManager.AppSettings["statsd.hostname"];
 int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
 string statsdPrefix =  ConfigurationManager.AppSettings["statsd.prefix"];
 
-Bind<IStatsDPublisher>().To<StatsDImmediatePublisher>()
+Bind<IStatsDPublisher>().To<StatsDPublisher>()
     .WithConstructorArgument("cultureInfo", CultureInfo.InvariantCulture)
     .WithConstructorArgument("hostNameOrAddress",statsdHostName)
     .WithConstructorArgument("port", statsdPort)
