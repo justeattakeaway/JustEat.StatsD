@@ -19,7 +19,6 @@ namespace JustEat.StatsD
         private readonly string _hostNameOrAddress;
         private readonly IPEndPoint _ipBasedEndpoint;
         private readonly int _port;
-        private bool _disposed;
 
         public StatsDUdpClient(string hostNameOrAddress, int port)
             : this(new DnsEndpointProvider(), hostNameOrAddress, port) {}
@@ -51,7 +50,7 @@ namespace JustEat.StatsD
         {
             var data = EventArgsPool.Pop();
             //firehose alert! -- keep it moving!
-            if (null == data)
+            if (data == null)
             {
                 return false;
             }
@@ -97,26 +96,6 @@ namespace JustEat.StatsD
                 Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
             }
             return client;
-        }
-
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        /// <param name="disposing">	true if resources should be disposed, false if not. </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _disposed = true;
-            }
         }
 
         private IPEndPoint GetIPEndPoint()
