@@ -11,7 +11,7 @@ namespace PerfTestHarness
         private static void Main(string[] args)
         {
             var iterations = Enumerable.Range(1, 500000);
-            var client = new StatsDUdpClient(10, "localhost", 3128);
+            var client = new StatsDUdpTransport(10, "localhost", 3128);
             var formatter = new StatsDMessageFormatter();
             var watch = new Stopwatch();
 

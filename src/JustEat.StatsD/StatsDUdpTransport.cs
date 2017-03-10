@@ -10,7 +10,7 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    public class StatsDUdpClient : IStatsDUdpClient
+    public class StatsDUdpTransport : IStatsDTransport
     {
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
@@ -20,13 +20,13 @@ namespace JustEat.StatsD
         private readonly IPEndPoint _ipBasedEndpoint;
         private readonly int _port;
 
-        public StatsDUdpClient(string hostNameOrAddress, int port)
+        public StatsDUdpTransport(string hostNameOrAddress, int port)
             : this(new DnsEndpointProvider(), hostNameOrAddress, port) {}
 
-        public StatsDUdpClient(int endpointCacheDuration, string hostNameOrAddress, int port)
+        public StatsDUdpTransport(int endpointCacheDuration, string hostNameOrAddress, int port)
             : this(new CachedDnsEndpointMapper(new DnsEndpointProvider(), endpointCacheDuration), hostNameOrAddress, port) {}
 
-        private StatsDUdpClient(IDnsEndpointMapper endpointMapper, string hostNameOrAddress, int port)
+        private StatsDUdpTransport(IDnsEndpointMapper endpointMapper, string hostNameOrAddress, int port)
         {
             _endPointMapper = endpointMapper;
             _hostNameOrAddress = hostNameOrAddress;
@@ -57,7 +57,7 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = GetIPEndPoint();
+                data.RemoteEndPoint = GetIpEndPoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();
@@ -98,7 +98,7 @@ namespace JustEat.StatsD
             return client;
         }
 
-        private IPEndPoint GetIPEndPoint()
+        private IPEndPoint GetIpEndPoint()
         {
             return _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); // Only DNS resolve if we were given a hostname
         }
