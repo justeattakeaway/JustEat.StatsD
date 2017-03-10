@@ -21,8 +21,8 @@ namespace JustEat.StatsD.Extensions
 
         private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
         {
-            var expectedLower = expected.Subtract(Timing.Delta);
-            var expectedUpper = expected.Add(Timing.Delta);
+            var expectedLower = expected.Subtract(TimingConstants.Delta);
+            var expectedUpper = expected.Add(TimingConstants.Delta);
 
             actual.ShouldBeGreaterThanOrEqualTo(expectedLower);
             actual.ShouldBeLessThanOrEqualTo(expectedUpper);

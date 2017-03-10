@@ -18,7 +18,7 @@ namespace JustEat.StatsD.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "stat");
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace JustEat.StatsD.Extensions
 
             publisher.CallCount.ShouldBe(2);
             publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace JustEat.StatsD.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "statWithAsync");
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace JustEat.StatsD.Extensions
 
             publisher.CallCount.ShouldBe(2);
             publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace JustEat.StatsD.Extensions
             publisher.Time("statOverAction", () => Delay());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAction");
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace JustEat.StatsD.Extensions
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -124,7 +124,7 @@ namespace JustEat.StatsD.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         [Fact]
@@ -143,28 +143,28 @@ namespace JustEat.StatsD.Extensions
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, Timing.StandardDelayMilliseconds);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
         private static void Delay()
         {
-            Thread.Sleep(Timing.StandardDelayMilliseconds);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
         }
 
         private static async Task DelayAsync()
         {
-            await Task.Delay(Timing.StandardDelayMilliseconds);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
         }
 
         private static int DelayedAnswer()
         {
-            Thread.Sleep(Timing.StandardDelayMilliseconds);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
             return 42;
         }
 
         private static async Task<int> DelayedAnswerAsync()
         {
-            await Task.Delay(Timing.StandardDelayMilliseconds);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
             return 42;
         }
     }
