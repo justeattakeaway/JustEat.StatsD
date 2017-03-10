@@ -21,8 +21,9 @@ namespace JustEat.StatsD.Extensions
 
         private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
         {
-            var expectedLower = expected.Subtract(TimingConstants.Delta);
-            var expectedUpper = expected.Add(TimingConstants.Delta);
+            var expectedLower = expected.Subtract(TimingConstants.DeltaFast);
+            // build servers are often slow, there can be delay outliers
+            var expectedUpper = expected.Add(TimingConstants.DeltaSlow);
 
             actual.ShouldBeGreaterThanOrEqualTo(expectedLower);
             actual.ShouldBeLessThanOrEqualTo(expectedUpper);
