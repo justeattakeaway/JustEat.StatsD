@@ -31,7 +31,7 @@ An example of a very simple statsd publisher configuration, using the default va
 ```csharp
 
 var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
-var statsDPublisher = new StatsDPublisher(statsDConfig);
+IStatsDPublisher statsDPublisher = new StatsDPublisher(statsDConfig);
 ```
 
 An example of IoC in NInject for statsd publisher with values for all options, read from configuration:
