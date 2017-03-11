@@ -23,6 +23,11 @@ namespace JustEat.StatsD
 
             public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
         {
+            if (cultureInfo == null)
+            {
+                throw new ArgumentNullException(nameof(cultureInfo));
+            }
+
             _cultureInfo = cultureInfo;
             _prefix = prefix;
 
