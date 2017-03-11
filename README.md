@@ -30,10 +30,7 @@ An example of a very simple statsd publisher configuration, using the default va
 
 ```csharp
 
-var statsDConfig = new StatsDConfiguration
-{
-  HostNameOrAddress = "metrics_server.mycompany.com"
-};
+var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
 var statsDPublisher = new StatsDPublisher(statsDConfig);
 ```
 
@@ -51,7 +48,7 @@ string statsdPrefix =  ConfigurationManager.AppSettings["statsd.prefix"];
 // it can be a preconfigured singleton instance
 var statsDConfig = new StatsDConfiguration
 {
-  HostNameOrAddress = statsdHostName,
+  Host = statsdHostName,
   Port = statsdPort,
   Prefix = statsdPrefix,
   Culture = CultureInfo.InvariantCulture

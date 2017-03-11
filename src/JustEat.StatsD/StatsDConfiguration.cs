@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace JustEat.StatsD
 {
@@ -7,10 +7,9 @@ namespace JustEat.StatsD
         public const int DefaultPort = 8125;
         private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
 
+        public string Host { get; set; }
+
         public int Port { get; set; } = DefaultPort;
-
-        public string HostNameOrAddress { get; set; }
-
         public string Prefix { get; set; } = string.Empty;
         public CultureInfo Culture { get; set; } = SafeDefaultCulture;
     }

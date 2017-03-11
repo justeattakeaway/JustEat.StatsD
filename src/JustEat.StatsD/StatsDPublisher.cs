@@ -13,7 +13,7 @@ namespace JustEat.StatsD
         public StatsDPublisher(StatsDConfiguration configuration)
         {
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
-            _transport = new StatsDUdpTransport(configuration.HostNameOrAddress, configuration.Port);
+            _transport = new StatsDUdpTransport(configuration.Host, configuration.Port);
         }
 
         public void Increment(string bucket)
