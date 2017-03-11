@@ -12,6 +12,11 @@ namespace JustEat.StatsD
 
         public StatsDPublisher(StatsDConfiguration configuration)
         {
+            if (configuration == null)
+            {
+               throw new ArgumentNullException(nameof(configuration));
+            }
+
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
             _transport = new StatsDUdpTransport(configuration.Host, configuration.Port);
         }

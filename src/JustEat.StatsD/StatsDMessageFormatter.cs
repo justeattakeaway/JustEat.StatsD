@@ -18,9 +18,12 @@ namespace JustEat.StatsD
         private readonly CultureInfo _cultureInfo;
         private readonly string _prefix;
 
-        public StatsDMessageFormatter(CultureInfo ci, string prefix = "")
+        public StatsDMessageFormatter(CultureInfo cultureInfo)
+            : this(cultureInfo, string.Empty) {}
+
+            public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
         {
-            _cultureInfo = ci;
+            _cultureInfo = cultureInfo;
             _prefix = prefix;
 
             if (!string.IsNullOrWhiteSpace(_prefix))
