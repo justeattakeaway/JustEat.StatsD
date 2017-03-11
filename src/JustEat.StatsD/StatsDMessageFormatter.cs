@@ -10,22 +10,19 @@ namespace JustEat.StatsD
 #endif
     public class StatsDMessageFormatter
     {
-        public const string SafeDefaultIsoCultureId = "en-US";
         private const double DefaultSampleRate = 1.0;
 
-        [ThreadStatic] private static Random _random;
+        [ThreadStatic]
+        private static Random _random;
 
         private readonly CultureInfo _cultureInfo;
         private readonly string _prefix;
-
-        public StatsDMessageFormatter() : this(new CultureInfo(SafeDefaultIsoCultureId), prefix: "") {}
-
-        public StatsDMessageFormatter(string prefix = "") : this(new CultureInfo(SafeDefaultIsoCultureId), prefix) {}
 
         public StatsDMessageFormatter(CultureInfo ci, string prefix = "")
         {
             _cultureInfo = ci;
             _prefix = prefix;
+
             if (!string.IsNullOrWhiteSpace(_prefix))
             {
                 _prefix = _prefix + "."; // if we have something, then append a . to it to make concatenations easy.

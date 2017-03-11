@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using JustEat.StatsD;
@@ -12,7 +13,7 @@ namespace PerfTestHarness
         {
             var iterations = Enumerable.Range(1, 500000);
             var client = new StatsDUdpTransport(10, "localhost", 3128);
-            var formatter = new StatsDMessageFormatter();
+            var formatter = new StatsDMessageFormatter(CultureInfo.InvariantCulture);
             var watch = new Stopwatch();
 
             Console.WriteLine("To start - hit ENTER.");
