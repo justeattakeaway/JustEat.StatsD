@@ -22,21 +22,44 @@ We use this within our components to publish [statsd](http://github.com/etsy/sta
 
 `IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. For the constructor parameters, you will need the statsd server host name. You can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the statsd server host name or IP address. Optionally, you can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
 #### Example of setting up a StatsDPublisher
 
-An example of Ioc in NInject for statsd publisher with values from configuration:
+An example of a very simple statsd publisher configuration, using the default values for most things.
+
 ```csharp
+
+var statsDConfig = new StatsDConfiguration
+{
+  HostNameOrAddress = "metrics_server.mycompany.com"
+};
+var statsDPublisher = new StatsDPublisher(statsDConfig);
+```
+
+An example of IoC in NInject for statsd publisher with values for all options, read from configuration:
+
+```csharp
+
+// read config values from app settings
 string statsdHostName =  ConfigurationManager.AppSettings["statsd.hostname"];
 int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
 string statsdPrefix =  ConfigurationManager.AppSettings["statsd.prefix"];
 
-Bind<IStatsDPublisher>().To<StatsDPublisher>()
-    .WithConstructorArgument("cultureInfo", CultureInfo.InvariantCulture)
-    .WithConstructorArgument("hostNameOrAddress",statsdHostName)
-    .WithConstructorArgument("port", statsdPort)
-    .WithConstructorArgument("prefix", statsdPrefix);
+// assemble a StatsDConfiguration object
+// since the configuration doesn't change for the lifetime of the app, 
+// it can be a preconfigured singleton instance
+var statsDConfig = new StatsDConfiguration
+{
+  HostNameOrAddress = statsdHostName,
+  Port = statsdPort,
+  Prefix = statsdPrefix,
+  Culture = CultureInfo.InvariantCulture
+};
+
+// register with NInject
+Bind<StatsDConfiguration>().ToConstant(statsDConfig>);
+Bind<IStatsDPublisher>().To<StatsDPublisher>();
 ```
 
 #### Example of using the interface
