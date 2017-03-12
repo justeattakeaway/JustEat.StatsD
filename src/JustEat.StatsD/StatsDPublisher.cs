@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace JustEat.StatsD
 {
@@ -8,17 +7,24 @@ namespace JustEat.StatsD
     /// </summary>
     public class StatsDPublisher : IStatsDPublisher
     {
-        private static readonly CultureInfo SafeDefaultCulture = new CultureInfo(StatsDMessageFormatter.SafeDefaultIsoCultureId);
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDTransport _transport;
 
-        public StatsDPublisher(CultureInfo cultureInfo, string hostNameOrAddress, int port = 8125, string prefix = "")
+        public StatsDPublisher(StatsDConfiguration configuration)
         {
-            _formatter = new StatsDMessageFormatter(cultureInfo, prefix);
-            _transport = new StatsDUdpTransport(hostNameOrAddress, port);
-        }
+            if (configuration == null)
+            {
+               throw new ArgumentNullException(nameof(configuration));
+            }
 
-        public StatsDPublisher(string hostNameOrAddress, int port = 8125, string prefix = "") : this(SafeDefaultCulture, hostNameOrAddress, port, prefix) {}
+            if (string.IsNullOrWhiteSpace(configuration.Host))
+            {
+                throw new ArgumentNullException(nameof(configuration.Host));
+            }
+
+            _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
+            _transport = new StatsDUdpTransport(configuration.Host, configuration.Port);
+        }
 
         public void Increment(string bucket)
         {
