@@ -22,6 +22,21 @@ namespace JustEat.StatsD.Extensions
         }
 
         [Fact]
+        public static void CanChangeStatName()
+        {
+            var publisher = new FakeStatsPublisher();
+
+            using (var timer = publisher.StartTimer("defaultName"))
+            {
+                Delay();
+                timer.StatName = "otherStat";
+            }
+
+            PublisherAssertions.SingleStatNameIs(publisher, "otherStat");
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
+        }
+
+        [Fact]
         public static void ShouldNotDisposePublisherAfterStatSent()
         {
             var publisher = new FakeStatsPublisher();
@@ -92,9 +107,23 @@ namespace JustEat.StatsD.Extensions
         public static void CanRecordStatInAction()
         {
             var publisher = new FakeStatsPublisher();
-            publisher.Time("statOverAction", () => Delay());
+            publisher.Time("statOverAction", t => Delay());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAction");
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
+        }
+
+        [Fact]
+        public static void CanChangeStatNameInAction()
+        {
+            var publisher = new FakeStatsPublisher();
+            publisher.Time("defaultName", t =>
+                {
+                    Delay();
+                    t.StatName = "otherStat";
+                });
+
+            PublisherAssertions.SingleStatNameIs(publisher, "otherStat");
             PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
@@ -102,7 +131,7 @@ namespace JustEat.StatsD.Extensions
         public static void CanRecordStatInFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = publisher.Time("statOverFunc", () => DelayedAnswer());
+            var answer = publisher.Time("statOverFunc", t => DelayedAnswer());
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
@@ -113,7 +142,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CanRecordStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("statOverAsyncAction", async () => await DelayAsync());
+            await publisher.Time("statOverAsyncAction", async t => await DelayAsync());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncAction");
         }
@@ -122,7 +151,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CorrectDurationForStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("stat", async () => await DelayAsync());
+            await publisher.Time("stat", async t => await DelayAsync());
 
             PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
@@ -131,7 +160,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CanRecordStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = await publisher.Time("statOverAsyncFunc", async () => await DelayedAnswerAsync());
+            var answer = await publisher.Time("statOverAsyncFunc", async t => await DelayedAnswerAsync());
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncFunc");
@@ -141,9 +170,23 @@ namespace JustEat.StatsD.Extensions
         public static async Task CorrectDurationForStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("stat", async () => await DelayedAnswerAsync());
+            await publisher.Time("stat", async t => await DelayedAnswerAsync());
 
             PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
+        }
+
+        [Fact]
+        public static async Task CanChangeStatNameInAsyncFunction()
+        {
+            var publisher = new FakeStatsPublisher();
+            await publisher.Time("defaultName", async t =>
+                {
+                    var result = await DelayedAnswerAsync();
+                    t.StatName = "afterTheAwait";
+                    return result;
+                });
+
+            PublisherAssertions.SingleStatNameIs(publisher, "afterTheAwait");
         }
 
         private static void Delay()
