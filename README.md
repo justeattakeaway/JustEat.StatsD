@@ -107,7 +107,7 @@ The stat name must be set to a non-empty string at the end of the `using` block.
 using (var timer = stats.StartTimer("SomeHttpOperation."))
 {
     var response = DoSomeHttpOperation();
-    timer.StatName = timer.StatName + response.StatusCode;
+    timer.StatName = timer.StatName + "." + (int)response.StatusCode;
     return response;
 }
 ```
@@ -126,7 +126,7 @@ await stats.Time("someStat", async t => await DoSomethingAsync());
 var result = await stats.Time("someStat", async t => await GetSomethingAsync());
 ```
 
-In all these cases the function is supplied with a `IDisposableTimer t` so that the stat name can be changed if need be.
+In all these cases the function or delegate is supplied with a `IDisposableTimer t` so that the stat name can be changed if need be.
 
 ##### Credits
 
