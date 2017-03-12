@@ -107,7 +107,7 @@ The stat name must be set to a non-empty string at the end of the `using` block.
 using (var timer = stats.StartTimer("SomeHttpOperation."))
 {
     var response = DoSomeHttpOperation();
-    timer.StatName = timer.StatName + "." + (int)response.StatusCode;
+    timer.StatName = timer.StatName + (int)response.StatusCode;
     return response;
 }
 ```
