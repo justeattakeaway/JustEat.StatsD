@@ -5,42 +5,72 @@ namespace JustEat.StatsD
 {
     public static class TimerExtensions
     {
+        /// <summary>
+        /// Start a timer for use in a "using" statement
+        /// </summary>
+        /// <param name="publisher">the stats publisher</param>
+        /// <param name="bucket">the stat name</param>
+        /// <returns>the disposable timer</returns>
         public static IDisposableTimer StartTimer(this IStatsDPublisher publisher, string bucket)
         {
             return new DisposableTimer(publisher, bucket);
         }
 
-        public static void Time(this IStatsDPublisher publisher, string bucket, Action action)
+        /// <summary>
+        /// functional style for timing an delegate with no return value, is not async
+        /// </summary>
+        /// <param name="publisher">the stats publisher</param>
+        /// <param name="bucket">the stat name</param>
+        /// <param name="action">the delegate to time</param>
+        public static void Time(this IStatsDPublisher publisher, string bucket, Action<IDisposableTimer> action)
         {
-            using (StartTimer(publisher, bucket))
+            using (var timer = StartTimer(publisher, bucket))
             {
-                action();
+                action(timer);
             }
         }
 
-        public static async Task Time(this IStatsDPublisher publisher, string bucket, Func<Task> action)
+        /// <summary>
+        /// functional style for timing an delegate with no return value, is async
+        /// </summary>
+        /// <param name="publisher">the stats publisher</param>
+        /// <param name="bucket">the stat name</param>
+        /// <param name="action">the delegate to time</param>
+        public static async Task Time(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, Task> action)
         {
-            using (StartTimer(publisher, bucket))
+            using (var timer = StartTimer(publisher, bucket))
             {
-                await action();
+                await action(timer);
             }
         }
 
-        public static T Time<T>(this IStatsDPublisher publisher, string bucket, Func<T> func)
+        /// <summary>
+        /// functional style for timing a function with a return value, is not async
+        /// </summary>
+        /// <param name="publisher">the stats publisher</param>
+        /// <param name="bucket">the stat name</param>
+        /// <param name="func">the function to time</param>
+        public static T Time<T>(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, T> func)
         {
-            using (StartTimer(publisher, bucket))
+            using (var timer = StartTimer(publisher, bucket))
             {
-                return func();
+                return func(timer);
             }
         }
 
-        public static async Task<T> Time<T>(this IStatsDPublisher publisher, string bucket, Func<Task<T>> func)
+
+        /// <summary>
+        /// functional style for timing a function with a return value, is async
+        /// </summary>
+        /// <param name="publisher">the stats publisher</param>
+        /// <param name="bucket">the stat name</param>
+        /// <param name="func">the function to time</param>
+        public static async Task<T> Time<T>(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, Task<T>> func)
         {
-            using (StartTimer(publisher, bucket))
+            using (var timer = StartTimer(publisher, bucket))
             {
-                return await func();
+                return await func(timer);
             }
         }
-
     }
 }
