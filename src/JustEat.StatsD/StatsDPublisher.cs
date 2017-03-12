@@ -17,6 +17,11 @@ namespace JustEat.StatsD
                throw new ArgumentNullException(nameof(configuration));
             }
 
+            if (string.IsNullOrWhiteSpace(configuration.Host))
+            {
+                throw new ArgumentNullException(nameof(configuration.Host));
+            }
+
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
             _transport = new StatsDUdpTransport(configuration.Host, configuration.Port);
         }
