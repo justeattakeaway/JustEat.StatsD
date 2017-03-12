@@ -92,27 +92,14 @@ using (stats.StartTimer("someStat"))
 }
 ```
 
-The `StartTimer` returns an `IDisposable` that wraps a stopwatch. The stopwatch is automatically stopped and the metric sent when it falls out of scope on the closing `}` of the `using` statement.
-
-##### Functional style
-
-```csharp
-//  timing a lambda without a return value:
-stats.Time("someStat", () => DoSomething());
-
-//  timing a lambda with a return value:
-var result = stats.Time("someStat", () => GetSomething());
-
-// and correctly times async lambdas using the usual syntax:
-await stats.Time("someStat", async () => await DoSomethingAsync());
-var result = await stats.Time("someStat", async () => await GetSomethingAsync());
-```
+The `StartTimer` returns an `IDisposableTimer` that wraps a stopwatch and implements `IDisposable`. 
+The stopwatch is automatically stopped and the metric sent when it falls out of scope and is disposed on the closing `}` of the `using` statement.
 
 ##### Changing the name of simple timers
 
 Sometimes the decision of which stat to send should not be taken before the operation completes. e.g. When you are timing http operations and want different status codes to be logged under different stats.
 
-The timer has a `StatName` property to set or change the name of the stat. To use this you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
+The `IDisposableTimer` has a `StatName` property to set or change the name of the stat. To use this you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
 
 The stat name must be set to a non-empty string at the end of the `using` block.
 
@@ -125,7 +112,25 @@ using (var timer = stats.StartTimer("SomeHttpOperation."))
 }
 ```
 
-The idea of "disposable timers" for using statements comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
+##### Functional style
+
+```csharp
+//  timing an action without a return value:
+stats.Time("someStat", t => DoSomething());
+
+//  timing a function with a return value:
+var result = stats.Time("someStat", t => GetSomething());
+
+// and it correctly times async code using the usual syntax:
+await stats.Time("someStat", async t => await DoSomethingAsync());
+var result = await stats.Time("someStat", async t => await GetSomethingAsync());
+```
+
+In all these cases the function is supplied with a `IDisposableTimer t` so that the stat name can be changed if need be.
+
+##### Credits
+
+The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
 
 ### How to contribute
 
