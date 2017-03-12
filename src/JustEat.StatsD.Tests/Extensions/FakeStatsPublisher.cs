@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JustEat.StatsD.Tests.Extensions
+namespace JustEat.StatsD.Extensions
 {
     public class FakeStatsPublisher : IStatsDPublisher
     {

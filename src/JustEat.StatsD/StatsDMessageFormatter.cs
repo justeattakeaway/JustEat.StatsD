@@ -5,25 +5,32 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
+#if NET45
     [Serializable]
+#endif
     public class StatsDMessageFormatter
     {
-        public const string SafeDefaultIsoCultureId = "en-US";
         private const double DefaultSampleRate = 1.0;
 
-        [ThreadStatic] private static Random _random;
+        [ThreadStatic]
+        private static Random _random;
 
         private readonly CultureInfo _cultureInfo;
         private readonly string _prefix;
 
-        public StatsDMessageFormatter() : this(new CultureInfo(SafeDefaultIsoCultureId), prefix: "") {}
+        public StatsDMessageFormatter(CultureInfo cultureInfo)
+            : this(cultureInfo, string.Empty) {}
 
-        public StatsDMessageFormatter(string prefix = "") : this(new CultureInfo(SafeDefaultIsoCultureId), prefix) {}
-
-        public StatsDMessageFormatter(CultureInfo ci, string prefix = "")
+            public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
         {
-            _cultureInfo = ci;
+            if (cultureInfo == null)
+            {
+                throw new ArgumentNullException(nameof(cultureInfo));
+            }
+
+            _cultureInfo = cultureInfo;
             _prefix = prefix;
+
             if (!string.IsNullOrWhiteSpace(_prefix))
             {
                 _prefix = _prefix + "."; // if we have something, then append a . to it to make concatenations easy.

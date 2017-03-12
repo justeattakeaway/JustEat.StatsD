@@ -10,7 +10,7 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    public class StatsDUdpClient : IStatsDUdpClient
+    public class StatsDUdpTransport : IStatsDTransport
     {
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
@@ -19,15 +19,14 @@ namespace JustEat.StatsD
         private readonly string _hostNameOrAddress;
         private readonly IPEndPoint _ipBasedEndpoint;
         private readonly int _port;
-        private bool _disposed;
 
-        public StatsDUdpClient(string hostNameOrAddress, int port)
+        public StatsDUdpTransport(string hostNameOrAddress, int port)
             : this(new DnsEndpointProvider(), hostNameOrAddress, port) {}
 
-        public StatsDUdpClient(int endpointCacheDuration, string hostNameOrAddress, int port)
+        public StatsDUdpTransport(int endpointCacheDuration, string hostNameOrAddress, int port)
             : this(new CachedDnsEndpointMapper(new DnsEndpointProvider(), endpointCacheDuration), hostNameOrAddress, port) {}
 
-        private StatsDUdpClient(IDnsEndpointMapper endpointMapper, string hostNameOrAddress, int port)
+        private StatsDUdpTransport(IDnsEndpointMapper endpointMapper, string hostNameOrAddress, int port)
         {
             _endPointMapper = endpointMapper;
             _hostNameOrAddress = hostNameOrAddress;
@@ -51,27 +50,29 @@ namespace JustEat.StatsD
         {
             var data = EventArgsPool.Pop();
             //firehose alert! -- keep it moving!
-            if (null == data)
+            if (data == null)
             {
                 return false;
             }
 
             try
             {
-                data.RemoteEndPoint = _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); //only DNS resolve if we were given a hostname
+                data.RemoteEndPoint = GetIPEndPoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();
 
                 using (var udpClient = GetUdpClient())
                 {
+                    udpClient.Client.Connect(data.RemoteEndPoint);
                     udpClient.Client.SendPacketsAsync(data);
                 }
 
                 Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
+
                 return true;
             }
-                //fire and forget, so just eat intermittent failures / exceptions
+            //fire and forget, so just eat intermittent failures / exceptions
             catch (Exception e)
             {
                 Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
@@ -85,7 +86,7 @@ namespace JustEat.StatsD
             UdpClient client = null;
             try
             {
-                client = new UdpClient(_hostNameOrAddress, _port)
+                client = new UdpClient()
                 {
                     Client = { SendBufferSize = 0 }
                 };
@@ -97,24 +98,9 @@ namespace JustEat.StatsD
             return client;
         }
 
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        public void Dispose()
+        private IPEndPoint GetIPEndPoint()
         {
-            if (!_disposed)
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        /// <summary>	Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. </summary>
-        /// <param name="disposing">	true if resources should be disposed, false if not. </param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _disposed = true;
-            }
+            return _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); // Only DNS resolve if we were given a hostname
         }
     }
 }

@@ -1,24 +1,22 @@
 ﻿using System.Linq;
-using NUnit.Framework;
+using Shouldly;
+using Xunit;
 
 namespace JustEat.StatsD.Tests
 {
-    [TestFixture]
     public class WhenBuildingPackets
     {
         private byte[][] _bytes;
 
-
-        [TestFixtureSetUp]
-        protected void SetBytes()
+        public WhenBuildingPackets()
         {
-            _bytes = new[] {Enumerable.Repeat("a", 512).ToString()}.ToMaximumBytePackets().ToArray();
+            _bytes = new[] { Enumerable.Repeat("a", 512).ToString()}.ToMaximumBytePackets().ToArray();
         }
 
-        [Test]
+        [Fact]
         public void TheMetricShouldGetSent()
         {
-            Assert.That(_bytes[0].Length, Is.InRange(1, 512));
+            _bytes[0].Length.ShouldBeInRange(1, 512);
         }
     }
 }

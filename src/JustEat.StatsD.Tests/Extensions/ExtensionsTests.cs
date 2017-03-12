@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Shouldly;
+using Xunit;
 
-namespace JustEat.StatsD.Tests.Extensions
+namespace JustEat.StatsD.Extensions
 {
-    [TestFixture]
-    public class ExtensionsTests
+    public static class ExtensionsTests
     {
-        private const int StandardDelayMillis = 200;
-
-        [Test]
-        public void CanRecordStat()
+        [Fact]
+        public static void CanRecordStat()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -21,11 +18,11 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "stat");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public void ShouldNotDisposePublisherAfterStatSent()
+        [Fact]
+        public static void ShouldNotDisposePublisherAfterStatSent()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -34,11 +31,11 @@ namespace JustEat.StatsD.Tests.Extensions
                 Delay();
             }
 
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            publisher.DisposeCount.ShouldBe(0);
         }
 
-        [Test]
-        public void CanRecordTwoStats()
+        [Fact]
+        public static void CanRecordTwoStats()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -52,13 +49,13 @@ namespace JustEat.StatsD.Tests.Extensions
                 Delay();
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            publisher.CallCount.ShouldBe(2);
+            publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public async Task CanRecordStatAsync()
+        [Fact]
+        public static async Task CanRecordStatAsync()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -68,11 +65,11 @@ namespace JustEat.StatsD.Tests.Extensions
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "statWithAsync");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public async Task CanRecordTwoStatsAsync()
+        [Fact]
+        public static async Task CanRecordTwoStatsAsync()
         {
             var publisher = new FakeStatsPublisher();
 
@@ -86,34 +83,34 @@ namespace JustEat.StatsD.Tests.Extensions
                 await DelayAsync();
             }
 
-            Assert.That(publisher.CallCount, Is.EqualTo(2));
-            Assert.That(publisher.BucketNames, Is.EquivalentTo(new List<string> { "stat1", "stat2" }));
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            publisher.CallCount.ShouldBe(2);
+            publisher.BucketNames.ShouldBe(new[] { "stat1", "stat2" });
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public void CanRecordStatInAction()
+        [Fact]
+        public static void CanRecordStatInAction()
         {
             var publisher = new FakeStatsPublisher();
             publisher.Time("statOverAction", () => Delay());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAction");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public void CanRecordStatInFunction()
+        [Fact]
+        public static void CanRecordStatInFunction()
         {
             var publisher = new FakeStatsPublisher();
             var answer = publisher.Time("statOverFunc", () => DelayedAnswer());
 
-            Assert.That(answer, Is.EqualTo(42));
+            answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public async Task CanRecordStatInAsyncAction()
+        [Fact]
+        public static async Task CanRecordStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
             await publisher.Time("statOverAsyncAction", async () => await DelayAsync());
@@ -121,53 +118,53 @@ namespace JustEat.StatsD.Tests.Extensions
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncAction");
         }
 
-        [Test]
-        public async Task CorrectDurationForStatInAsyncAction()
+        [Fact]
+        public static async Task CorrectDurationForStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        [Test]
-        public async Task CanRecordStatInAsyncFunction()
+        [Fact]
+        public static async Task CanRecordStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
             var answer = await publisher.Time("statOverAsyncFunc", async () => await DelayedAnswerAsync());
 
-            Assert.That(answer, Is.EqualTo(42));
+            answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncFunc");
         }
 
-        [Test]
-        public async Task CorrectDurationForStatInAsyncFunction()
+        [Fact]
+        public static async Task CorrectDurationForStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
             await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
-            PublisherAssertions.LastDurationIs(publisher, StandardDelayMillis);
+            PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
 
-        private void Delay()
+        private static void Delay()
         {
-            Thread.Sleep(StandardDelayMillis);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
         }
 
-        private async Task DelayAsync()
+        private static async Task DelayAsync()
         {
-            await Task.Delay(StandardDelayMillis);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
         }
 
-        private int DelayedAnswer()
+        private static int DelayedAnswer()
         {
-            Thread.Sleep(StandardDelayMillis);
+            Thread.Sleep(TimingConstants.DelayMilliseconds);
             return 42;
         }
 
-        private async Task<int> DelayedAnswerAsync()
+        private static async Task<int> DelayedAnswerAsync()
         {
-            await Task.Delay(StandardDelayMillis);
+            await Task.Delay(TimingConstants.DelayMilliseconds);
             return 42;
         }
     }

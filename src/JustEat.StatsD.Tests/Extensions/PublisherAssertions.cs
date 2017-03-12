@@ -1,17 +1,17 @@
 ﻿using System;
-using NUnit.Framework;
+using Shouldly;
 
-namespace JustEat.StatsD.Tests.Extensions
+namespace JustEat.StatsD.Extensions
 {
     public static class PublisherAssertions
     {
         public static void SingleStatNameIs(FakeStatsPublisher publisher, string statName)
         {
-            Assert.That(publisher.CallCount, Is.EqualTo(1));
-            Assert.That(publisher.DisposeCount, Is.EqualTo(0));
+            publisher.CallCount.ShouldBe(1);
+            publisher.DisposeCount.ShouldBe(0);
 
-            Assert.That(publisher.BucketNames.Count, Is.EqualTo(1));
-            Assert.That(publisher.BucketNames[0], Is.EqualTo(statName));
+            publisher.BucketNames.Count.ShouldBe(1);
+            publisher.BucketNames[0].ShouldBe(statName);
         }
 
         public static void LastDurationIs(FakeStatsPublisher publisher, int expectedMillis)
@@ -19,15 +19,14 @@ namespace JustEat.StatsD.Tests.Extensions
             DurationIsMoreOrLess(publisher.LastDuration, TimeSpan.FromMilliseconds(expectedMillis));
         }
 
-        private static void DurationIsMoreOrLess(TimeSpan expected, TimeSpan actual)
+        private static void DurationIsMoreOrLess(TimeSpan actual, TimeSpan expected)
         {
-            TimeSpan delta = TimeSpan.FromMilliseconds(100);
+            var expectedLower = expected.Subtract(TimingConstants.DeltaFast);
+            // build servers are often slow, there can be delay outliers
+            var expectedUpper = expected.Add(TimingConstants.DeltaSlow);
 
-            var expectedLower = expected.Subtract(delta);
-            var expectedUpper = expected.Add(delta);
-
-            Assert.That(actual, Is.GreaterThanOrEqualTo(expectedLower));
-            Assert.That(actual, Is.LessThanOrEqualTo(expectedUpper));
+            actual.ShouldBeGreaterThanOrEqualTo(expectedLower);
+            actual.ShouldBeLessThanOrEqualTo(expectedUpper);
         }
     }
 }
