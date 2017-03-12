@@ -10,7 +10,7 @@ namespace JustEat.StatsD
         /// </summary>
         /// <param name="publisher">the stats publisher</param>
         /// <param name="bucket">the stat name</param>
-        /// <returns>the disposable time</returns>
+        /// <returns>the disposable timer</returns>
         public static IDisposableTimer StartTimer(this IStatsDPublisher publisher, string bucket)
         {
             return new DisposableTimer(publisher, bucket);
