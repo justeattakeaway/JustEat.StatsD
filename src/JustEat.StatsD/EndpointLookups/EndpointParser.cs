@@ -12,7 +12,6 @@ namespace JustEat.StatsD.EndpointLookups
                 throw new ArgumentException(nameof(hostName));
             }
 
-
             IPAddress address;
             if (IPAddress.TryParse(hostName, out address))
             {
