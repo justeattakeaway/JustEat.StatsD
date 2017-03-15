@@ -5,15 +5,15 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public static class EndpointParser
     {
-        public static IPEndPointSource MakeEndPointSource(string hostName, int port, int? endpointCacheDuration)
+        public static IPEndPointSource MakeEndPointSource(string host, int port, int? endpointCacheDuration)
         {
-            if (string.IsNullOrWhiteSpace(hostName))
+            if (string.IsNullOrWhiteSpace(host))
             {
-                throw new ArgumentException(nameof(hostName));
+                throw new ArgumentException(nameof(host));
             }
 
             IPAddress address;
-            if (IPAddress.TryParse(hostName, out address))
+            if (IPAddress.TryParse(host, out address))
             {
                 //if we were given an IP instead of a hostname, 
                 // we can happily keep it the life of this class
@@ -23,7 +23,7 @@ namespace JustEat.StatsD.EndpointLookups
 
             // we have a host name,
             // so we use DNS lookup
-            var uncachedLookup = new DnsLookupIpEndpointSource(hostName, port);
+            var uncachedLookup = new DnsLookupIpEndpointSource(host, port);
             if (!endpointCacheDuration.HasValue)
             {
                 return uncachedLookup;
