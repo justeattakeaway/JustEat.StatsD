@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 using Shouldly;
 using Xunit;
 
@@ -27,5 +24,11 @@ namespace JustEat.StatsD.EndpointLookups
             parsed.ShouldNotBeNull();
         }
 
+        [Fact]
+        public static void CanParseHostValueWithCache()
+        {
+            var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, 1234);
+            parsed.ShouldNotBeNull();
+        }
     }
 }

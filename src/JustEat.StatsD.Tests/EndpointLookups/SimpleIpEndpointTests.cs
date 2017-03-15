@@ -9,12 +9,15 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanHoldValue()
         {
-            var ipEndpoint = new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);
+            var wrapped = new SimpleIpEndpoint(MakeTestIpEndPoint());
 
-            var mapped = new SimpleIpEndpoint(ipEndpoint);
+            var expected = MakeTestIpEndPoint();
+            wrapped.Endpoint.ShouldBe(expected);
+        }
 
-            var expected = new IPEndPoint(new IPAddress(new byte[] {1, 2, 3, 4}), 8125);
-            mapped.Endpoint.ShouldBe(expected);
+        private static IPEndPoint MakeTestIpEndPoint()
+        {
+            return new IPEndPoint(new IPAddress(new byte[] {1, 2, 3, 4}), 8125);
         }
     }
 }
