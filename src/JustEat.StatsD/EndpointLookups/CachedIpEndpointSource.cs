@@ -9,7 +9,7 @@ namespace JustEat.StatsD.EndpointLookups
     public class CachedIpEndpointSource : IPEndPointSource
     {
         private IPEndPoint _cachedValue;
-        private DateTime _cachedAt;
+        private DateTime _expiry;
         private readonly int _cacheDurationSeconds;
 
         private readonly IPEndPointSource _inner;
@@ -17,6 +17,7 @@ namespace JustEat.StatsD.EndpointLookups
         public CachedIpEndpointSource(IPEndPointSource inner, int cacheDurationSeconds)
         {
             _inner = inner;
+            _cachedValue = null;
             _cacheDurationSeconds = cacheDurationSeconds;
         }
 
@@ -27,7 +28,7 @@ namespace JustEat.StatsD.EndpointLookups
                 if (NeedsRead())
                 {
                     _cachedValue = _inner.Endpoint;
-                    _cachedAt = DateTime.UtcNow;
+                    _expiry = DateTime.UtcNow.AddSeconds(_cacheDurationSeconds);
                 }
                 return _cachedValue;
             }
@@ -40,7 +41,7 @@ namespace JustEat.StatsD.EndpointLookups
                 return true;
             }
 
-            return _cachedAt.AddSeconds(_cacheDurationSeconds) <= DateTime.UtcNow;
+            return _expiry <= DateTime.UtcNow;
         }
     }
 }
