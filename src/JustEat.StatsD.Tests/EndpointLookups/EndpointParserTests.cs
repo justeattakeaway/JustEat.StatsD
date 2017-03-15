@@ -25,6 +25,22 @@ namespace JustEat.StatsD.EndpointLookups
         }
 
         [Fact]
+        public static void CanParseLocalhostValue()
+        {
+            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, null);
+            parsed.ShouldNotBeNull();
+            parsed.Endpoint.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public static void CanParseCachedLocalhostValue()
+        {
+            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, 1234);
+            parsed.ShouldNotBeNull();
+            parsed.Endpoint.ShouldNotBeNull();
+        }
+
+        [Fact]
         public static void CanParseHostValueWithCache()
         {
             var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, 1234);
