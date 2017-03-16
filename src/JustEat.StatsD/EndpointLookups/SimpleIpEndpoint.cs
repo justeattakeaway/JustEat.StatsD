@@ -14,9 +14,6 @@ namespace JustEat.StatsD.EndpointLookups
             _value = value;
         }
 
-        public IPEndPoint GetEndpoint()
-        {
-            return _value;
-        }
+        public IPEndPoint GetEndpoint() => _value;
     }
 }
