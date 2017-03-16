@@ -12,7 +12,7 @@ namespace JustEat.StatsD.EndpointLookups
             var wrapped = new SimpleIpEndpoint(MakeTestIpEndPoint());
 
             var expected = MakeTestIpEndPoint();
-            wrapped.Endpoint.ShouldBe(expected);
+            wrapped.GetEndpoint().ShouldBe(expected);
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace JustEat.StatsD.EndpointLookups
         {
             var wrapped = new SimpleIpEndpoint(MakeTestIpEndPoint());
 
-            wrapped.Endpoint.ShouldBe(wrapped.Endpoint);
+            wrapped.GetEndpoint().ShouldBe(wrapped.GetEndpoint());
         }
 
         private static IPEndPoint MakeTestIpEndPoint()

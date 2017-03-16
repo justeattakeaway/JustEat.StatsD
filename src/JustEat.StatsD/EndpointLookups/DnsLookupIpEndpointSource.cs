@@ -16,9 +16,12 @@ namespace JustEat.StatsD.EndpointLookups
             _port = port;
         }
 
-        public IPEndPoint Endpoint => new IPEndPoint(GetIpAddressOfHost(_hostName), _port);
+        public IPEndPoint GetEndpoint()
+        {
+            return new IPEndPoint(GetIpAddressOfHost(_hostName), _port);
+        }
 
-        private IPAddress GetIpAddressOfHost(string hostName)
+        private static IPAddress GetIpAddressOfHost(string hostName)
         {
             var endpoints = Dns.GetHostAddressesAsync(hostName)
                 .GetAwaiter().GetResult();

@@ -4,6 +4,6 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public interface IPEndPointSource
     {
-        IPEndPoint Endpoint { get; }
+        IPEndPoint GetEndpoint();
     }
 }

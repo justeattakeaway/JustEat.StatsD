@@ -12,53 +12,53 @@ namespace JustEat.StatsD.EndpointLookups
         public static void CachedValueIsReturnedFromInner()
         {
             var mockInner = new Mock<IPEndPointSource>();
-            mockInner.SetupGet(x => x.Endpoint).Returns(MakeTestIpEndPoint());
+            mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, 1234);
 
-            var value = cachedEndpoint.Endpoint;
+            var value = cachedEndpoint.GetEndpoint();
             value.ShouldNotBeNull();
             value.ShouldBe(MakeTestIpEndPoint());
 
-            mockInner.VerifyGet(x=> x.Endpoint, Times.Exactly(1));
+            mockInner.Verify(x=> x.GetEndpoint(), Times.Exactly(1));
         }
 
         [Fact]
         public static void CachedValueIsReturnedOnce()
         {
             var mockInner = new Mock<IPEndPointSource>();
-            mockInner.SetupGet(x => x.Endpoint).Returns(MakeTestIpEndPoint());
+            mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, 1234);
 
-            var value1 = cachedEndpoint.Endpoint;
-            var value2 = cachedEndpoint.Endpoint;
-            var value3 = cachedEndpoint.Endpoint;
+            var value1 = cachedEndpoint.GetEndpoint();
+            var value2 = cachedEndpoint.GetEndpoint();
+            var value3 = cachedEndpoint.GetEndpoint();
 
             value1.ShouldNotBeNull();
             value1.ShouldBe(value2);
             value1.ShouldBe(value3);
 
-            mockInner.VerifyGet(x => x.Endpoint, Times.Exactly(1));
+            mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(1));
         }
 
         [Fact]
         public static async Task CachedValueIsReturnedAgainAfterExpiry()
         {
             var mockInner = new Mock<IPEndPointSource>();
-            mockInner.SetupGet(x => x.Endpoint).Returns(MakeTestIpEndPoint());
+            mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, 1);
 
-            var value1 = cachedEndpoint.Endpoint;
-            var value2 = cachedEndpoint.Endpoint;
+            var value1 = cachedEndpoint.GetEndpoint();
+            var value2 = cachedEndpoint.GetEndpoint();
 
             await Task.Delay(1500);
 
-            var value3 = cachedEndpoint.Endpoint;
-            var value4 = cachedEndpoint.Endpoint;
+            var value3 = cachedEndpoint.GetEndpoint();
+            var value4 = cachedEndpoint.GetEndpoint();
 
-            mockInner.VerifyGet(x => x.Endpoint, Times.Exactly(2));
+            mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(2));
         }
 
         private static IPEndPoint MakeTestIpEndPoint()

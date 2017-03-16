@@ -14,7 +14,7 @@ namespace JustEat.StatsD.EndpointLookups
             parsed.ShouldNotBeNull();
 
             var expected = new IPEndPoint(new IPAddress(new byte[] { 11, 12, 13, 14 }), 8125);
-            parsed.Endpoint.ShouldBe(expected);
+            parsed.GetEndpoint().ShouldBe(expected);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace JustEat.StatsD.EndpointLookups
         {
             var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, null);
             parsed.ShouldNotBeNull();
-            parsed.Endpoint.ShouldNotBeNull();
+            parsed.GetEndpoint().ShouldNotBeNull();
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace JustEat.StatsD.EndpointLookups
         {
             var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, 1234);
             parsed.ShouldNotBeNull();
-            parsed.Endpoint.ShouldNotBeNull();
+            parsed.GetEndpoint().ShouldNotBeNull();
         }
 
         [Fact]

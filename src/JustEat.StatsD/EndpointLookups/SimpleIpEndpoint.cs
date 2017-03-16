@@ -7,11 +7,16 @@ namespace JustEat.StatsD.EndpointLookups
     /// </summary>
     public class SimpleIpEndpoint : IPEndPointSource
     {
+        private readonly IPEndPoint _value;
+
         public SimpleIpEndpoint(IPEndPoint value)
         {
-            Endpoint = value;
+            _value = value;
         }
 
-        public IPEndPoint Endpoint { get; }
+        public IPEndPoint GetEndpoint()
+        {
+            return _value;
+        }
     }
 }

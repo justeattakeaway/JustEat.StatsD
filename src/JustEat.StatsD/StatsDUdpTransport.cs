@@ -43,7 +43,7 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = _endpointSource.Endpoint;
+                data.RemoteEndPoint = _endpointSource.GetEndpoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();

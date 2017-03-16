@@ -21,17 +21,14 @@ namespace JustEat.StatsD.EndpointLookups
             _cacheDurationSeconds = cacheDurationSeconds;
         }
 
-        public IPEndPoint Endpoint
+        public IPEndPoint GetEndpoint()
         {
-            get
+            if (NeedsRead())
             {
-                if (NeedsRead())
-                {
-                    _cachedValue = _inner.Endpoint;
-                    _expiry = DateTime.UtcNow.AddSeconds(_cacheDurationSeconds);
-                }
-                return _cachedValue;
+                _cachedValue = _inner.GetEndpoint();
+                _expiry = DateTime.UtcNow.AddSeconds(_cacheDurationSeconds);
             }
+            return _cachedValue;
         }
 
         private bool NeedsRead()
