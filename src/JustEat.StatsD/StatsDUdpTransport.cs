@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
 
@@ -15,29 +14,20 @@ namespace JustEat.StatsD
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
 
-        private readonly IDnsEndpointMapper _endPointMapper;
-        private readonly string _hostNameOrAddress;
-        private readonly IPEndPoint _ipBasedEndpoint;
-        private readonly int _port;
+        private readonly IPEndPointSource _endpointSource;
 
-        public StatsDUdpTransport(string hostNameOrAddress, int port)
-            : this(new DnsEndpointProvider(), hostNameOrAddress, port) {}
-
-        public StatsDUdpTransport(int endpointCacheDuration, string hostNameOrAddress, int port)
-            : this(new CachedDnsEndpointMapper(new DnsEndpointProvider(), endpointCacheDuration), hostNameOrAddress, port) {}
-
-        private StatsDUdpTransport(IDnsEndpointMapper endpointMapper, string hostNameOrAddress, int port)
+        public StatsDUdpTransport(IPEndPointSource endPointSource)
         {
-            _endPointMapper = endpointMapper;
-            _hostNameOrAddress = hostNameOrAddress;
-            _port = port;
-
-            //if we were given an IP instead of a hostname, we can happily cache it off for the life of this class
-            IPAddress address;
-            if (IPAddress.TryParse(hostNameOrAddress, out address))
+            if (endPointSource == null)
             {
-                _ipBasedEndpoint = new IPEndPoint(address, _port);
+                throw new ArgumentNullException(nameof(endPointSource));
             }
+            _endpointSource = endPointSource;
+        }
+
+        public StatsDUdpTransport(string hostNameOrAddress, int port, TimeSpan? endpointCacheDuration)
+            : this(EndpointParser.MakeEndPointSource(hostNameOrAddress, port, endpointCacheDuration))
+        {
         }
 
         public bool Send(string metric)
@@ -57,7 +47,7 @@ namespace JustEat.StatsD
 
             try
             {
-                data.RemoteEndPoint = GetIPEndPoint();
+                data.RemoteEndPoint = _endpointSource.GetEndpoint();
                 data.SendPacketsElements = metrics.ToMaximumBytePackets()
                     .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
                     .ToArray();
@@ -86,7 +76,7 @@ namespace JustEat.StatsD
             UdpClient client = null;
             try
             {
-                client = new UdpClient()
+                client = new UdpClient
                 {
                     Client = { SendBufferSize = 0 }
                 };
@@ -96,11 +86,6 @@ namespace JustEat.StatsD
                 Trace.TraceError(string.Format(CultureInfo.InvariantCulture, "Error Creating udpClient :-  Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace));
             }
             return client;
-        }
-
-        private IPEndPoint GetIPEndPoint()
-        {
-            return _ipBasedEndpoint ?? _endPointMapper.GetIPEndPoint(_hostNameOrAddress, _port); // Only DNS resolve if we were given a hostname
         }
     }
 }
