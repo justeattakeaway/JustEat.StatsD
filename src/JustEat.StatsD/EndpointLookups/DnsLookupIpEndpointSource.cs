@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
 {
@@ -25,6 +26,11 @@ namespace JustEat.StatsD.EndpointLookups
         {
             var endpoints = Dns.GetHostAddressesAsync(hostName)
                 .GetAwaiter().GetResult();
+
+            if (endpoints == null || endpoints.Length == 0)
+            {
+                throw new Exception($"DNS did not find any addresses for statsd host '${hostName}'");
+            }
             return endpoints[0];
         }
     }
