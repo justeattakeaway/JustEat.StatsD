@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Shouldly;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanParseCachedLocalhostValue()
         {
-            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, 1234);
+            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, TimeSpan.FromMinutes(5));
             parsed.ShouldNotBeNull();
             parsed.GetEndpoint().ShouldNotBeNull();
         }
@@ -43,7 +44,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanParseHostValueWithCache()
         {
-            var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, 1234);
+            var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, TimeSpan.FromMinutes(5));
             parsed.ShouldNotBeNull();
         }
     }

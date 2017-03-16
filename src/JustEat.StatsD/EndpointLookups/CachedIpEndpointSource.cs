@@ -10,15 +10,15 @@ namespace JustEat.StatsD.EndpointLookups
     {
         private IPEndPoint _cachedValue;
         private DateTime _expiry;
-        private readonly int _cacheDurationSeconds;
+        private readonly TimeSpan _cacheDuration;
 
         private readonly IPEndPointSource _inner;
 
-        public CachedIpEndpointSource(IPEndPointSource inner, int cacheDurationSeconds)
+        public CachedIpEndpointSource(IPEndPointSource inner, TimeSpan cacheDuration)
         {
             _inner = inner;
             _cachedValue = null;
-            _cacheDurationSeconds = cacheDurationSeconds;
+            _cacheDuration = cacheDuration;
         }
 
         public IPEndPoint GetEndpoint()
@@ -26,7 +26,7 @@ namespace JustEat.StatsD.EndpointLookups
             if (NeedsRead())
             {
                 _cachedValue = _inner.GetEndpoint();
-                _expiry = DateTime.UtcNow.AddSeconds(_cacheDurationSeconds);
+                _expiry = DateTime.UtcNow.Add(_cacheDuration);
             }
             return _cachedValue;
         }

@@ -18,10 +18,14 @@ namespace JustEat.StatsD
 
         public StatsDUdpTransport(IPEndPointSource endPointSource)
         {
+            if (endPointSource == null)
+            {
+                throw new ArgumentNullException(nameof(endPointSource));
+            }
             _endpointSource = endPointSource;
         }
 
-        public StatsDUdpTransport(string hostNameOrAddress, int port, int? endpointCacheDuration)
+        public StatsDUdpTransport(string hostNameOrAddress, int port, TimeSpan? endpointCacheDuration)
             : this(EndpointParser.MakeEndPointSource(hostNameOrAddress, port, endpointCacheDuration))
         {
         }

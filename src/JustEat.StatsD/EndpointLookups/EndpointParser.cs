@@ -5,11 +5,11 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public static class EndpointParser
     {
-        public static IPEndPointSource MakeEndPointSource(string host, int port, int? endpointCacheDuration)
+        public static IPEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
         {
             if (string.IsNullOrWhiteSpace(host))
             {
-                throw new ArgumentException(nameof(host));
+                throw new ArgumentException("statsd host is null or empty");
             }
 
             IPAddress address;
