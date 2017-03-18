@@ -1,10 +1,12 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace JustEat.StatsD
 {
     public class StatsDConfiguration
     {
         public const int DefaultPort = 8125;
+        public static readonly TimeSpan DefaultDnsLookupInterval = TimeSpan.FromMinutes(5);
 
         public string Host { get; set; }
 
