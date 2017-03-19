@@ -11,6 +11,9 @@ namespace JustEat.StatsD
         public string Host { get; set; }
 
         public int Port { get; set; } = DefaultPort;
+
+        public TimeSpan? DnsLookupInterval { get; set; } = DefaultDnsLookupInterval;
+
         public string Prefix { get; set; } = string.Empty;
         public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
     }

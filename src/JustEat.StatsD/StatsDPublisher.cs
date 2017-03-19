@@ -41,7 +41,8 @@ namespace JustEat.StatsD
 
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
 
-            var endpointSource = EndpointParser.MakeEndPointSource(configuration.Host, configuration.Port, StatsDConfiguration.DefaultDnsLookupInterval);
+            var endpointSource = EndpointParser.MakeEndPointSource(
+                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
             _transport = new StatsDUdpTransport(endpointSource);
         }
 
