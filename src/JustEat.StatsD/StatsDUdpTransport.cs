@@ -25,11 +25,6 @@ namespace JustEat.StatsD
             _endpointSource = endPointSource;
         }
 
-        public StatsDUdpTransport(string hostNameOrAddress, int port, TimeSpan? endpointCacheDuration)
-            : this(EndpointParser.MakeEndPointSource(hostNameOrAddress, port, endpointCacheDuration))
-        {
-        }
-
         public bool Send(string metric)
         {
             return Send(new[] {metric});

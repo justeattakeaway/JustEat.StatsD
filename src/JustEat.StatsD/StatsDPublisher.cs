@@ -1,4 +1,5 @@
 ﻿using System;
+using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
@@ -9,6 +10,22 @@ namespace JustEat.StatsD
     {
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDTransport _transport;
+
+        public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
+        {
+            if (configuration == null)
+            {
+               throw new ArgumentNullException(nameof(configuration));
+            }
+
+            if (transport == null)
+            {
+               throw new ArgumentNullException(nameof(transport));
+            }
+
+            _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
+            _transport = transport;            
+        }
 
         public StatsDPublisher(StatsDConfiguration configuration)
         {
@@ -23,7 +40,10 @@ namespace JustEat.StatsD
             }
 
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
-            _transport = new StatsDUdpTransport(configuration.Host, configuration.Port, null);
+
+            var endpointSource = EndpointParser.MakeEndPointSource(
+                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
+            _transport = new StatsDUdpTransport(endpointSource);
         }
 
         public void Increment(string bucket)
