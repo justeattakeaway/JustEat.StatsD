@@ -15,13 +15,13 @@ namespace JustEat.StatsD
         public string Host { get; set; }
 
         /// <summary>
-        /// The port on the satsD server that stas are sent to.
+        /// The port on the statsD server to use.
         /// Default is the standard port (8125).
         /// </summary>
         public int Port { get; set; } = DefaultPort;
 
         /// <summary>
-        /// Length of time to cache the host name to Ip address lookup.
+        /// Length of time to cache the host name to IP address lookup.
         /// Only used when "Host" contains a host name.
         /// Default is 5 minutes.
         /// </summary>
