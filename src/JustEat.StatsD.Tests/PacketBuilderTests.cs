@@ -6,7 +6,7 @@ namespace JustEat.StatsD.Tests
 {
     public class WhenBuildingPackets
     {
-        private byte[][] _bytes;
+        private readonly byte[][] _bytes;
 
         public WhenBuildingPackets()
         {

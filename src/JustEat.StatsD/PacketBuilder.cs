@@ -1,16 +1,17 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace JustEat.StatsD
 {
-    /// <summary>	A helper class for turning a list of strings into a Udp packet.  </summary>
+    /// <summary>	
+    /// A helper class for turning a list of strings into a Udp packet. 
+    /// </summary>
     public static class PacketBuilder
     {
-        //private static readonly byte[] Terminator = Encoding.UTF8.GetBytes("\n");
-
         /// <summary>
-        ///     Takes a list of metric strings, separating them with newlines into a byte packet that is a maximum of 512 bytes in size.
+        /// Takes a list of metric strings, separating them with newlines 
+        /// into a list of byte packet, each a maximum of 512 bytes in size.
         /// </summary>
         /// <param name="metrics">	The metrics to act on. </param>
         /// <returns>	A streamed list of byte arrays, where each array is a maximum of 512 bytes. </returns>
@@ -20,10 +21,10 @@ namespace JustEat.StatsD
         }
 
         /// <summary>
-        ///     Takes a list of metric strings, separating them with newlines into a byte packet of the maximum specified size.
+        /// Takes a list of metric strings, separating them with newlines into a byte packet of the maximum specified size.
         /// </summary>
-        /// <param name="metrics">   	The metrics to act on. </param>
-        /// <param name="packetSize">	Maximum size of each packet (512 bytes recommended for Udp). </param>
+        /// <param name="metrics">The metrics to act on.</param>
+        /// <param name="packetSize">Maximum size of each packet (512 bytes recommended for Udp). </param>
         /// <returns>	A streamed list of byte arrays, where each array is a maximum of 512 bytes. </returns>
         public static IEnumerable<byte[]> ToMaximumBytePackets(this IEnumerable<string> metrics, int packetSize)
         {
