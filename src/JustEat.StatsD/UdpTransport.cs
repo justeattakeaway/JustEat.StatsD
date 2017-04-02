@@ -8,14 +8,14 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    public class StatsDUdpTransport : IStatsDTransport
+    public class UdpTransport : IStatsDTransport
     {
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
 
         private readonly IPEndPointSource _endpointSource;
 
-        public StatsDUdpTransport(IPEndPointSource endPointSource)
+        public UdpTransport(IPEndPointSource endPointSource)
         {
             if (endPointSource == null)
             {
