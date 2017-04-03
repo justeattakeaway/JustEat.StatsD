@@ -43,7 +43,7 @@ namespace JustEat.StatsD
 
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
-            _transport = new StatsDUdpTransport(endpointSource);
+            _transport = new UdpTransport(endpointSource);
         }
 
         public void Increment(string bucket)

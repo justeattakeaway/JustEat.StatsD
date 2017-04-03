@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
@@ -9,14 +8,14 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    public class StatsDUdpTransport : IStatsDTransport
+    public class UdpTransport : IStatsDTransport
     {
         private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
             = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
 
         private readonly IPEndPointSource _endpointSource;
 
-        public StatsDUdpTransport(IPEndPointSource endPointSource)
+        public UdpTransport(IPEndPointSource endPointSource)
         {
             if (endPointSource == null)
             {
@@ -30,7 +29,6 @@ namespace JustEat.StatsD
             return Send(new[] {metric});
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This is one of the rare cases where eating exceptions is OK")]
         public bool Send(IEnumerable<string> metrics)
         {
             var data = EventArgsPool.Pop();

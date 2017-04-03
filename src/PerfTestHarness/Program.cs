@@ -14,7 +14,7 @@ namespace PerfTestHarness
         {
             var iterations = Enumerable.Range(1, 500000);
             var endpoint = EndpointParser.MakeEndPointSource("localhost", 3128, null);
-            var client = new StatsDUdpTransport(endpoint);
+            var client = new UdpTransport(endpoint);
             var formatter = new StatsDMessageFormatter(CultureInfo.InvariantCulture);
             var watch = new Stopwatch();
 
