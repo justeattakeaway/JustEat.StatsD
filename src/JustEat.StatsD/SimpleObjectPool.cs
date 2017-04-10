@@ -20,7 +20,7 @@ namespace JustEat.StatsD
         {
             if (constructor == null)
             {
-                throw new ArgumentNullException("constructor");
+                throw new ArgumentNullException(nameof(constructor));
             }
 
             _pool = new ConcurrentBag<T>();
@@ -57,7 +57,7 @@ namespace JustEat.StatsD
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item", "Items added to a SimpleObjectPool cannot be null");
+                throw new ArgumentNullException(nameof(item), "Items added to a SimpleObjectPool cannot be null");
             }
 
             _pool.Add(item);

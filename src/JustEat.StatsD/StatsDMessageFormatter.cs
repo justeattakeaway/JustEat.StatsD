@@ -23,12 +23,7 @@ namespace JustEat.StatsD
 
             public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
         {
-            if (cultureInfo == null)
-            {
-                throw new ArgumentNullException(nameof(cultureInfo));
-            }
-
-            _cultureInfo = cultureInfo;
+            _cultureInfo = cultureInfo ?? throw new ArgumentNullException(nameof(cultureInfo));
             _prefix = prefix;
 
             if (!string.IsNullOrWhiteSpace(_prefix))
@@ -37,10 +32,7 @@ namespace JustEat.StatsD
             }
         }
 
-        private static Random Random
-        {
-            get { return _random ?? (_random = new Random()); }
-        }
+        private static Random Random => _random ?? (_random = new Random());
 
         public string Timing(long milliseconds, string statBucket)
         {

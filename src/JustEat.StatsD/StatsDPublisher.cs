@@ -18,13 +18,9 @@ namespace JustEat.StatsD
                throw new ArgumentNullException(nameof(configuration));
             }
 
-            if (transport == null)
-            {
-               throw new ArgumentNullException(nameof(transport));
-            }
+            _transport = transport ?? throw new ArgumentNullException(nameof(transport));
 
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
-            _transport = transport;            
         }
 
         public StatsDPublisher(StatsDConfiguration configuration)
