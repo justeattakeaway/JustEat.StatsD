@@ -17,11 +17,7 @@ namespace JustEat.StatsD
 
         public UdpTransport(IPEndPointSource endPointSource)
         {
-            if (endPointSource == null)
-            {
-                throw new ArgumentNullException(nameof(endPointSource));
-            }
-            _endpointSource = endPointSource;
+            _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
         public bool Send(string metric)

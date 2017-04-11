@@ -14,17 +14,13 @@ namespace JustEat.StatsD
 
         public DisposableTimer(IStatsDPublisher publisher, string statName)
         {
-            if (publisher == null)
-            {
-                throw new ArgumentNullException("publisher");
-            }
+            _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
             if (string.IsNullOrEmpty(statName))
             {
-                throw new ArgumentNullException("statName");
+                throw new ArgumentNullException(nameof(statName));
             }
 
-            _publisher = publisher;
             StatName = statName;
             _stopwatch = Stopwatch.StartNew();
         }

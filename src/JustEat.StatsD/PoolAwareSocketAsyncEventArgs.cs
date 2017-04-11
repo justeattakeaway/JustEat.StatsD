@@ -14,12 +14,7 @@ namespace JustEat.StatsD
         /// <param name="parentPool">	The pool that owns this instance. </param>
         public PoolAwareSocketAsyncEventArgs(SimpleObjectPool<SocketAsyncEventArgs> parentPool)
         {
-            if (parentPool == null)
-            {
-                throw new ArgumentNullException("parentPool");
-            }
-
-            _parentPool = parentPool;
+            _parentPool = parentPool ?? throw new ArgumentNullException(nameof(parentPool));
         }
 
         /// <summary>	Represents a method that is called when an asynchronous operation completes. </summary>
