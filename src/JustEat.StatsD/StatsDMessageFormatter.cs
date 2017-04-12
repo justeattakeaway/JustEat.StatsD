@@ -5,9 +5,6 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
-#if NET45
-    [Serializable]
-#endif
     public class StatsDMessageFormatter
     {
         private const double DefaultSampleRate = 1.0;
