@@ -130,7 +130,7 @@ In all these cases the function or delegate is supplied with a `IDisposableTimer
 
 #### Configuring in AWS lambda
 
-We are using this library in AWS lambda functions written in C# .Net core. 
+We are using this library in AWS lambda functions written in C# using .NET Core. 
 Our experience is that the UDP transport does not work there, so a bit of custom setup is needed to use the IP transport instead, e.g.
 
 ```csharp
