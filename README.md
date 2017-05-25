@@ -128,6 +128,27 @@ var result = await stats.Time("someStat", async t => await GetSomethingAsync());
 
 In all these cases the function or delegate is supplied with a `IDisposableTimer t` so that the stat name can be changed if need be.
 
+#### Configuring in AWS lambda
+
+We are using this library in AWS lambda functions written in C# .Net core. 
+Our experience is that the UDP transport does not work there, so a bit of custom setup is needed to use the IP transport instead, e.g.
+
+```csharp
+public static IStatsDPublisher CreatePublisher(string statsdHost)
+{
+	var config = new StatsDConfiguration
+	{
+		Prefix = "my.app.prefix",
+		Host = statsdHost
+	};
+
+	var statsEndpoint = EndpointParser.MakeEndPointSource(statsdHost, 
+		StatsDConfiguration.DefaultPort, StatsDConfiguration.DefaultDnsLookupInterval);
+
+	return new StatsDPublisher(config, new IpTransport(statsEndpoint));
+}
+```
+
 ##### Credits
 
 The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
