@@ -35,7 +35,6 @@ namespace JustEat.StatsD
                     }
                 }
 
-                Trace.TraceInformation("statsd: {0}", string.Join(",", metrics));
                 return true;
             }
             //fire and forget, so just eat intermittent failures / exceptions
