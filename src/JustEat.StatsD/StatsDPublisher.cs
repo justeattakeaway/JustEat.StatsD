@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -10,6 +10,7 @@ namespace JustEat.StatsD
     {
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDTransport _transport;
+        private readonly Func<Exception, bool> _onError;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
@@ -21,6 +22,7 @@ namespace JustEat.StatsD
             _transport = transport ?? throw new ArgumentNullException(nameof(transport));
 
             _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
+            _onError = configuration.OnError;
         }
 
         public StatsDPublisher(StatsDConfiguration configuration)
@@ -40,71 +42,88 @@ namespace JustEat.StatsD
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
             _transport = new UdpTransport(endpointSource);
+            _onError = configuration.OnError;
         }
 
         public void Increment(string bucket)
         {
-            _transport.Send(_formatter.Increment(bucket));
+            Send(_formatter.Increment(bucket));
         }
 
         public void Increment(long value, string bucket)
         {
-            _transport.Send(_formatter.Increment(value, bucket));
+            Send(_formatter.Increment(value, bucket));
         }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            _transport.Send(_formatter.Increment(value, sampleRate, bucket));
+            Send(_formatter.Increment(value, sampleRate, bucket));
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
-            _transport.Send(_formatter.Increment(value, sampleRate, buckets));
+            Send(_formatter.Increment(value, sampleRate, buckets));
         }
 
         public void Decrement(string bucket)
         {
-            _transport.Send(_formatter.Decrement(bucket));
+            Send(_formatter.Decrement(bucket));
         }
 
         public void Decrement(long value, string bucket)
         {
-            _transport.Send(_formatter.Decrement(value, bucket));
+            Send(_formatter.Decrement(value, bucket));
         }
 
         public void Decrement(long value, double sampleRate, string bucket)
         {
-            _transport.Send(_formatter.Decrement(value, sampleRate, bucket));
+            Send(_formatter.Decrement(value, sampleRate, bucket));
         }
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
-            _transport.Send(_formatter.Decrement(value, sampleRate, buckets));
+            Send(_formatter.Decrement(value, sampleRate, buckets));
         }
 
         public void Gauge(long value, string bucket)
         {
-            _transport.Send(_formatter.Gauge(value, bucket));
+            Send(_formatter.Gauge(value, bucket));
         }
 
         public void Gauge(long value, string bucket, DateTime timestamp)
         {
-            _transport.Send(_formatter.Gauge(value, bucket, timestamp));
+            Send(_formatter.Gauge(value, bucket, timestamp));
         }
 
         public void Timing(TimeSpan duration, string bucket)
         {
-            _transport.Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), bucket));
+            Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), bucket));
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
-            _transport.Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
+            Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
         }
 
         public void MarkEvent(string name)
         {
-            _transport.Send(_formatter.Event(name));
+            Send(_formatter.Event(name));
+        }
+
+        private void Send(string metric)
+        {
+            try
+            {
+                _transport.Send(metric);
+            }
+            catch (Exception ex)
+            {
+                var handled = _onError(ex);
+                if (!handled)
+                {
+                    throw;
+                }
+            }
         }
     }
 }

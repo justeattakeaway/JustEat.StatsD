@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 
 namespace JustEat.StatsD
@@ -38,5 +38,12 @@ namespace JustEat.StatsD
         /// Default is InvariantCulture.
         /// </summary>
         public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        /// <summary>
+        /// Function to receive notificaion of any exceptions
+        /// Returns: True if it has handled the exception and no further action is needed, 
+        /// false if it should be re-thrown
+        /// </summary>
+        public Func<Exception, bool> OnError { get; set; } = e => true;
     }
 }
