@@ -40,10 +40,12 @@ namespace JustEat.StatsD
         public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
 
         /// <summary>
-        /// Function to receive notificaion of any exceptions
-        /// Returns: True if it has handled the exception and no further action is needed, 
-        /// false if it should be re-thrown
+        /// Function to receive notification of any exceptions
+        /// This function should return:
+        /// True if the exception was handled and no further action is needed
+        /// False if the exception should be thrown
+        /// The default behaviour is to ignore the error
         /// </summary>
-        public Func<Exception, bool> OnError { get; set; } = e => true;
+        public Func<Exception, bool> OnError { get; set; }
     }
 }

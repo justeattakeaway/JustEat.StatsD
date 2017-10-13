@@ -118,7 +118,7 @@ namespace JustEat.StatsD
             }
             catch (Exception ex)
             {
-                var handled = _onError(ex);
+                var handled = _onError?.Invoke(ex) ?? true;
                 if (!handled)
                 {
                     throw;
