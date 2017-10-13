@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
 
@@ -38,9 +37,8 @@ namespace JustEat.StatsD
                 return true;
             }
             //fire and forget, so just eat intermittent failures / exceptions
-            catch (Exception e)
+            catch (Exception)
             {
-                Trace.TraceError("General Exception when sending metric data to statsD :- Message : {0}, Inner Exception {1}, StackTrace {2}.", e.Message, e.InnerException, e.StackTrace);
             }
 
             return false;
