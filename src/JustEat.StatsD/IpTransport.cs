@@ -14,34 +14,23 @@ namespace JustEat.StatsD
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
-        public bool Send(string metric)
+        public void Send(string metric)
         {
-            return Send(new[] {metric});
+            Send(new[] {metric});
         }
 
-        public bool Send(IEnumerable<string> metrics)
+        public void Send(IEnumerable<string> metrics)
         {
-            try
-            {
-                var endpoint = _endpointSource.GetEndpoint();
-                var packets = metrics.ToMaximumBytePackets();
+            var endpoint = _endpointSource.GetEndpoint();
+            var packets = metrics.ToMaximumBytePackets();
 
-                using (var socket = MakeIpDatagramSocket())
+            using (var socket = MakeIpDatagramSocket())
+            {
+                foreach (var packet in packets)
                 {
-                    foreach (var packet in packets)
-                    {
-                        socket.SendTo(packet, endpoint);
-                    }
+                    socket.SendTo(packet, endpoint);
                 }
-
-                return true;
             }
-            //fire and forget, so just eat intermittent failures / exceptions
-            catch (Exception)
-            {
-            }
-
-            return false;
         }
 
         private static Socket MakeIpDatagramSocket()

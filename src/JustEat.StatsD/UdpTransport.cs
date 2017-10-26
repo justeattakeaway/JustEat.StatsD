@@ -18,57 +18,38 @@ namespace JustEat.StatsD
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
-        public bool Send(string metric)
+        public void Send(string metric)
         {
-            return Send(new[] {metric});
+            Send(new[] {metric});
         }
 
-        public bool Send(IEnumerable<string> metrics)
+        public void Send(IEnumerable<string> metrics)
         {
             var data = EventArgsPool.Pop();
             //firehose alert! -- keep it moving!
             if (data == null)
             {
-                return false;
+                return;
             }
 
-            try
+            data.RemoteEndPoint = _endpointSource.GetEndpoint();
+            data.SendPacketsElements = metrics.ToMaximumBytePackets()
+                .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
+                .ToArray();
+
+            using (var udpClient = GetUdpClient())
             {
-                data.RemoteEndPoint = _endpointSource.GetEndpoint();
-                data.SendPacketsElements = metrics.ToMaximumBytePackets()
-                    .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
-                    .ToArray();
-
-                using (var udpClient = GetUdpClient())
-                {
-                    udpClient.Client.Connect(data.RemoteEndPoint);
-                    udpClient.Client.SendPacketsAsync(data);
-                }
-
-                return true;
+                udpClient.Client.Connect(data.RemoteEndPoint);
+                udpClient.Client.SendPacketsAsync(data);
             }
-            //fire and forget, so just eat intermittent failures / exceptions
-            catch (Exception)
-            {
-            }
-
-            return false;
         }
 
         public UdpClient GetUdpClient()
         {
-            UdpClient client = null;
-            try
+            return new UdpClient
             {
-                client = new UdpClient
-                {
-                    Client = { SendBufferSize = 0 }
-                };
-            }
-            catch (SocketException)
-            {
-            }
-            return client;
+                Client = { SendBufferSize = 0 }
+            };
         }
     }
 }
