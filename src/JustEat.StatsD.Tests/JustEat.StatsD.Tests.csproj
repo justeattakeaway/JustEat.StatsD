@@ -2,7 +2,7 @@
   <Import Project="..\..\JustEat.StatsD.Common.props" />
   <PropertyGroup>
     <RootNamespace>JustEat.StatsD</RootNamespace>
-    <TargetFrameworks>netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
