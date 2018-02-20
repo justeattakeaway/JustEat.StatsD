@@ -1,7 +1,4 @@
 using System;
-#if !NET451
-using System.Runtime.InteropServices;
-#endif
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -44,7 +41,7 @@ namespace JustEat.StatsD
 
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
-            _transport = CreateTransport(endpointSource);
+            _transport = new UdpTransport(endpointSource);
             _onError = configuration.OnError;
         }
 
@@ -111,23 +108,6 @@ namespace JustEat.StatsD
         public void MarkEvent(string name)
         {
             Send(_formatter.Event(name));
-        }
-
-        private static IStatsDTransport CreateTransport(IPEndPointSource endpointSource)
-        {
-#if !NET451
-            // UdpClient is not supported on Linux/macOS
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return new UdpTransport(endpointSource);
-            }
-            else
-            {
-                return new IpTransport(endpointSource);
-            }
-#else
-            return new UdpTransport(endpointSource);
-#endif
         }
 
         private void Send(string metric)
