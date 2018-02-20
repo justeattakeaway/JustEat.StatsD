@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+#if !NET451
+using System.Runtime.InteropServices;
+#endif
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -46,10 +49,19 @@ namespace JustEat.StatsD
 
         public UdpClient GetUdpClient()
         {
-            return new UdpClient
+            var client = new UdpClient();
+
+#if !NET451
+            // See https://github.com/dotnet/corefx/pull/17853#issuecomment-291371266
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Client = { SendBufferSize = 0 }
-            };
+                client.Client.SendBufferSize = 0;
+            }
+#else
+            client.Client.SendBufferSize = 0;
+#endif
+
+            return client;
         }
     }
 }

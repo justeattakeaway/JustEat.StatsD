@@ -1,6 +1,10 @@
 sudo: required
 dist: trusty
 
+os:
+  - linux
+  - osx
+
 env:
   global:
     - CLI_VERSION=2.1.4
