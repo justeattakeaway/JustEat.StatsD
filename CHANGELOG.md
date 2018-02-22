@@ -1,3 +1,11 @@
+# 2.0.0
+
+See https://github.com/justeat/JustEat.StatsD/releases/tag/v2.0.0.
+
+# 1.1.0
+
+Add support for .NET Core.
+
 # 1.0.4
 ## Change
 
@@ -11,7 +19,7 @@ usage: given an existing instance of `IStatsDPublisher` called `stats` you can d
    {
       DoSomething();
    }
- 
+
    //  timing a lambda without a return value:
    stats.Time("someStat", () => DoSomething());
 
@@ -26,7 +34,7 @@ usage: given an existing instance of `IStatsDPublisher` called `stats` you can d
 
     // and correctly times async lambdas using the usual syntax:
     var result = await stats.Time("someStat", async () => await GetSomethingAsync());
-    
+
 ```
 The idea of "disposable timers" comes from [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
 
