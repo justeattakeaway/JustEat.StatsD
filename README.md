@@ -66,14 +66,14 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 
 ## StatsDConfiguration fields
 
-| Name              | Type                  | Default                      | Required | Comments                                                                                                |
-|-------------------|-----------------------|------------------------------|----------|---------------------------------------------------------------------------------------------------------|
-| Host              | string                |                              | Yes      | The host name or IP address of the statsD server.                                                       |
-| Port              | int                   | 8125                         | No       |                                                                                                         |
-| DnsLookupInterval | TimeSpan?             | 5 minutes                    | No       | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
-| Prefix            | string                | string.Empty                 | No       | Prepend a prefix to all stats.                                                                          |
-| Culture           | Culture               | CultureInfo.InvariantCulture | No       | Culture for formatting stats strings.                                                                   |
-| OnError           | Func<Exception, bool> | null                         | No       | Function to receive notification of any exceptions.                                                     |
+| Name              | Type                  | Default                      | Comments                                                                                                |
+|-------------------|-----------------------|------------------------------|---------------------------------------------------------------------------------------------------------|
+| Host              | string                |                              | The host name or IP address of the statsD server. There is no default, this must be set.                |
+| Port              | int                   | 8125                         | The statsD port.                                                                                        |
+| DnsLookupInterval | TimeSpan?             | 5 minutes                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
+| Prefix            | string                | string.Empty                 | Prepend a prefix to all stats.                                                                          |
+| Culture           | Culture               | CultureInfo.InvariantCulture | Culture for formatting stats strings.                                                                   |
+| OnError           | Func<Exception, bool> | null                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
  *  *True* if the exception was handled and no further action is needed
