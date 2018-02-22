@@ -26,9 +26,9 @@ The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The 
 
 ## Setting up StatsD
 
-### Simple Example of setting up a StatsDPublisher
+### Simple example of setting up a StatsDPublisher
 
-An example of a very simple statsd publisher configuration, using the default values for most things.
+An example of a very simple StatsD publisher configuration, using the default values for most things.
 
 ```csharp
 
@@ -38,7 +38,7 @@ IStatsDPublisher statsDPublisher = new StatsDPublisher(statsDConfig);
 
 ### IoC example
 
-An example of IoC in NInject for statsd publisher with values for all options, read from configuration:
+An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
 ```csharp
 
@@ -68,8 +68,8 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 
 | Name              | Type                  | Default                      | Comments                                                                                                |
 |-------------------|-----------------------|------------------------------|---------------------------------------------------------------------------------------------------------|
-| Host              | `string`                |                                | The host name or IP address of the statsD server. There is no default, this must be set.                |
-| Port              | `int`                   | `8125`                         | The statsD port.                                                                                        |
+| Host              | `string`                |                                | The host name or IP address of the StatsD server. There is no default, this must be set.                |
+| Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
 | Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
 | Culture           | `CultureInfo`           | `CultureInfo.InvariantCulture` | Culture for formatting stats strings.                                                                   |
