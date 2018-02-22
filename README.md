@@ -76,8 +76,8 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
- *  *True* if the exception was handled and no further action is needed
- *  *False* if the exception should be thrown
+ *  **True** if the exception was handled and no further action is needed
+ *  **False** if the exception should be thrown
 
 The default behaviour is to ignore the error.
 
