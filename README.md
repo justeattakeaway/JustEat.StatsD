@@ -24,9 +24,11 @@ We use this within our components to publish [statsd](http://github.com/etsy/sta
 
 The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the statsd server host name or IP address. Optionally, you can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
-#### Example of setting up a StatsDPublisher
+## Setting up StatsD
 
-An example of a very simple statsd publisher configuration, using the default values for most things.
+### Simple example of setting up a StatsDPublisher
+
+An example of a very simple StatsD publisher configuration, using the default values for most things.
 
 ```csharp
 
@@ -34,7 +36,9 @@ var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.co
 IStatsDPublisher statsDPublisher = new StatsDPublisher(statsDConfig);
 ```
 
-An example of IoC in NInject for statsd publisher with values for all options, read from configuration:
+### IoC example
+
+An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
 ```csharp
 
@@ -44,13 +48,14 @@ int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
 string statsdPrefix =  ConfigurationManager.AppSettings["statsd.prefix"];
 
 // assemble a StatsDConfiguration object
-// since the configuration doesn't change for the lifetime of the app, 
+// since the configuration doesn't change for the lifetime of the app,
 // it can be a preconfigured singleton instance
 var statsDConfig = new StatsDConfiguration
 {
   Host = statsdHostName,
   Port = statsdPort,
   Prefix = statsdPrefix,
+  OnError = ex => LogError(ex),
   Culture = CultureInfo.InvariantCulture
 };
 
@@ -58,6 +63,24 @@ var statsDConfig = new StatsDConfiguration
 Bind<StatsDConfiguration>().ToConstant(statsDConfig>);
 Bind<IStatsDPublisher>().To<StatsDPublisher>();
 ```
+
+## StatsDConfiguration fields
+
+| Name              | Type                  | Default                      | Comments                                                                                                |
+|-------------------|-----------------------|------------------------------|---------------------------------------------------------------------------------------------------------|
+| Host              | `string`                |                                | The host name or IP address of the StatsD server. There is no default, this must be set.                |
+| Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
+| DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
+| Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
+| Culture           | `CultureInfo`           | `CultureInfo.InvariantCulture` | Culture for formatting stats strings.                                                                   |
+| OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
+
+`OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
+ *  **True** if the exception was handled and no further action is needed
+ *  **False** if the exception should be thrown
+
+The default behaviour is to ignore the error.
+
 
 #### Example of using the interface
 
@@ -92,7 +115,7 @@ using (stats.StartTimer("someStat"))
 }
 ```
 
-The `StartTimer` returns an `IDisposableTimer` that wraps a stopwatch and implements `IDisposable`. 
+The `StartTimer` returns an `IDisposableTimer` that wraps a stopwatch and implements `IDisposable`.
 The stopwatch is automatically stopped and the metric sent when it falls out of scope and is disposed on the closing `}` of the `using` statement.
 
 ##### Changing the name of simple timers
