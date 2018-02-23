@@ -161,4 +161,4 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ### How to release
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md#releases).
