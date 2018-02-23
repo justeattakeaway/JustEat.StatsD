@@ -157,7 +157,8 @@ The idea of "disposable timers" for using statements is an old one, see for exam
 
 ### How to contribute
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ### How to release
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
