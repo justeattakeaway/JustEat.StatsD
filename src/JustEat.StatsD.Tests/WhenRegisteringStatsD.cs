@@ -1,5 +1,7 @@
 #if !NET451
 using System;
+using System.Collections.Generic;
+using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Shouldly;
@@ -32,6 +34,9 @@ namespace JustEat.StatsD
             configuration.ShouldNotBeNull();
             configuration.ShouldBe(config);
 
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
             transport.ShouldBeOfType<UdpTransport>();
@@ -59,6 +64,9 @@ namespace JustEat.StatsD
             configuration.ShouldNotBeNull();
             configuration.Host.ShouldBe(host);
             configuration.Prefix.ShouldBeEmpty();
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
@@ -89,6 +97,9 @@ namespace JustEat.StatsD
             configuration.Host.ShouldBe(host);
             configuration.Prefix.ShouldBe(prefix);
 
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
             transport.ShouldBeOfType<UdpTransport>();
@@ -118,6 +129,9 @@ namespace JustEat.StatsD
             var configuration = provider.GetRequiredService<StatsDConfiguration>();
             configuration.ShouldBe(config);
 
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
             transport.ShouldBeOfType<UdpTransport>();
@@ -143,6 +157,9 @@ namespace JustEat.StatsD
             configuration.ShouldNotBeNull();
             configuration.Host.ShouldBe("localhost");
             configuration.Prefix.ShouldBeEmpty();
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
@@ -182,6 +199,9 @@ namespace JustEat.StatsD
             configuration.ShouldNotBeNull();
             configuration.Host.ShouldBe(options.StatsDHost);
             configuration.Prefix.ShouldBeEmpty();
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
@@ -225,6 +245,9 @@ namespace JustEat.StatsD
             configuration.Host.ShouldBe(options.StatsDHost);
             configuration.Prefix.ShouldBeEmpty();
 
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
             transport.ShouldBeOfType<UdpTransport>();
@@ -239,6 +262,7 @@ namespace JustEat.StatsD
         {
             // Arrange
             var existingConfig = new StatsDConfiguration();
+            var existingSource = Mock.Of<IPEndPointSource>();
             var existingTransport = Mock.Of<IStatsDTransport>();
             var existingPublisher = Mock.Of<IStatsDPublisher>();
 
@@ -246,6 +270,7 @@ namespace JustEat.StatsD
                 (services) =>
                 {
                     services.AddSingleton(existingConfig);
+                    services.AddSingleton(existingSource);
                     services.AddSingleton(existingTransport);
                     services.AddSingleton(existingPublisher);
 
@@ -256,6 +281,9 @@ namespace JustEat.StatsD
             // Assert
             var configuration = provider.GetRequiredService<StatsDConfiguration>();
             configuration.ShouldBe(existingConfig);
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldBe(existingSource);
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldBe(existingTransport);
@@ -300,6 +328,39 @@ namespace JustEat.StatsD
             Should.Throw<ArgumentNullException>(() => services.AddStatsD(host)).ParamName.ShouldBe("services");
         }
 
+        [Fact]
+        public static void CanRegisterServicesWithCustomTransport()
+        {
+            // Arrange
+            string host = "localhost";
+
+            var provider = Configure(
+                (services) =>
+                {
+                    services.AddSingleton<IStatsDTransport, MyTransport>();
+
+                    // Act
+                    services.AddStatsD(host);
+                });
+
+            // Assert
+            var configuration = provider.GetRequiredService<StatsDConfiguration>();
+            configuration.ShouldNotBeNull();
+            configuration.Host.ShouldBe(host);
+            configuration.Prefix.ShouldBeEmpty();
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
+            var transport = provider.GetRequiredService<IStatsDTransport>();
+            transport.ShouldNotBeNull();
+            transport.ShouldBeOfType<MyTransport>();
+
+            var publisher = provider.GetRequiredService<IStatsDPublisher>();
+            publisher.ShouldNotBeNull();
+            publisher.ShouldBeOfType<StatsDPublisher>();
+        }
+
         private static IServiceProvider Configure(Action<IServiceCollection> registration)
         {
             var services = new ServiceCollection();
@@ -312,6 +373,21 @@ namespace JustEat.StatsD
         private sealed class MyOptions
         {
             public string StatsDHost { get; set; }
+        }
+
+        private sealed class MyTransport : IStatsDTransport
+        {
+            public MyTransport(IPEndPointSource endpointSource)
+            {
+            }
+
+            public void Send(string metric)
+            {
+            }
+
+            public void Send(IEnumerable<string> metrics)
+            {
+            }
         }
     }
 }

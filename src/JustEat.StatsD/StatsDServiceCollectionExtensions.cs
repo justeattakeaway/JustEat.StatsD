@@ -186,10 +186,21 @@ namespace JustEat.StatsD
 
         private static IServiceCollection AddStatsDCore(this IServiceCollection services)
         {
+            services.TryAddSingleton(ResolveEndPointSource);
             services.TryAddSingleton(ResolveStatsDTransport);
             services.TryAddSingleton(ResolveStatsDPublisher);
 
             return services;
+        }
+
+        private static IPEndPointSource ResolveEndPointSource(IServiceProvider provider)
+        {
+            var config = provider.GetRequiredService<StatsDConfiguration>();
+
+            return EndpointParser.MakeEndPointSource(
+                config.Host,
+                config.Port,
+                config.DnsLookupInterval);
         }
 
         private static IStatsDPublisher ResolveStatsDPublisher(IServiceProvider provider)
@@ -202,13 +213,7 @@ namespace JustEat.StatsD
 
         private static IStatsDTransport ResolveStatsDTransport(IServiceProvider provider)
         {
-            var config = provider.GetRequiredService<StatsDConfiguration>();
-
-            var endpointSource = EndpointParser.MakeEndPointSource(
-                config.Host,
-                config.Port,
-                config.DnsLookupInterval);
-
+            var endpointSource = provider.GetRequiredService<IPEndPointSource>();
             return new UdpTransport(endpointSource);
         }
     }
