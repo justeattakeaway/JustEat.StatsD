@@ -59,99 +59,13 @@ namespace JustEat.StatsD
             }
 
             return services.AddStatsD(
-                (configuration) =>
+                (_) =>
                 {
-                    configuration.Host = host;
-                    configuration.Prefix = prefix ?? string.Empty;
-                });
-        }
-
-        /// <summary>
-        /// Adds statsD services to the specified <see cref="IServiceCollection"/> with the specified configuration.
-        /// </summary>
-        /// <param name="services">The service collection to register statsD with.</param>
-        /// <param name="configuration">The statsD configuration to use.</param>
-        /// <returns>
-        /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> or <paramref name="configuration"/> is <see langword="null"/>.
-        /// </exception>
-        public static IServiceCollection AddStatsD(this IServiceCollection services, StatsDConfiguration configuration)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
-            services.AddStatsDCore();
-            services.AddSingleton(configuration);
-
-            return services;
-        }
-
-        /// <summary>
-        /// Adds StatsD services to the specified <see cref="IServiceCollection"/> with the specified configuration delegate.
-        /// </summary>
-        /// <param name="services">The service collection to register StatsD with.</param>
-        /// <param name="configure">A delegate to a method to use to configure the StatsD configuration.</param>
-        /// <returns>
-        /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.
-        /// </exception>
-        public static IServiceCollection AddStatsD(this IServiceCollection services, Action<StatsDConfiguration> configure)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (configure == null)
-            {
-                throw new ArgumentNullException(nameof(configure));
-            }
-
-            return services.AddStatsD((_, configuration) => configure(configuration));
-        }
-
-        /// <summary>
-        /// Adds statsD services to the specified <see cref="IServiceCollection"/> with the specified configuration delegate.
-        /// </summary>
-        /// <param name="services">The service collection to register statsD with.</param>
-        /// <param name="configure">A delegate to a method to use to configure the statsD configuration.</param>
-        /// <returns>
-        /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="services"/> or <paramref name="configure"/> is <see langword="null"/>.
-        /// </exception>
-        public static IServiceCollection AddStatsD(this IServiceCollection services, Action<IServiceProvider, StatsDConfiguration> configure)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (configure == null)
-            {
-                throw new ArgumentNullException(nameof(configure));
-            }
-
-            return services.AddStatsD(
-                (provider) =>
-                {
-                    var configuration = new StatsDConfiguration();
-
-                    configure(provider, configuration);
-
-                    return configuration;
+                    return new StatsDConfiguration()
+                    {
+                        Host = host,
+                        Prefix = prefix ?? string.Empty,
+                    };
                 });
         }
 
