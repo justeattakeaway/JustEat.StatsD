@@ -1,3 +1,7 @@
+# 2.1.0
+
+See https://github.com/justeat/JustEat.StatsD/releases/tag/v2.1.0.
+
 # 2.0.0
 
 See https://github.com/justeat/JustEat.StatsD/releases/tag/v2.0.0.
