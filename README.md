@@ -66,7 +66,6 @@ services.AddStatsD(
     (provider) =>
     {
         var options = provider.GetRequiredService<MyOptions>().StatsD;
-        var logger = provider.GetRequiredService<ILogger<StatsDConfiguration>>();
 
         return new StatsDConfiguration()
         {
