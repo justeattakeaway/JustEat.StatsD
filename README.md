@@ -32,8 +32,10 @@ An example of a very simple StatsD publisher configuration, using the default va
 
 #### .NET Core
 
+Using `IServiceCollection` and the built-in DI container:
+
 ```csharp
-// Service registration
+// Registration
 services.AddStatsD("metrics_server.mycompany.com");
 services.AddSingleton<MyService>();
 
@@ -48,7 +50,9 @@ public class MyService
 
 ```
 
-#### .NET 4.5.1
+#### Simplest example
+
+No service registration or IoC. Works for both .NET 4.5.1 and .NET Core.
 
 ```csharp
 var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
