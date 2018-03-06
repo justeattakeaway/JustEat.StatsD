@@ -30,13 +30,59 @@ The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The 
 
 An example of a very simple StatsD publisher configuration, using the default values for most things.
 
-```csharp
+#### .NET Core
 
+Using `IServiceCollection` and the built-in DI container:
+
+```csharp
+// Registration
+services.AddStatsD("metrics_server.mycompany.com");
+services.AddSingleton<MyService>();
+
+// Consumption
+public class MyService
+{
+    public MyService(IStatsDPublisher statsPublisher)
+    {
+        // Use the publisher
+    }
+}
+
+```
+
+#### Simplest example
+
+No service registration or IoC. Works for both .NET 4.5.1 and .NET Core.
+
+```csharp
 var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
 IStatsDPublisher statsDPublisher = new StatsDPublisher(statsDConfig);
 ```
 
-### IoC example
+### IoC Examples
+
+#### .NET Core
+
+An example of registering StatsD dependencies using `IServiceCollection`:
+
+```csharp
+services.AddStatsD(
+    (provider) =>
+    {
+        var options = provider.GetRequiredService<MyOptions>().StatsD;
+
+        return new StatsDConfiguration()
+        {
+            Host = options.HostName,
+            Port = options.Port,
+            Prefix = options.Prefix,
+            OnError = ex => LogError(ex),
+            Culture = CultureInfo.InvariantCulture,
+        };
+    });
+```
+
+#### .NET 4.5.1
 
 An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
@@ -66,8 +112,8 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 
 ## StatsDConfiguration fields
 
-| Name              | Type                  | Default                      | Comments                                                                                                |
-|-------------------|-----------------------|------------------------------|---------------------------------------------------------------------------------------------------------|
+| Name              | Type                    | Default                        | Comments                                                                                                |
+|-------------------|-------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------|
 | Host              | `string`                |                                | The host name or IP address of the StatsD server. There is no default, this must be set.                |
 | Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
