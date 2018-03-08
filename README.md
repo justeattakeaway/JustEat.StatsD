@@ -107,7 +107,7 @@ services.AddStatsD(
             Culture = CultureInfo.InvariantCulture,
         };
     });
-`
+```
 
 #### .NET 4.5.1
 
