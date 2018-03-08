@@ -249,6 +249,38 @@ namespace JustEat.StatsD
             publisher.ShouldBeOfType<StatsDPublisher>();
         }
 
+        [Fact]
+        public static void CanRegisterServicesWithIPTransport()
+        {
+            // Arrange
+            string host = "127.0.0.1";
+
+            var provider = Configure(
+                (services) =>
+                {
+                    // Act
+                    services.AddSingleton<IStatsDTransport, IpTransport>();
+                    services.AddStatsD(host);
+                });
+
+            // Assert
+            var configuration = provider.GetRequiredService<StatsDConfiguration>();
+            configuration.ShouldNotBeNull();
+            configuration.Host.ShouldBe(host);
+            configuration.Prefix.ShouldBeEmpty();
+
+            var source = provider.GetRequiredService<IPEndPointSource>();
+            source.ShouldNotBeNull();
+
+            var transport = provider.GetRequiredService<IStatsDTransport>();
+            transport.ShouldNotBeNull();
+            transport.ShouldBeOfType<IpTransport>();
+
+            var publisher = provider.GetRequiredService<IStatsDPublisher>();
+            publisher.ShouldNotBeNull();
+            publisher.ShouldBeOfType<StatsDPublisher>();
+        }
+
         private static IServiceProvider Configure(Action<IServiceCollection> registration)
         {
             var services = new ServiceCollection();

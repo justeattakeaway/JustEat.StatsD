@@ -82,6 +82,33 @@ services.AddStatsD(
     });
 ```
 
+#### .NET Core (AWS Lambda functions)
+
+An example of registering StatsD dependencies using `IServiceCollection` when using an AWS Lambda function:
+
+```csharp
+// Simple
+services.AddSingleton<IStatsDTransport, IpTransport>();
+services.AddStatsD(Environment.GetEnvironmentVariable("MY_STATSD_ENDPOINT"));
+
+// Advanced
+services.AddSingleton<IStatsDTransport, IpTransport>();
+services.AddStatsD(
+    (provider) =>
+    {
+        var options = provider.GetRequiredService<MyOptions>().StatsD;
+
+        return new StatsDConfiguration()
+        {
+            Host = options.HostName,
+            Port = options.Port,
+            Prefix = options.Prefix,
+            OnError = ex => LogError(ex),
+            Culture = CultureInfo.InvariantCulture,
+        };
+    });
+`
+
 #### .NET 4.5.1
 
 An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
