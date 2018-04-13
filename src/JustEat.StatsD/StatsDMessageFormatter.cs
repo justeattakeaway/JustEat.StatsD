@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -99,6 +99,17 @@ namespace JustEat.StatsD
         public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
         {
             return Format(sampleRate, statBuckets.Select(key => string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, key, magnitude)).ToArray());
+        }
+
+        public string Gauge(double magnitude, string statBucket)
+        {
+            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
+            return Format(stat, DefaultSampleRate);
+        }
+        public string Gauge(double magnitude, string statBucket, DateTime timestamp)
+        {
+            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
+            return Format(stat, DefaultSampleRate);
         }
 
         public string Gauge(long magnitude, string statBucket)
