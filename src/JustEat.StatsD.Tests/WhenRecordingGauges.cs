@@ -98,7 +98,7 @@ namespace JustEat.StatsD
             double magnitude = new Random().NextDouble() * (100000000 - 0.1) + 0.1;
 
             string statBucket = "gauge-bucket";
-            string incompatibleValue = magnitude.ToString("0.00", culture);
+            string incompatibleValue = magnitude.ToString("0.00000000", culture);
 
             var target = new StatsDMessageFormatter(culture);
 
