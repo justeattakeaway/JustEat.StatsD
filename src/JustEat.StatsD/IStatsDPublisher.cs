@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace JustEat.StatsD
 {
@@ -12,6 +12,8 @@ namespace JustEat.StatsD
         void Decrement(long value, string bucket);
         void Decrement(long value, double sampleRate, string bucket);
         void Decrement(long value, double sampleRate, params string[] buckets);
+        void Gauge(double value, string bucket);
+        void Gauge(double value, string bucket, DateTime timestamp);
         void Gauge(long value, string bucket);
         void Gauge(long value, string bucket, DateTime timestamp);
         void Timing(TimeSpan duration, string bucket);

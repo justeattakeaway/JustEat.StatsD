@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace JustEat.StatsD.Extensions
@@ -67,6 +67,18 @@ namespace JustEat.StatsD.Extensions
         {
             CallCount++;
             BucketNames.AddRange(buckets);
+        }
+
+        public void Gauge(double value, string bucket)
+        {
+            CallCount++;
+            BucketNames.Add(bucket);
+        }
+
+        public void Gauge(double value, string bucket, DateTime timestamp)
+        {
+            CallCount++;
+            BucketNames.Add(bucket);
         }
 
         public void Gauge(long value, string bucket)

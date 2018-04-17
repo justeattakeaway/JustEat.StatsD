@@ -84,7 +84,14 @@ namespace JustEat.StatsD
         {
             Send(_formatter.Decrement(value, sampleRate, buckets));
         }
-
+        public void Gauge(double  value, string bucket)
+        {
+            Send(_formatter.Gauge(value, bucket));
+        }
+        public void Gauge(double value, string bucket, DateTime timestamp)
+        {
+            Send(_formatter.Gauge(value, bucket, timestamp));
+        }
         public void Gauge(long value, string bucket)
         {
             Send(_formatter.Gauge(value, bucket));
