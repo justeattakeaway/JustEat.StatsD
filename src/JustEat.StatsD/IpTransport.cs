@@ -19,14 +19,14 @@ namespace JustEat.StatsD
             var endpoint = _endpointSource.GetEndpoint();
             var bytes = Encoding.UTF8.GetBytes(metric);
 
-            using (var socket = MakeIpDatagramSocket())
+            using (var socket = CreateSocket())
             {
                 socket.Connect(endpoint);
                 socket.Send(bytes);
             }
         }
 
-        private static Socket MakeIpDatagramSocket()
+        private static Socket CreateSocket()
         {
             return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
         }

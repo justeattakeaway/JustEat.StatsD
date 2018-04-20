@@ -22,14 +22,14 @@ namespace JustEat.StatsD
             var bytes = Encoding.UTF8.GetBytes(metric);
             var endpoint = _endpointSource.GetEndpoint();
 
-            using (var socket = GetUdpClient())
+            using (var socket = CreateSocket())
             {
                 socket.Connect(endpoint);
                 socket.Send(bytes);
             }
         }
 
-        public Socket GetUdpClient()
+        public Socket CreateSocket()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
