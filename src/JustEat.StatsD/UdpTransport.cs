@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 #if !NET451
 using System.Runtime.InteropServices;
 #endif
@@ -11,9 +10,6 @@ namespace JustEat.StatsD
 {
     public class UdpTransport : IStatsDTransport
     {
-        private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
-            = new SimpleObjectPool<SocketAsyncEventArgs>(30, pool => new PoolAwareSocketAsyncEventArgs(pool));
-
         private readonly IPEndPointSource _endpointSource;
 
         public UdpTransport(IPEndPointSource endPointSource)
@@ -23,45 +19,31 @@ namespace JustEat.StatsD
 
         public void Send(string metric)
         {
-            Send(new[] {metric});
-        }
+            var bytes = Encoding.UTF8.GetBytes(metric);
+            var endpoint = _endpointSource.GetEndpoint();
 
-        public void Send(IEnumerable<string> metrics)
-        {
-            var data = EventArgsPool.Pop();
-            //firehose alert! -- keep it moving!
-            if (data == null)
+            using (var socket = GetUdpClient())
             {
-                return;
-            }
-
-            data.RemoteEndPoint = _endpointSource.GetEndpoint();
-            data.SendPacketsElements = metrics.ToMaximumBytePackets()
-                .Select(bytes => new SendPacketsElement(bytes, 0, bytes.Length, true))
-                .ToArray();
-
-            using (var udpClient = GetUdpClient())
-            {
-                udpClient.Client.Connect(data.RemoteEndPoint);
-                udpClient.Client.SendPacketsAsync(data);
+                socket.Connect(endpoint);
+                socket.Send(bytes);
             }
         }
 
-        public UdpClient GetUdpClient()
+        public Socket GetUdpClient()
         {
-            var client = new UdpClient();
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 #if !NET451
             // See https://github.com/dotnet/corefx/pull/17853#issuecomment-291371266
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                client.Client.SendBufferSize = 0;
+                socket.SendBufferSize = 0;
             }
 #else
-            client.Client.SendBufferSize = 0;
+            socket.SendBufferSize = 0;
 #endif
 
-            return client;
+            return socket;
         }
     }
 }
