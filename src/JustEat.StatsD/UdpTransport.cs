@@ -29,7 +29,7 @@ namespace JustEat.StatsD
             }
         }
 
-        public Socket CreateSocket()
+        private static Socket CreateSocket()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
