@@ -24,8 +24,7 @@ namespace JustEat.StatsD
 
             using (var socket = CreateSocket())
             {
-                socket.Connect(endpoint);
-                socket.Send(bytes);
+                socket.SendTo(bytes, endpoint);
             }
         }
 
