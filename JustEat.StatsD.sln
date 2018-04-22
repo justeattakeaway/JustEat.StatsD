@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerfTestHarness", "src\Perf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.StatsD.Tests", "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj", "{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "src\Benchmark\Benchmark.csproj", "{537F16FC-D50D-4260-8B16-3C3F47A4DC4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D9AA1A3-2619-4800-AAEC-84AE4DA15455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{537F16FC-D50D-4260-8B16-3C3F47A4DC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{537F16FC-D50D-4260-8B16-3C3F47A4DC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{537F16FC-D50D-4260-8B16-3C3F47A4DC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{537F16FC-D50D-4260-8B16-3C3F47A4DC4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
