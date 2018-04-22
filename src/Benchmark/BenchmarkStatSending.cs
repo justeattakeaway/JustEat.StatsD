@@ -11,6 +11,8 @@ namespace Benchmark
         private IStatsDPublisher _udpSender;
         private IStatsDPublisher _ipSender;
 
+        private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
+
         [GlobalSetup]
         public void Setup()
         {
@@ -29,7 +31,7 @@ namespace Benchmark
             var ipTransport = new IpTransport(endpointSource);
 
             _udpSender = new StatsDPublisher(config, udpTransport);
-            _udpSender.Increment("startup.udp");
+            _udpSender.Increment("startup.ud");
 
             _ipSender = new StatsDPublisher(config, ipTransport);
             _udpSender.Increment("startup.ip");
@@ -38,15 +40,15 @@ namespace Benchmark
         [Benchmark]
         public void RunUdp()
         {
-            _udpSender.Increment("increment.udp");
-            _udpSender.Timing(TimeSpan.FromMinutes(1), "timer.udp");
+            _udpSender.Increment("increment.ud");
+            _udpSender.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]
         public void RunIp()
         {
             _ipSender.Increment("increment.ip");
-            _ipSender.Timing(TimeSpan.FromMinutes(1), "timer.ip");
+            _ipSender.Timing(Timed, "timer.ip");
         }
     }
 }

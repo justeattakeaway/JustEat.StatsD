@@ -7,7 +7,7 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<BenchmarkStatSending>();
+            BenchmarkRunner.Run<BenchmarkStatSending>();
         }
     }
 }
