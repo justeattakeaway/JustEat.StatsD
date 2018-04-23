@@ -1,11 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\JustEat.StatsD.Common.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <DebugType>portable</DebugType>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.14" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
   </ItemGroup>
+
 </Project>
