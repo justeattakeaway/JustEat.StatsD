@@ -163,7 +163,7 @@ namespace JustEat.StatsD
             {
                 foreach (var stat in stats)
                 {
-                    formatted.AppendFormat(_cultureInfo, "{0}", stat);
+                    formatted.Append(stat);
                 }
             }
 
