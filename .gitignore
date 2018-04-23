@@ -18,3 +18,4 @@ project.lock.json
 TestResult.xml
 !3rdparty/*/bin
 lint.db
+src/Benchmark/BenchmarkDotNet.Artifacts/*
