@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Text;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -16,24 +16,16 @@ namespace JustEat.StatsD
 
         public void Send(string metric)
         {
-            Send(new[] {metric});
-        }
-
-        public void Send(IEnumerable<string> metrics)
-        {
             var endpoint = _endpointSource.GetEndpoint();
-            var packets = metrics.ToMaximumBytePackets();
+            var bytes = Encoding.UTF8.GetBytes(metric);
 
-            using (var socket = MakeIpDatagramSocket())
+            using (var socket = CreateSocket())
             {
-                foreach (var packet in packets)
-                {
-                    socket.SendTo(packet, endpoint);
-                }
+                socket.SendTo(bytes, endpoint);
             }
         }
 
-        private static Socket MakeIpDatagramSocket()
+        private static Socket CreateSocket()
         {
             return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
         }
