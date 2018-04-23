@@ -140,7 +140,7 @@ namespace JustEat.StatsD
             }
             else
             {
-                return string.Format(_cultureInfo, "{0}", stat);
+                return stat;
             }
 
             return string.Empty;
