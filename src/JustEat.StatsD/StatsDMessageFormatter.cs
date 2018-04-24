@@ -88,7 +88,7 @@ namespace JustEat.StatsD
         public string Increment(long magnitude, double sampleRate, string statBucket)
         {
             var stat = string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
-            return Format(stat, sampleRate);
+            return Format(sampleRate, stat);
         }
 
         public string Increment(long magnitude, params string[] statBuckets)
@@ -104,24 +104,24 @@ namespace JustEat.StatsD
         public string Gauge(double magnitude, string statBucket)
         {
             var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
-            return Format(stat, DefaultSampleRate);
+            return Format(DefaultSampleRate, stat);
         }
         public string Gauge(double magnitude, string statBucket, DateTime timestamp)
         {
             var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
-            return Format(stat, DefaultSampleRate);
+            return Format(DefaultSampleRate, stat);
         }
 
         public string Gauge(long magnitude, string statBucket)
         {
             var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
-            return Format(stat, DefaultSampleRate);
+            return Format(DefaultSampleRate, stat);
         }
 
         public string Gauge(long magnitude, string statBucket, DateTime timestamp)
         {
             var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
-            return Format(stat, DefaultSampleRate);
+            return Format(DefaultSampleRate, stat);
         }
 
         public string Event(string name)
@@ -129,9 +129,19 @@ namespace JustEat.StatsD
             return Increment(name);
         }
 
-        private string Format(String stat, double sampleRate)
+        private string Format(double sampleRate, string stat)
         {
-            return Format(sampleRate, stat);
+            if (sampleRate >= DefaultSampleRate)
+            {
+                return stat;
+            }
+
+            if (Random.NextDouble() <= sampleRate)
+            {
+                return string.Format(_cultureInfo, "{0}|@{1:f}", stat, sampleRate);
+            }
+
+            return string.Empty;
         }
 
         private string Format(double sampleRate, params string[] stats)
@@ -151,7 +161,7 @@ namespace JustEat.StatsD
             {
                 foreach (var stat in stats)
                 {
-                    formatted.AppendFormat(_cultureInfo, "{0}", stat);
+                    formatted.Append(stat);
                 }
             }
 
