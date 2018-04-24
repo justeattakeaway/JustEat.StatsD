@@ -131,7 +131,10 @@ namespace JustEat.StatsD
 
         private string Format(double sampleRate, string stat)
         {
-            if (sampleRate >= DefaultSampleRate) return stat;
+            if (sampleRate >= DefaultSampleRate)
+            {
+                return stat;
+            }
 
             if (Random.NextDouble() <= sampleRate)
             {
