@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Shouldly;
 using Xunit;
 
@@ -39,19 +39,6 @@ namespace JustEat.StatsD
 
             Should.Throw<ArgumentNullException>(
              () => new StatsDPublisher(noConfig));
-        }
-
-        [Fact]
-        public void ConfigurationHasNoCulture()
-        {
-            var badConfig = new StatsDConfiguration
-            {
-                Host = "someserver.somewhere.com",
-                Culture = null
-            };
-
-            Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(badConfig));
         }
 
         [Fact]

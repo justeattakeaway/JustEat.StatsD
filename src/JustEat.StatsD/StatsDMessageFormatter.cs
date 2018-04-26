@@ -12,15 +12,14 @@ namespace JustEat.StatsD
         [ThreadStatic]
         private static Random _random;
 
-        private readonly CultureInfo _cultureInfo;
+        private readonly CultureInfo _cultureInfo = CultureInfo.InvariantCulture;
         private readonly string _prefix;
 
-        public StatsDMessageFormatter(CultureInfo cultureInfo)
-            : this(cultureInfo, string.Empty) {}
+        public StatsDMessageFormatter()
+            : this(string.Empty) {}
 
-            public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
+            public StatsDMessageFormatter(string prefix)
         {
-            _cultureInfo = cultureInfo ?? throw new ArgumentNullException(nameof(cultureInfo));
             _prefix = prefix;
 
             if (!string.IsNullOrWhiteSpace(_prefix))

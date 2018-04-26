@@ -34,12 +34,6 @@ namespace JustEat.StatsD
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
-        /// Culture for formatting stats.
-        /// Default is InvariantCulture.
-        /// </summary>
-        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
-
-        /// <summary>
         /// Function to receive notification of any exceptions
         /// This function should return:
         /// True if the exception was handled and no further action is needed

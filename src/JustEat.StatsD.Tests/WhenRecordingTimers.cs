@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Shouldly;
 using Xunit;
@@ -13,12 +13,11 @@ namespace JustEat.StatsD
             string statBucket = "timing-bucket";
             long milliseconds = new Random().Next(1000);
 
-            var culture = new CultureInfo("en-US");
-            var target = new StatsDMessageFormatter(culture);
+            var target = new StatsDMessageFormatter();
 
             string actual = target.Timing(milliseconds, statBucket);
 
-            actual.ShouldBe(string.Format(culture, "{0}:{1:d}|ms", statBucket, milliseconds));
+            actual.ShouldBe(string.Format(CultureInfo.InvariantCulture, "{0}:{1:d}|ms", statBucket, milliseconds));
         }
     }
 }
