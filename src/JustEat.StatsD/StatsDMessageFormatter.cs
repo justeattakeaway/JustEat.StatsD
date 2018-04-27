@@ -12,15 +12,14 @@ namespace JustEat.StatsD
         [ThreadStatic]
         private static Random _random;
 
-        private readonly CultureInfo _cultureInfo;
+        private static readonly CultureInfo InvariantCulture = CultureInfo.InvariantCulture;
         private readonly string _prefix;
 
-        public StatsDMessageFormatter(CultureInfo cultureInfo)
-            : this(cultureInfo, string.Empty) {}
+        public StatsDMessageFormatter()
+            : this(string.Empty) {}
 
-            public StatsDMessageFormatter(CultureInfo cultureInfo, string prefix)
+            public StatsDMessageFormatter(string prefix)
         {
-            _cultureInfo = cultureInfo ?? throw new ArgumentNullException(nameof(cultureInfo));
             _prefix = prefix;
 
             if (!string.IsNullOrWhiteSpace(_prefix))
@@ -38,7 +37,7 @@ namespace JustEat.StatsD
 
         public string Timing(long milliseconds, double sampleRate, string statBucket)
         {
-            return Format(sampleRate, string.Format(_cultureInfo, "{0}{1}:{2:d}|ms", _prefix, statBucket, milliseconds));
+            return Format(sampleRate, string.Format(InvariantCulture, "{0}{1}:{2:d}|ms", _prefix, statBucket, milliseconds));
         }
 
         public string Decrement(string statBucket)
@@ -87,7 +86,7 @@ namespace JustEat.StatsD
 
         public string Increment(long magnitude, double sampleRate, string statBucket)
         {
-            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
+            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
             return Format(sampleRate, stat);
         }
 
@@ -98,29 +97,29 @@ namespace JustEat.StatsD
 
         public string Increment(long magnitude, double sampleRate, params string[] statBuckets)
         {
-            return Format(sampleRate, statBuckets.Select(key => string.Format(_cultureInfo, "{0}{1}:{2}|c", _prefix, key, magnitude)).ToArray());
+            return Format(sampleRate, statBuckets.Select(key => string.Format(InvariantCulture, "{0}{1}:{2}|c", _prefix, key, magnitude)).ToArray());
         }
 
         public string Gauge(double magnitude, string statBucket)
         {
-            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
+            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
             return Format(DefaultSampleRate, stat);
         }
         public string Gauge(double magnitude, string statBucket, DateTime timestamp)
         {
-            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
+            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
             return Format(DefaultSampleRate, stat);
         }
 
         public string Gauge(long magnitude, string statBucket)
         {
-            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
+            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
             return Format(DefaultSampleRate, stat);
         }
 
         public string Gauge(long magnitude, string statBucket, DateTime timestamp)
         {
-            var stat = string.Format(_cultureInfo, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
+            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
             return Format(DefaultSampleRate, stat);
         }
 
@@ -138,7 +137,7 @@ namespace JustEat.StatsD
 
             if (Random.NextDouble() <= sampleRate)
             {
-                return string.Format(_cultureInfo, "{0}|@{1:f}", stat, sampleRate);
+                return string.Format(InvariantCulture, "{0}|@{1:f}", stat, sampleRate);
             }
 
             return string.Empty;
@@ -153,7 +152,7 @@ namespace JustEat.StatsD
                 {
                     if (Random.NextDouble() <= sampleRate)
                     {
-                        formatted.AppendFormat(_cultureInfo, "{0}|@{1:f}", stat, sampleRate);
+                        formatted.AppendFormat(InvariantCulture, "{0}|@{1:f}", stat, sampleRate);
                     }
                 }
             }

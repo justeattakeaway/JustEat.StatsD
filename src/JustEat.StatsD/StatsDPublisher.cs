@@ -21,7 +21,7 @@ namespace JustEat.StatsD
 
             _transport = transport ?? throw new ArgumentNullException(nameof(transport));
 
-            _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
+            _formatter = new StatsDMessageFormatter(configuration.Prefix);
             _onError = configuration.OnError;
         }
 
@@ -37,7 +37,7 @@ namespace JustEat.StatsD
                 throw new ArgumentNullException(nameof(configuration.Host));
             }
 
-            _formatter = new StatsDMessageFormatter(configuration.Culture, configuration.Prefix);
+            _formatter = new StatsDMessageFormatter(configuration.Prefix);
 
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
