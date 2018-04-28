@@ -6,13 +6,7 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class FormatterBenchmark
     {
-        private StatsDMessageFormatter _formatter;
-
-        [GlobalSetup]
-        public void Setup()
-        {
-            _formatter = new StatsDMessageFormatter("test.prefix");
-        }
+        private readonly StatsDMessageFormatter _formatter = new StatsDMessageFormatter("test.prefix");
 
         [Benchmark]
         public string IncrementBy1()
