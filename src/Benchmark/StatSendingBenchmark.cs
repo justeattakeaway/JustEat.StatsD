@@ -1,5 +1,7 @@
+using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
+using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
 {
