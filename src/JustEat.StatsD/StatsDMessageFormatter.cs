@@ -86,6 +86,11 @@ namespace JustEat.StatsD
 
         public string Increment(long magnitude, double sampleRate, string statBucket)
         {
+            if (magnitude == 1 && sampleRate == 1.0)
+            {
+                return _prefix + statBucket + ":1|c";
+            }
+
             var stat = string.Format(InvariantCulture, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
             return Format(sampleRate, stat);
         }
