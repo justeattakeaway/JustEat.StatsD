@@ -15,7 +15,13 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public string Increment()
+        public string IncrementBy1()
+        {
+            return _formatter.Increment(1, "some.stat");
+        }
+
+        [Benchmark]
+        public string IncrementBy12()
         {
             return _formatter.Increment(12, "some.stat");
         }
