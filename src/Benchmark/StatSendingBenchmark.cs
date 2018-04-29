@@ -6,7 +6,7 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
-    public class BenchmarkStatSending
+    public class StatSendingBenchmark
     {
         private IStatsDPublisher _udpSender;
         private IStatsDPublisher _ipSender;

@@ -7,7 +7,8 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarkStatSending>();
+            BenchmarkRunner.Run<StatSendingBenchmark>();
+            BenchmarkRunner.Run<FormatterBenchmark>();
         }
     }
 }
