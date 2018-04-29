@@ -76,8 +76,7 @@ services.AddStatsD(
             Host = options.HostName,
             Port = options.Port,
             Prefix = options.Prefix,
-            OnError = ex => LogError(ex),
-            Culture = CultureInfo.InvariantCulture,
+            OnError = ex => LogError(ex)
         };
     });
 ```
@@ -103,8 +102,7 @@ services.AddStatsD(
             Host = options.HostName,
             Port = options.Port,
             Prefix = options.Prefix,
-            OnError = ex => LogError(ex),
-            Culture = CultureInfo.InvariantCulture,
+            OnError = ex => LogError(ex)
         };
     });
 ```
@@ -128,8 +126,7 @@ var statsDConfig = new StatsDConfiguration
   Host = statsdHostName,
   Port = statsdPort,
   Prefix = statsdPrefix,
-  OnError = ex => LogError(ex),
-  Culture = CultureInfo.InvariantCulture
+  OnError = ex => LogError(ex)
 };
 
 // register with NInject
@@ -145,7 +142,6 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 | Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
 | Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
-| Culture           | `CultureInfo`           | `CultureInfo.InvariantCulture` | Culture for formatting stats strings.                                                                   |
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
