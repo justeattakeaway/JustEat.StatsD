@@ -37,7 +37,8 @@ namespace JustEat.StatsD
 
         public string Timing(long milliseconds, double sampleRate, string statBucket)
         {
-            return Format(sampleRate, string.Format(InvariantCulture, "{0}{1}:{2:d}|ms", _prefix, statBucket, milliseconds));
+            var stat = string.Concat(_prefix, statBucket, ":", milliseconds.ToString("d", InvariantCulture), "|ms");
+            return Format(sampleRate, stat);
         }
 
         public string Decrement(string statBucket)
@@ -91,7 +92,7 @@ namespace JustEat.StatsD
                 return _prefix + statBucket + ":1|c";
             }
 
-            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|c", _prefix, statBucket, magnitude);
+            var stat = string.Concat(_prefix, statBucket, ":", magnitude.ToString(InvariantCulture), "|c");
             return Format(sampleRate, stat);
         }
 
