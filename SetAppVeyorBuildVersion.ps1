@@ -33,4 +33,5 @@ if ($versionSuffix -ne "") {
   $version = $versionPrefix
 }
 
+Write-Host "Setting Appveyor build version to: $version"
 Update-AppveyorBuild -Version "$version"
