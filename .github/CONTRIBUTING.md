@@ -29,7 +29,7 @@ If the project maintainers are satisfied that your contribution is appropriate i
 
   * AppVeyor and Travis CI should be green on the master branch.
   * Check the version number has been updated since the last release - follow [SemVer rules](http://semver.org)
-    * Bump the version in `appveyor.yml` and `JustEat.StatsD.Common.props` if neccessary.
+    * Bump the version in `appveyor.yml` and `version.props` if neccessary.
   * Update the CHANGELOG.md
   * Create a new release in [GitHub](https://github.com/justeat/JustEat.StatsD/releases) with appropriate release notes and tagged version number.
   * Wait for the tag build to push the package to [NuGet](https://www.nuget.org/packages/JustEat.StatsD) and for the pushed version to be indexed.
