@@ -5,6 +5,8 @@ environment:
   CLI_VERSION: 2.1.4
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_XMLDOC_MODE: skip
+install:
+  - ps: .\SetAppVeyorBuildVersion.ps1
 build_script:
   - ps: .\Build.ps1
 artifacts:

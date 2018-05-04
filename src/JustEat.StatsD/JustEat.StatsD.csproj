@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\JustEat.StatsD.Common.props" />
   <PropertyGroup>
     <Description>A .NET library for publishing metrics to statsd.</Description>
     <OutputType>Library</OutputType>

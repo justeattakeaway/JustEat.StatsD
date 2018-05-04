@@ -1,7 +1,6 @@
 param(
     [Parameter(Mandatory=$false)][bool]   $RestorePackages  = $false,
     [Parameter(Mandatory=$false)][string] $Configuration    = "Release",
-    [Parameter(Mandatory=$false)][string] $VersionSuffix    = "",
     [Parameter(Mandatory=$false)][string] $OutputPath       = "",
     [Parameter(Mandatory=$false)][bool]   $RunTests         = $true,
     [Parameter(Mandatory=$false)][bool]   $CreatePackages   = $true
@@ -20,11 +19,6 @@ if ($OutputPath -eq "") {
 if ($env:CI -ne $null) {
 
     $RestorePackages = $true
-
-    if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
-        $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
-        $VersionSuffix = "beta" + $ThisVersion.ToString("0000")
-    }
 }
 
 $installDotNetSdk = $false;
@@ -64,12 +58,8 @@ function DotNetRestore { param([string]$Project)
     }
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
-    if ($VersionSuffix) {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
-    } else {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
-    }
+function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework)
+    & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
     }
@@ -82,12 +72,8 @@ function DotNetTest { param([string]$Project)
     }
 }
 
-function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
-    if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
-    } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
-    }
+function DotNetPack { param([string]$Project, [string]$Configuration)
+    & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
@@ -112,8 +98,8 @@ if ($RestorePackages -eq $true) {
 
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration "netstandard1.6" $VersionSuffix
-    DotNetBuild $project $Configuration "net451" $VersionSuffix
+    DotNetBuild $project $Configuration "netstandard1.6"
+    DotNetBuild $project $Configuration "net451"
 }
 
 if ($RunTests -eq $true) {
@@ -126,6 +112,6 @@ if ($RunTests -eq $true) {
 if ($CreatePackages -eq $true) {
     Write-Host "Creating $($packageProjects.Count) package(s)..." -ForegroundColor Green
     ForEach ($project in $packageProjects) {
-        DotNetPack $project $Configuration $VersionSuffix
+        DotNetPack $project $Configuration
     }
 }
