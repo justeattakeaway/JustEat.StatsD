@@ -107,6 +107,20 @@ namespace JustEat.StatsD.Extensions
             BucketNames.Add(bucket);
         }
 
+        public void Timing(long duration, string bucket)
+        {
+            CallCount++;
+            LastDuration = TimeSpan.FromMilliseconds(duration);
+            BucketNames.Add(bucket);
+        }
+
+        public void Timing(long duration, double sampleRate, string bucket)
+        {
+            CallCount++;
+            LastDuration = TimeSpan.FromMilliseconds(duration);
+            BucketNames.Add(bucket);
+        }
+
         public void MarkEvent(string name)
         {
             CallCount++;
