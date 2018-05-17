@@ -112,6 +112,16 @@ namespace JustEat.StatsD
             Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
         }
 
+        public void Timing(long duration, string bucket)
+        {
+            Send(_formatter.Timing(duration, bucket));
+        }
+
+        public void Timing(long duration, double sampleRate, string bucket)
+        {
+            Send(_formatter.Timing(duration, sampleRate, bucket));
+        }
+
         public void MarkEvent(string name)
         {
             Send(_formatter.Event(name));
