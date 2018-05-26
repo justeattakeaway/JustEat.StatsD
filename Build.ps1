@@ -10,7 +10,9 @@ $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
 $solutionFile  = Join-Path $solutionPath "JustEat.StatsD.sln"
-$dotnetVersion = "2.1.4"
+$sdkFile       = Join-Path $solutionPath "global.json"
+
+$dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
@@ -41,7 +43,7 @@ if ($installDotNetSdk -eq $true) {
     if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
         mkdir $env:DOTNET_INSTALL_DIR | Out-Null
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
-        Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/v$dotnetVersion/scripts/obtain/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
+        Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/release/2.1.3xx/scripts/obtain/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
         & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
 
