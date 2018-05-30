@@ -10,7 +10,9 @@ $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
 $solutionFile  = Join-Path $solutionPath "JustEat.StatsD.sln"
-$dotnetVersion = "2.1.4"
+$sdkFile       = Join-Path $solutionPath "global.json"
+
+$dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"

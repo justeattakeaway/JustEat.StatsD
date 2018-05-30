@@ -1,9 +1,14 @@
 <Project>
  <Import Project="version.props" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-62925-02" PrivateAssets="All" />
+  </ItemGroup>
   <PropertyGroup>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Authors>Just Eat</Authors>
     <Company>Just Eat</Company>
     <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -13,6 +18,7 @@
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>statsd;graphite;metrics;monitoring</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
