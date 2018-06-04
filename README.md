@@ -222,7 +222,7 @@ In all these cases the function or delegate is supplied with a `IDisposableTimer
 
 ##### Credits
 
-The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client).
+The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client) and [MiniProfiler](https://miniprofiler.com/dotnet/HowTo/ProfileCode).
 
 ### How to contribute
 
