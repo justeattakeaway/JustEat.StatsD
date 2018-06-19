@@ -40,7 +40,7 @@ if [ "$dotnet_version" != "$CLI_VERSION" ]; then
     curl -sSL https://raw.githubusercontent.com/dotnet/cli/v$CLI_VERSION/scripts/obtain/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
 fi
 
-dotnet build src/JustEat.StatsD/JustEat.StatsD.csproj --output $artifacts --configuration $configuration --framework "netstandard1.6" || exit 1
+dotnet build src/JustEat.StatsD/JustEat.StatsD.csproj --output $artifacts --configuration $configuration --framework "netstandard2.0" || exit 1
 
 if [ $skipTests == 0 ]; then
     dotnet test src/JustEat.StatsD.Tests/JustEat.StatsD.Tests.csproj --output $artifacts --configuration $configuration --framework "netcoreapp2.0" || exit 1
