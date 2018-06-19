@@ -100,7 +100,7 @@ if ($RestorePackages -eq $true) {
 
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration "netstandard1.6"
+    DotNetBuild $project $Configuration "netstandard2.0"
     DotNetBuild $project $Configuration "net451"
 }
 
