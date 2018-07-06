@@ -11,6 +11,7 @@ namespace JustEat.StatsD
         private readonly StatsDMessageFormatter _formatter;
         private readonly IStatsDTransport _transport;
         private readonly Func<Exception, bool> _onError;
+        private SpanStatsDMessageFormatter _spanFormatter;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
@@ -22,6 +23,7 @@ namespace JustEat.StatsD
             _transport = transport ?? throw new ArgumentNullException(nameof(transport));
 
             _formatter = new StatsDMessageFormatter(configuration.Prefix);
+            _spanFormatter = new SpanStatsDMessageFormatter(configuration.Prefix);
             _onError = configuration.OnError;
         }
 
@@ -47,17 +49,26 @@ namespace JustEat.StatsD
 
         public void Increment(string bucket)
         {
-            Send(_formatter.Increment(bucket));
+            Span<byte> buffer = stackalloc byte[512];
+            var writer = new Writer(buffer);
+            _spanFormatter.Increment(bucket, ref writer);
+            Send(writer.Get());
         }
 
         public void Increment(long value, string bucket)
         {
-            Send(_formatter.Increment(value, bucket));
+            Span<byte> buffer = stackalloc byte[512];
+            var writer = new Writer(buffer);
+            _spanFormatter.Increment(value, bucket, ref writer);
+            Send(writer.Get());
         }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            Send(_formatter.Increment(value, sampleRate, bucket));
+            Span<byte> buffer = stackalloc byte[512];
+            var writer = new Writer(buffer);
+            _spanFormatter.Increment(value, sampleRate, bucket, ref writer);
+            Send(writer.Get());
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
@@ -125,6 +136,22 @@ namespace JustEat.StatsD
         public void MarkEvent(string name)
         {
             Send(_formatter.Event(name));
+        }
+
+        private void Send(ReadOnlySpan<byte> metric)
+        {
+            try
+            {
+                //_transport.Send(metric);
+            }
+            catch (Exception ex)
+            {
+                var handled = _onError?.Invoke(ex) ?? true;
+                if (!handled)
+                {
+                    throw;
+                }
+            }
         }
 
         private void Send(string metric)

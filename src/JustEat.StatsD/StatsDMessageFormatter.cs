@@ -5,6 +5,57 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
+    internal static class StringBuilderCache
+    {
+        private const int DefaultCapacity = 128;
+        private const int MaxBuilderSize = DefaultCapacity * 3;
+
+        [ThreadStatic]
+        private static StringBuilder t_cachedInstance;
+
+        /// <summary>Get a StringBuilder for the specified capacity.</summary>
+        /// <remarks>If a StringBuilder of an appropriate size is cached, it will be returned and the cache emptied.</remarks>
+        public static StringBuilder Acquire(int capacity = DefaultCapacity)
+        {
+            if (capacity <= MaxBuilderSize)
+            {
+                StringBuilder sb = t_cachedInstance;
+                if (capacity < DefaultCapacity)
+                {
+                    capacity = DefaultCapacity;
+                }
+
+                if (sb != null)
+                {
+                    // Avoid stringbuilder block fragmentation by getting a new StringBuilder
+                    // when the requested size is larger than the current capacity
+                    if (capacity <= sb.Capacity)
+                    {
+                        t_cachedInstance = null;
+                        sb.Clear();
+                        return sb;
+                    }
+                }
+            }
+            return new StringBuilder(capacity);
+        }
+
+        public static void Release(StringBuilder sb)
+        {
+            if (sb.Capacity <= MaxBuilderSize)
+            {
+                t_cachedInstance = sb;
+            }
+        }
+
+        public static string GetStringAndRelease(StringBuilder sb)
+        {
+            string result = sb.ToString();
+            Release(sb);
+            return result;
+        }
+    }
+
     public class StatsDMessageFormatter
     {
         private const double DefaultSampleRate = 1.0;
@@ -18,7 +69,7 @@ namespace JustEat.StatsD
         public StatsDMessageFormatter()
             : this(string.Empty) {}
 
-            public StatsDMessageFormatter(string prefix)
+        public StatsDMessageFormatter(string prefix)
         {
             _prefix = prefix;
 
@@ -50,7 +101,6 @@ namespace JustEat.StatsD
         {
             return Decrement(magnitude, DefaultSampleRate, statBucket);
         }
-
 
         public string Decrement(long magnitude, double sampleRate, string statBucket)
         {
@@ -134,7 +184,7 @@ namespace JustEat.StatsD
             return Increment(name);
         }
 
-        private string Format(double sampleRate, string stat)
+        private static string Format(double sampleRate, string stat)
         {
             if (sampleRate >= DefaultSampleRate)
             {
@@ -149,9 +199,9 @@ namespace JustEat.StatsD
             return string.Empty;
         }
 
-        private string Format(double sampleRate, params string[] stats)
+        private static string Format(double sampleRate, params string[] stats)
         {
-            var formatted = new StringBuilder();
+            var formatted = StringBuilderCache.Acquire();
             if (sampleRate < DefaultSampleRate)
             {
                 foreach (var stat in stats)
@@ -169,8 +219,7 @@ namespace JustEat.StatsD
                     formatted.Append(stat);
                 }
             }
-
-            return formatted.ToString();
+            return StringBuilderCache.GetStringAndRelease(formatted);
         }
     }
 }

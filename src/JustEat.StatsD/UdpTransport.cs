@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Net.Sockets;
 using System.Text;
 #if !NET451
@@ -19,13 +20,17 @@ namespace JustEat.StatsD
 
         public void Send(string metric)
         {
-            var bytes = Encoding.UTF8.GetBytes(metric);
+            var rent = ArrayPool<byte>.Shared.Rent(Encoding.UTF8.GetMaxByteCount(metric.Length));
+            var bytes = Encoding.UTF8.GetBytes(metric, rent);
+
             var endpoint = _endpointSource.GetEndpoint();
 
             using (var socket = CreateSocket())
             {
-                socket.SendTo(bytes, endpoint);
+                socket.SendTo(rent, bytes, SocketFlags.None, endpoint);
             }
+
+            ArrayPool<byte>.Shared.Return(rent);
         }
 
         private static Socket CreateSocket()

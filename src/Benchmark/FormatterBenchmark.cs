@@ -1,3 +1,4 @@
+using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
 
@@ -42,6 +43,60 @@ namespace Benchmark
         public string Timing()
         {
             return _formatter.Timing(1000, "some.stat");
+        }
+    }
+
+    [MemoryDiagnoser]
+    public class FormatterBenchmarkSpan
+    {
+        private readonly SpanStatsDMessageFormatter _formatter = new SpanStatsDMessageFormatter("test.prefix");
+
+        [Benchmark]
+        public void IncrementBy1()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Increment(1, "some.stat", ref writer);
+        }
+
+        [Benchmark]
+        public void IncrementBy12()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Increment(12, "some.stat", ref writer);
+        }
+
+        [Benchmark]
+        public void Decrement()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Decrement(12, "some.stat", ref writer);
+        }
+
+        [Benchmark]
+        public void Event()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Event("some.stat", ref writer);
+        }
+
+        [Benchmark]
+        public void Gauge()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Gauge(12, "some.stat", ref writer);
+        }
+
+        [Benchmark]
+        public void Timing()
+        {
+            Span<byte> buff = stackalloc byte[64];
+            var writer = new Writer(buff);
+            _formatter.Timing(1000, "some.stat", ref writer);
         }
     }
 
