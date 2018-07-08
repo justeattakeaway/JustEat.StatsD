@@ -55,7 +55,7 @@ namespace Benchmark
         public void IncrementBy1()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Increment(1, "some.stat", ref writer);
         }
 
@@ -63,7 +63,7 @@ namespace Benchmark
         public void IncrementBy12()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Increment(12, "some.stat", ref writer);
         }
 
@@ -71,7 +71,7 @@ namespace Benchmark
         public void Decrement()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Decrement(12, "some.stat", ref writer);
         }
 
@@ -79,7 +79,7 @@ namespace Benchmark
         public void Event()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Event("some.stat", ref writer);
         }
 
@@ -87,7 +87,7 @@ namespace Benchmark
         public void Gauge()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Gauge(12, "some.stat", ref writer);
         }
 
@@ -95,7 +95,7 @@ namespace Benchmark
         public void Timing()
         {
             Span<byte> buff = stackalloc byte[64];
-            var writer = new Writer(buff);
+            var writer = new FixedBuffer(buff);
             _formatter.Timing(1000, "some.stat", ref writer);
         }
     }

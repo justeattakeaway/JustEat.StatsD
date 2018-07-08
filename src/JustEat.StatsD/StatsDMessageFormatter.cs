@@ -7,7 +7,7 @@ namespace JustEat.StatsD
 {
     internal static class StringBuilderCache
     {
-        private const int DefaultCapacity = 128;
+        private const int DefaultCapacity = 256;
         private const int MaxBuilderSize = DefaultCapacity * 3;
 
         [ThreadStatic]

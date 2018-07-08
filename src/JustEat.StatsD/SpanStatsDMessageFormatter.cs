@@ -6,41 +6,41 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
-    public static class WriterExtensions
+    public static class FixedBufferExtensions
     {
-        public static string Show(in this Writer src) => Encoding.UTF8.GetString(src.Get());
+        public static string Show(in this FixedBuffer src) => Encoding.UTF8.GetString(src.Get());
 
-        public static Span<byte> Get(in this Writer src) => src.Buffer.Slice(0, src.Position);
+        public static Span<byte> Get(in this FixedBuffer src) => src.Buffer.Slice(0, src.Position);
 
-        public static ref Writer Add(ref this Writer src, byte[] str)
+        public static ref FixedBuffer Add(ref this FixedBuffer src, byte[] str)
         {
             str.CopyTo(src.Buffer.Slice(src.Position));
             src.Position += str.Length;
             return ref src;
         }
 
-        public static ref Writer Add(ref this Writer src, ReadOnlySpan<byte> str)
+        public static ref FixedBuffer Add(ref this FixedBuffer src, ReadOnlySpan<byte> str)
         {
             str.CopyTo(src.Buffer.Slice(src.Position));
             src.Position += str.Length;
             return ref src;
         }
 
-        public static ref Writer Add(ref this Writer src, byte str)
+        public static ref FixedBuffer Add(ref this FixedBuffer src, byte str)
         {
             src.Buffer[src.Position] = str;
             src.Position += 1;
             return ref src;
         }
 
-        public static ref Writer Add(ref this Writer src, string str)
+        public static ref FixedBuffer Add(ref this FixedBuffer src, string str)
         {
             var written = Encoding.UTF8.GetBytes(str, src.Buffer.Slice(src.Position));
             src.Position += written;
             return ref src;
         }
 
-        public static ref Writer Add(ref this Writer src, double value) 
+        public static ref FixedBuffer Add(ref this FixedBuffer src, double value) 
         {
             if (!Utf8Formatter.TryFormat(value, src.Buffer.Slice(src.Position), out int written, new StandardFormat('f', 2)))
             {
@@ -51,7 +51,7 @@ namespace JustEat.StatsD
             return ref src;
         }
 
-        public static ref Writer Add(ref this Writer src, long value)
+        public static ref FixedBuffer Add(ref this FixedBuffer src, long value)
         {
             if (!Utf8Formatter.TryFormat(value, src.Buffer.Slice(src.Position), out int written, new StandardFormat('d')))
             {
@@ -60,22 +60,20 @@ namespace JustEat.StatsD
 
             src.Position += written;
             return ref src;
-
         }
 
-        public static void Clear(ref this Writer src)
+        public static void Clear(ref this FixedBuffer src)
         {
             src.Position = 0;
         }
-
     }
 
-    public ref struct Writer
+    public ref struct FixedBuffer
     {
         public Span<byte> Buffer;
         public int Position;
 
-        public Writer(Span<byte> buffer) : this()
+        public FixedBuffer(Span<byte> buffer) : this()
         {
             Buffer = buffer;
             Position = 0;
@@ -103,131 +101,133 @@ namespace JustEat.StatsD
 
         private static Random Random => _random ?? (_random = new Random());
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Timing(long milliseconds, string statBucket, ref Writer writer)
+        public void Timing(long milliseconds, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            Timing(milliseconds, DefaultSampleRate, statBucket, ref writer);
+            Timing(milliseconds, DefaultSampleRate, statBucket, ref fixedBuffer);
         }
 
         private static readonly byte[] TimingSuffix = Encoding.UTF8.GetBytes("|ms");
 
-        public void Timing(long milliseconds, double sampleRate, string statBucket, ref Writer writer)
+        public void Timing(long milliseconds, double sampleRate, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            writer.Add(_prefix).Add(statBucket).Add(Colon).Add(milliseconds).Add(TimingSuffix);
+            fixedBuffer.Add(_prefix).Add(statBucket).Add(Colon).Add(milliseconds).Add(TimingSuffix);
 
-            Format(sampleRate, ref writer);
+            Format(sampleRate, ref fixedBuffer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Decrement(string statBucket, ref Writer writer)
+        public void Decrement(string statBucket, ref FixedBuffer fixedBuffer)
         {
-           Increment(-1, DefaultSampleRate, statBucket, ref writer);
+           Increment(-1, DefaultSampleRate, statBucket, ref fixedBuffer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Decrement(long magnitude, string statBucket, ref Writer writer)
+        public void Decrement(long magnitude, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            Decrement(magnitude, DefaultSampleRate, statBucket, ref writer);
+            Decrement(magnitude, DefaultSampleRate, statBucket, ref fixedBuffer);
         }
 
-        public void Decrement(long magnitude, double sampleRate, string statBucket, ref Writer writer)
+        public void Decrement(long magnitude, double sampleRate, string statBucket, ref FixedBuffer fixedBuffer)
         {
             magnitude = magnitude < 0 ? magnitude : -magnitude;
-            Increment(magnitude, sampleRate, statBucket, ref writer);
+            Increment(magnitude, sampleRate, statBucket, ref fixedBuffer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Increment(string statBucket, ref Writer writer)
+        public void Increment(string statBucket, ref FixedBuffer fixedBuffer)
         {
-            Increment(1, DefaultSampleRate, statBucket, ref writer);
+            Increment(1, DefaultSampleRate, statBucket, ref fixedBuffer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Increment(long magnitude, string statBucket, ref Writer writer)
+        public void Increment(long magnitude, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            Increment(magnitude, DefaultSampleRate, statBucket, ref writer);
+            Increment(magnitude, DefaultSampleRate, statBucket, ref fixedBuffer);
         }
 
         private const byte Colon = (byte) ':';
         private static readonly byte[] IncrementColonBar1C = Encoding.UTF8.GetBytes(":1|c");
         private static readonly byte[] IncrementBarC = Encoding.UTF8.GetBytes("|c");
 
-        public void Increment(long magnitude, double sampleRate, string statBucket, ref Writer writer)
+        public void Increment(long magnitude, double sampleRate, string statBucket, ref FixedBuffer fixedBuffer)
         {
             if (magnitude == 1 && sampleRate == 1.0)
             {
-                writer.Add(_prefix).Add(statBucket).Add(IncrementColonBar1C);
+                fixedBuffer.Add(_prefix).Add(statBucket).Add(IncrementColonBar1C);
                 return;
             }
 
-            writer.Add(_prefix).Add(statBucket).Add(Colon).Add(magnitude).Add(IncrementBarC);
+            fixedBuffer.Add(_prefix).Add(statBucket).Add(Colon).Add(magnitude).Add(IncrementBarC);
 
-            Format(sampleRate, ref writer);
+            Format(sampleRate, ref fixedBuffer);
         }
         
         private static readonly byte[] GaugeSuffix = Encoding.UTF8.GetBytes("|g");
         private static readonly byte[] GaugeSuffixExtra = Encoding.UTF8.GetBytes("|g|@");
 
-        public void Gauge(double magnitude, string statBucket, ref Writer writer)
+        public void Gauge(double magnitude, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            writer.Add(_prefix).Add(statBucket).Add(Colon).Add(magnitude).Add(GaugeSuffix);
+            fixedBuffer
+                .Add(_prefix)
+                .Add(statBucket)
+                .Add(Colon)
+                .Add(magnitude)
+                .Add(GaugeSuffix);
 
-            Format(DefaultSampleRate, ref writer);
+            Format(DefaultSampleRate, ref fixedBuffer);
         }
 
-        public void Gauge(double magnitude, string statBucket, DateTime timestamp, ref Writer writer)
+        public void Gauge(double magnitude, string statBucket, DateTime timestamp, ref FixedBuffer fixedBuffer)
         {
-            writer.Add(_prefix)
+            fixedBuffer
+                .Add(_prefix)
                 .Add(statBucket)
                 .Add(Colon)
                 .Add(magnitude)
                 .Add(GaugeSuffixExtra)
                 .Add(timestamp.AsUnixTime());
 
-            Format(DefaultSampleRate, ref writer);
+            Format(DefaultSampleRate, ref fixedBuffer);
         }
 
-        public void Gauge(long magnitude, string statBucket, ref Writer writer)
+        public void Gauge(long magnitude, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            writer.Add(_prefix)
-             .Add(statBucket)
-             .Add(Colon)
-             .Add(magnitude)
-             .Add(GaugeSuffix);
+            fixedBuffer
+                 .Add(_prefix)
+                 .Add(statBucket)
+                 .Add(Colon)
+                 .Add(magnitude)
+                 .Add(GaugeSuffix);
 
-            Format(DefaultSampleRate, ref writer);
+            Format(DefaultSampleRate, ref fixedBuffer);
         }
 
-        public void Gauge(long magnitude, string statBucket, DateTime timestamp, ref Writer writer)
+        public void Gauge(long magnitude, string statBucket, DateTime timestamp, ref FixedBuffer fixedBuffer)
         {
-            writer.Add(_prefix)
+            fixedBuffer
+                .Add(_prefix)
                 .Add(statBucket)
                 .Add(Colon)
                 .Add(magnitude)
                 .Add(GaugeSuffixExtra)
                 .Add(timestamp.AsUnixTime());
 
-            Format(DefaultSampleRate, ref writer);
+            Format(DefaultSampleRate, ref fixedBuffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Event(string name, ref Writer writer)
+        public void Event(string name, ref FixedBuffer fixedBuffer)
         {
-            Increment(name, ref writer);
+            Increment(name, ref fixedBuffer);
         }
 
         private const byte Bar = (byte) '|';
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Format(double sampleRate, ref Writer stat)
+        private static void Format(double sampleRate, ref FixedBuffer stat)
         {
             if (sampleRate >= DefaultSampleRate)
                 return;
 
             if (Random.NextDouble() <= sampleRate)
             {
-                stat.Add(Bar);
-                stat.Add(sampleRate);
+                stat.Add(Bar).Add(sampleRate);
             }
             else
                 stat.Clear();

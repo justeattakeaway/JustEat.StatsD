@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Net.Sockets;
-using System.Text;
 #if !NET451
 using System.Runtime.InteropServices;
 #endif
@@ -18,19 +17,27 @@ namespace JustEat.StatsD
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
-        public void Send(string metric)
+        public void Send(ReadOnlySpan<byte> metric)
         {
-            var rent = ArrayPool<byte>.Shared.Rent(Encoding.UTF8.GetMaxByteCount(metric.Length));
-            var bytes = Encoding.UTF8.GetBytes(metric, rent);
+            if (metric.Length == 0)
+                return;
 
             var endpoint = _endpointSource.GetEndpoint();
-
-            using (var socket = CreateSocket())
+            Socket socket = null;
+            byte[] buffer = null;
+            
+            try
             {
-                socket.SendTo(rent, bytes, SocketFlags.None, endpoint);
+                buffer = ArrayPool<byte>.Shared.Rent(metric.Length);
+                metric.CopyTo(buffer);
+                socket = CreateSocket();
+                socket.SendTo(buffer, metric.Length, SocketFlags.None, endpoint);
             }
-
-            ArrayPool<byte>.Shared.Return(rent);
+            finally 
+            {
+                if (buffer!= null) ArrayPool<byte>.Shared.Return(buffer);
+                socket?.Dispose();
+            }
         }
 
         private static Socket CreateSocket()

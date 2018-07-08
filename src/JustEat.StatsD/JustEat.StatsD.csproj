@@ -22,8 +22,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>..\..\..\..\Users\dmytro.kushnir\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
   </ItemGroup>
 </Project>

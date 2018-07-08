@@ -25,16 +25,9 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-
-            //Span<byte> buff = stackalloc byte[128];
-            //var formatter = new SpanStatsDMessageFormatter("some.cool.prefix");
-            //var writer = new Writer(buff);
-            //formatter.Gauge(1000, "some.stat", ref writer);
-            //Console.WriteLine(writer.Show());
-
             //BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
             //BenchmarkRunner.Run<FormatterBenchmark>(new FastAndDirty());
-            BenchmarkRunner.Run<FormatterBenchmarkSpan>(new FastAndDirty());
+            BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
         }
     }
 }
