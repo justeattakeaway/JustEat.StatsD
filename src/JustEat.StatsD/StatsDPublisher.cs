@@ -50,26 +50,26 @@ namespace JustEat.StatsD
 
         public void Increment(string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Increment(bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Increment(long value, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Increment(value, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Increment(value, sampleRate, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
@@ -79,26 +79,26 @@ namespace JustEat.StatsD
 
         public void Decrement(string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Decrement(bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Decrement(long value, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Decrement(value, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Decrement(long value, double sampleRate, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Decrement(value, sampleRate, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
@@ -108,74 +108,74 @@ namespace JustEat.StatsD
 
         public void Gauge(double  value, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Gauge(value, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Gauge(double value, string bucket, DateTime timestamp)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Gauge(value, bucket, timestamp, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Gauge(long value, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Gauge(value, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Gauge(long value, string bucket, DateTime timestamp)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Gauge(value, bucket, timestamp, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Timing(TimeSpan duration, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Timing(long duration, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Timing(duration, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void Timing(long duration, double sampleRate, string bucket)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(bucket)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Timing(duration, sampleRate, bucket, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         public void MarkEvent(string name)
         {
-            Span<byte> buffer = stackalloc byte[512];
+            Span<byte> buffer = stackalloc byte[_spanFormatter.GetMaxSize(name)];
             var writer = new FixedBuffer(buffer);
             _spanFormatter.Event(name, ref writer);
-            Send(writer.Get());
+            Send(writer.Written());
         }
 
         private void Send(ReadOnlySpan<byte> metric)

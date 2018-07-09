@@ -13,7 +13,7 @@ namespace JustEat.StatsD
         [ThreadStatic]
         private static StringBuilder t_cachedInstance;
 
-        /// <summary>Get a StringBuilder for the specified capacity.</summary>
+        /// <summary>Written a StringBuilder for the specified capacity.</summary>
         /// <remarks>If a StringBuilder of an appropriate size is cached, it will be returned and the cache emptied.</remarks>
         public static StringBuilder Acquire(int capacity = DefaultCapacity)
         {

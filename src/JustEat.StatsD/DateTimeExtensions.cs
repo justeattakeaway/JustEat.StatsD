@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace JustEat.StatsD
 {
@@ -12,9 +12,9 @@ namespace JustEat.StatsD
         /// <summary>	Returns the DateTime as the number of seconds since the epoch (1970), which is Unix time. </summary>
         /// <param name="dateTime">	The dateTime to act on. </param>
         /// <returns>	A number of seconds since the epoch. </returns>
-        public static double AsUnixTime(this DateTime dateTime)
+        public static long AsUnixTime(this DateTime dateTime)
         {
-            return Math.Round(dateTime.ToUniversalTime().Subtract(Epoch).TotalSeconds);
+            return (long)Math.Round(dateTime.ToUniversalTime().Subtract(Epoch).TotalSeconds);
         }
     }
 }

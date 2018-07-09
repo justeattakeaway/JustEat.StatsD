@@ -26,8 +26,8 @@ namespace Benchmark
         static void Main(string[] args)
         {
             //BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
-            //BenchmarkRunner.Run<FormatterBenchmark>(new FastAndDirty());
-            BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
+            //BenchmarkRunner.Run<FormatterBenchmarkSpan>(new FastAndDirty());
+            BenchmarkRunner.Run<StatSendingBenchmark>();
         }
     }
 }

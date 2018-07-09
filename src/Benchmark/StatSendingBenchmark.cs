@@ -34,7 +34,7 @@ namespace Benchmark
             _udpSender.Increment("startup.ud");
 
             _ipSender = new StatsDPublisher(config, ipTransport);
-            _udpSender.Increment("startup.ip");
+            _ipSender.Increment("startup.ip");
         }
 
         [Benchmark]

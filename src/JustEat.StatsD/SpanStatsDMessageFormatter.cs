@@ -8,9 +8,9 @@ namespace JustEat.StatsD
 {
     public static class FixedBufferExtensions
     {
-        public static string Show(in this FixedBuffer src) => Encoding.UTF8.GetString(src.Get());
+        public static string Show(in this FixedBuffer src) => Encoding.UTF8.GetString(src.Written());
 
-        public static Span<byte> Get(in this FixedBuffer src) => src.Buffer.Slice(0, src.Position);
+        public static Span<byte> Written(in this FixedBuffer src) => src.Buffer.Slice(0, src.Position);
 
         public static ref FixedBuffer Add(ref this FixedBuffer src, byte[] str)
         {
@@ -211,10 +211,18 @@ namespace JustEat.StatsD
             Format(DefaultSampleRate, ref fixedBuffer);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Event(string name, ref FixedBuffer fixedBuffer)
         {
             Increment(name, ref fixedBuffer);
+        }
+
+        public int GetMaxSize(string bucket)
+        {
+            const int maxDoubleSize = 30;
+            const int maxLongSize = 20;
+            const int maxStatsDSuffixSize = 20;
+
+            return _prefix.Length + Encoding.UTF8.GetByteCount(bucket) + maxDoubleSize + maxLongSize + maxStatsDSuffixSize;
         }
 
         private const byte Bar = (byte) '|';

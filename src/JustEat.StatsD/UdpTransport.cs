@@ -23,20 +23,10 @@ namespace JustEat.StatsD
                 return;
 
             var endpoint = _endpointSource.GetEndpoint();
-            Socket socket = null;
-            byte[] buffer = null;
-            
-            try
+            using (var socket = CreateSocket())
             {
-                buffer = ArrayPool<byte>.Shared.Rent(metric.Length);
-                metric.CopyTo(buffer);
-                socket = CreateSocket();
-                socket.SendTo(buffer, metric.Length, SocketFlags.None, endpoint);
-            }
-            finally 
-            {
-                if (buffer!= null) ArrayPool<byte>.Shared.Return(buffer);
-                socket?.Dispose();
+                socket.Connect(endpoint);
+                socket.Send(metric);
             }
         }
 
