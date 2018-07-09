@@ -20,7 +20,9 @@ namespace JustEat.StatsD
         public void Send(string metric)
         {
             if (string.IsNullOrWhiteSpace(metric))
+            {
                 return;
+            }
 
             var bytes = Encoding.UTF8.GetBytes(metric);
             var endpoint = _endpointSource.GetEndpoint();
