@@ -25,9 +25,19 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            //BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
-            //BenchmarkRunner.Run<FormatterBenchmarkSpan>(new FastAndDirty());
-            BenchmarkRunner.Run<StatSendingBenchmark>();
+            var statSendingBenchmark = new StatSendingBenchmark();
+            statSendingBenchmark.Setup();
+
+            //statSendingBenchmark.RunIp();
+
+            //for (int i = 0; i < 1000_000; i++)
+            //{
+            //    statSendingBenchmark.RunUdpSpan();
+            //}
+            
+
+            BenchmarkRunner.Run<StatSendingBenchmark>(new FastAndDirty());
+            //BenchmarkRunner.Run<StatSendingBenchmark>();
         }
     }
 }

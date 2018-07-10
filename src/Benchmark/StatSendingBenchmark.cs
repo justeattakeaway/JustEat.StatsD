@@ -1,15 +1,22 @@
 using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Columns;
+using BenchmarkDotNet.Configs;
 using JustEat.StatsD;
 using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+    [CategoriesColumn]
     public class StatSendingBenchmark
     {
         private IStatsDPublisher _udpSender;
         private IStatsDPublisher _ipSender;
+
+        private IStatsDPublisher _udpSenderSpan;
+        private IStatsDPublisher _ipSenderSpan;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -28,6 +35,7 @@ namespace Benchmark
                 config.Host, config.Port, config.DnsLookupInterval);
 
             var udpTransport = new UdpTransport(endpointSource);
+            var udpTransportPooled = new UdpTransportPooled(endpointSource);
             var ipTransport = new IpTransport(endpointSource);
 
             _udpSender = new StatsDPublisher(config, udpTransport);
@@ -35,20 +43,47 @@ namespace Benchmark
 
             _ipSender = new StatsDPublisher(config, ipTransport);
             _ipSender.Increment("startup.ip");
+
+            _udpSenderSpan = new SpanStatsDPublisher(config, udpTransportPooled);
+            _udpSenderSpan.Increment("startup.ud");
+
+            _ipSenderSpan = new SpanStatsDPublisher(config, ipTransport);
+            _ipSenderSpan.Increment("startup.ip");
         }
 
-        [Benchmark]
+        private static void Run(IStatsDPublisher sender)
+        {
+            sender.Increment(1, 0.5, "increment.stat");
+            sender.Decrement(1, 0.5, "increment.stat");
+            sender.Increment(1, "increment.stat");
+            sender.Decrement(1, "increment.stat");
+            sender.Timing(Timed, "timer.stat");
+            sender.Timing(Timed, 0.5, "timer.stat");
+            sender.Gauge(long.MinValue, "gauge.stat", DateTime.Now);
+        }
+
+        [Benchmark(Baseline = true),BenchmarkCategory("UDP")]
         public void RunUdp()
         {
-            _udpSender.Increment("increment.ud");
-            _udpSender.Timing(Timed, "timer.ud");
+            Run(_udpSender);
         }
 
-        [Benchmark]
+        [Benchmark, BenchmarkCategory("UDP")]
+        public void RunUdpSpanPooled()
+        {
+            Run(_udpSenderSpan);
+        }
+
+        [Benchmark(Baseline = true), BenchmarkCategory("TCP")]
         public void RunIp()
         {
-            _ipSender.Increment("increment.ip");
-            _ipSender.Timing(Timed, "timer.ip");
+            Run(_ipSender);
+        }
+
+        [Benchmark, BenchmarkCategory("TCP")]
+        public void RunIpSpan()
+        {
+            Run(_ipSenderSpan);
         }
     }
 }

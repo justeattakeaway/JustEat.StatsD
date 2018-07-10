@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Buffers.Text;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -12,6 +13,7 @@ namespace JustEat.StatsD
 
         public static Span<byte> Written(in this FixedBuffer src) => src.Buffer.Slice(0, src.Position);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref FixedBuffer Add(ref this FixedBuffer src, byte[] str)
         {
             str.CopyTo(src.Buffer.Slice(src.Position));
@@ -19,13 +21,7 @@ namespace JustEat.StatsD
             return ref src;
         }
 
-        public static ref FixedBuffer Add(ref this FixedBuffer src, ReadOnlySpan<byte> str)
-        {
-            str.CopyTo(src.Buffer.Slice(src.Position));
-            src.Position += str.Length;
-            return ref src;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref FixedBuffer Add(ref this FixedBuffer src, byte str)
         {
             src.Buffer[src.Position] = str;
@@ -33,6 +29,7 @@ namespace JustEat.StatsD
             return ref src;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref FixedBuffer Add(ref this FixedBuffer src, string str)
         {
             var written = Encoding.UTF8.GetBytes(str, src.Buffer.Slice(src.Position));
@@ -40,17 +37,25 @@ namespace JustEat.StatsD
             return ref src;
         }
 
-        public static ref FixedBuffer Add(ref this FixedBuffer src, double value) 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ref FixedBuffer Add(ref this FixedBuffer src, double value)
         {
-            if (!Utf8Formatter.TryFormat(value, src.Buffer.Slice(src.Position), out int written, new StandardFormat('f', 2)))
+            Span<char> dest = stackalloc char[32];
+            value.TryFormat(dest, out int written, "", CultureInfo.InvariantCulture);
+
+            
+
+            ref var pos = ref src.Position;
+            
+            for (var i = 0; i < written; i++)
             {
-                throw new OutOfMemoryException();
+                src.Buffer[pos++] = (byte) dest[i];
             }
 
-            src.Position += written;
             return ref src;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref FixedBuffer Add(ref this FixedBuffer src, long value)
         {
             if (!Utf8Formatter.TryFormat(value, src.Buffer.Slice(src.Position), out int written, new StandardFormat('d')))
@@ -62,6 +67,7 @@ namespace JustEat.StatsD
             return ref src;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Clear(ref this FixedBuffer src)
         {
             src.Position = 0;
@@ -110,7 +116,12 @@ namespace JustEat.StatsD
 
         public void Timing(long milliseconds, double sampleRate, string statBucket, ref FixedBuffer fixedBuffer)
         {
-            fixedBuffer.Add(_prefix).Add(statBucket).Add(Colon).Add(milliseconds).Add(TimingSuffix);
+            fixedBuffer
+                .Add(_prefix)
+                .Add(statBucket)
+                .Add(Colon)
+                .Add(milliseconds)
+                .Add(TimingSuffix);
 
             Format(sampleRate, ref fixedBuffer);
         }
@@ -149,11 +160,20 @@ namespace JustEat.StatsD
         {
             if (magnitude == 1 && sampleRate == 1.0)
             {
-                fixedBuffer.Add(_prefix).Add(statBucket).Add(IncrementColonBar1C);
+                fixedBuffer
+                    .Add(_prefix)
+                    .Add(statBucket)
+                    .Add(IncrementColonBar1C);
+
                 return;
             }
 
-            fixedBuffer.Add(_prefix).Add(statBucket).Add(Colon).Add(magnitude).Add(IncrementBarC);
+            fixedBuffer
+                .Add(_prefix)
+                .Add(statBucket)
+                .Add(Colon)
+                .Add(magnitude)
+                .Add(IncrementBarC);
 
             Format(sampleRate, ref fixedBuffer);
         }
@@ -218,9 +238,9 @@ namespace JustEat.StatsD
 
         public int GetMaxSize(string bucket)
         {
-            const int maxDoubleSize = 30;
-            const int maxLongSize = 20;
-            const int maxStatsDSuffixSize = 20;
+            const int maxDoubleSize = 15;
+            const int maxLongSize = 15;
+            const int maxStatsDSuffixSize = 10;
 
             return _prefix.Length + Encoding.UTF8.GetByteCount(bucket) + maxDoubleSize + maxLongSize + maxStatsDSuffixSize;
         }
@@ -238,7 +258,9 @@ namespace JustEat.StatsD
                 stat.Add(Bar).Add(sampleRate);
             }
             else
+            {
                 stat.Clear();
+            }
         }
     }
 }
