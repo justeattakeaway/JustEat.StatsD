@@ -131,6 +131,8 @@ namespace JustEat.StatsD
             Send(_formatter.Event(name));
         }
 
+
+
         private void Send(string metric)
         {
             if (string.IsNullOrEmpty(metric))
