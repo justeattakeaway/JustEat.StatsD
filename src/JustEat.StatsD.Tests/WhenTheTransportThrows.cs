@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using Shouldly;
 using Xunit;
@@ -8,12 +7,7 @@ namespace JustEat.StatsD
 {
     public class ThrowingTransport : IStatsDTransport
     {
-        public void Send(string metric)
-        {
-            Send(new[] {metric});
-        }
-
-        public void Send(IEnumerable<string> metrics)
+        public void Send(in Data metric)
         {
             throw new SocketException(42);
         }

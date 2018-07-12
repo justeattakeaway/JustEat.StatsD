@@ -1,6 +1,5 @@
 using System;
 using System.Net.Sockets;
-using System.Text;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -14,7 +13,7 @@ namespace JustEat.StatsD
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
-        public void Send(string metric)
+        public void Send(in Data metric)
         {
             if (string.IsNullOrWhiteSpace(metric))
             {
@@ -22,11 +21,15 @@ namespace JustEat.StatsD
             }
 
             var endpoint = _endpointSource.GetEndpoint();
-            var bytes = Encoding.UTF8.GetBytes(metric);
 
             using (var socket = CreateSocket())
             {
-                socket.SendTo(bytes, endpoint);
+#if NETCOREAPP2_1
+                socket.Connect(endpoint);
+                socket.Send(metric.GetSpan());
+#else
+                socket.SendTo(metric.GetArray(), endpoint);
+#endif
             }
         }
 

@@ -1,6 +1,4 @@
-using System;
-using System.Globalization;
-using Shouldly;
+using System.Text;
 using Xunit;
 
 namespace JustEat.StatsD
@@ -15,7 +13,7 @@ namespace JustEat.StatsD
             var target = new UdpTransport(endPointSource);
 
             // Act and Assert
-            target.Send("mycustommetric");
+            target.Send(Encoding.UTF8.GetBytes("mycustommetric"));
         }
     }
 }
