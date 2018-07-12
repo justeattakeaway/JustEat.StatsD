@@ -149,14 +149,10 @@ namespace JustEat.StatsD
                     Span<byte> destination = stackalloc byte[maxBytes];
                     var written = Encoding.UTF8.GetBytes(metric, destination);
                     _transport.Send(destination.Slice(0, written));
+                    return;
                 }
-                else
-                {
-                    _transport.Send(Encoding.UTF8.GetBytes(metric));
-                }
-#else
-                _transport.Send(Encoding.UTF8.GetBytes(metric));
 #endif
+                _transport.Send(Encoding.UTF8.GetBytes(metric));
             }
             catch (Exception ex)
             {
