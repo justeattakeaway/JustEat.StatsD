@@ -44,4 +44,5 @@ dotnet build src/JustEat.StatsD/JustEat.StatsD.csproj --output $artifacts --conf
 
 if [ $skipTests == 0 ]; then
     dotnet test src/JustEat.StatsD.Tests/JustEat.StatsD.Tests.csproj --output $artifacts --configuration $configuration --framework "netcoreapp2.0" || exit 1
+    dotnet test src/JustEat.StatsD.Tests/JustEat.StatsD.Tests.csproj --output $artifacts --configuration $configuration --framework "netcoreapp2.1" || exit 1
 fi
