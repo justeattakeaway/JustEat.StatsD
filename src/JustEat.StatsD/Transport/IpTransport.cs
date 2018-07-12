@@ -15,11 +15,6 @@ namespace JustEat.StatsD
 
         public void Send(in Data metric)
         {
-            if (string.IsNullOrWhiteSpace(metric))
-            {
-                return;
-            }
-
             var endpoint = _endpointSource.GetEndpoint();
 
             using (var socket = CreateSocket())
