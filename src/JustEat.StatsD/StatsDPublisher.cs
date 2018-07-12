@@ -131,8 +131,6 @@ namespace JustEat.StatsD
             Send(_formatter.Event(name));
         }
 
-
-
         private void Send(string metric)
         {
             if (string.IsNullOrEmpty(metric))
@@ -143,9 +141,12 @@ namespace JustEat.StatsD
             try
             {
 #if NETCOREAPP2_1
-                if (metric.Length <= 128)
+                const int MaxStackallockThresholdInBytes = 256;
+                const int MaxUTF16CharsToFitOnStack = MaxStackallockThresholdInBytes / 2;
+                if (metric.Length <= MaxUTF16CharsToFitOnStack)
                 {
-                    Span<byte> destination = stackalloc byte[metric.Length * 2];
+                    int maxBytes = metric.Length * 2;
+                    Span<byte> destination = stackalloc byte[maxBytes];
                     var written = Encoding.UTF8.GetBytes(metric, destination);
                     _transport.Send(destination.Slice(0, written));
                 }
