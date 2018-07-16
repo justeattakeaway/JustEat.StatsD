@@ -9,6 +9,8 @@ namespace JustEat.StatsD
     {
         private readonly IPEndPointSource _endpointSource;
 
+        private readonly Socket _socket = CreateSocket();
+
         public IpTransport(IPEndPointSource endPointSource)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
@@ -24,10 +26,7 @@ namespace JustEat.StatsD
             var endpoint = _endpointSource.GetEndpoint();
             var bytes = Encoding.UTF8.GetBytes(metric);
 
-            using (var socket = CreateSocket())
-            {
-                socket.SendTo(bytes, endpoint);
-            }
+            _socket.SendTo(bytes, endpoint);
         }
 
         private static Socket CreateSocket()
