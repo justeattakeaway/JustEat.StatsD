@@ -45,10 +45,22 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public void RunUdpWithSampling()
+        {
+            _udpSender.Increment(2, 0.5, "increment.ud");
+        }
+
+        [Benchmark]
         public void RunIp()
         {
             _ipSender.Increment("increment.ip");
             _ipSender.Timing(Timed, "timer.ip");
+        }
+
+        [Benchmark]
+        public void RunIpWithSampling()
+        {
+            _ipSender.Increment(2, 0.5, "increment.ip");
         }
     }
 }

@@ -21,6 +21,12 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public string IncrementBy2WithSampling()
+        {
+            return _formatter.Increment(2, 0.5, "some.stat");
+        }
+
+        [Benchmark]
         public string Decrement()
         {
             return _formatter.Decrement(12, "some.stat");
