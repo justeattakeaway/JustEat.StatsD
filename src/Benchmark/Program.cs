@@ -9,6 +9,7 @@ namespace Benchmark
             BenchmarkRunner.Run<StatSendingBenchmark>();
             BenchmarkRunner.Run<FormatterBenchmark>();
             BenchmarkRunner.Run<UdpTransportBenchmark>();
+            BenchmarkRunner.Run<UdpStatSendingBenchmark>();
         }
     }
 }

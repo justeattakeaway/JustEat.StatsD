@@ -1,5 +1,4 @@
 using System;
-using Moq;
 using Shouldly;
 using Xunit;
 
@@ -15,7 +14,7 @@ namespace JustEat.StatsD
                 Host = "someserver.somewhere.com"
             };
 
-            var stats = new StatsDPublisher(validConfig, Mock.Of<IStatsDTransport>());
+            var stats = new StatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -28,7 +27,7 @@ namespace JustEat.StatsD
                 Host = "10.0.1.2"
             };
 
-            var stats = new StatsDPublisher(validConfig, Mock.Of<IStatsDTransport>());
+            var stats = new StatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -39,7 +38,19 @@ namespace JustEat.StatsD
             StatsDConfiguration noConfig = null;
 
             Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(noConfig, Mock.Of<IStatsDTransport>()));
+             () => new StatsDPublisher(noConfig));
+        }
+
+        [Fact]
+        public void ConfigurationHasNoHost()
+        {
+            var badConfig = new StatsDConfiguration
+            {
+                Host = null
+            };
+
+            Should.Throw<ArgumentNullException>(
+             () => new StatsDPublisher(badConfig));
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Benchmark
     {
         private const string MetricName = "this.is.a.metric";
 
-        private UdpTransport _pooledTransport;
-        private NotPooledUdpTransport _unpooledTransport;
+        private PooledUdpTransport _pooledTransport;
+        private UdpTransport _unpooledTransport;
 
         [GlobalSetup]
         public void Setup()
@@ -25,8 +25,8 @@ namespace Benchmark
                 config.Port,
                 config.DnsLookupInterval);
 
-            _pooledTransport = new UdpTransport(endpointSource);
-            _unpooledTransport = new NotPooledUdpTransport(endpointSource);
+            _pooledTransport = new PooledUdpTransport(endpointSource);
+            _unpooledTransport = new UdpTransport(endpointSource);
         }
 
         [GlobalCleanup]

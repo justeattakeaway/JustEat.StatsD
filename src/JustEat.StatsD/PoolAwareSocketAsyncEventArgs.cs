@@ -6,7 +6,7 @@ namespace JustEat.StatsD
     /// <summary>
     ///     A SocketAsyncEventArgs derived class that is aware that it needs to be returned to an object pool when OnCompleted has been called.
     /// </summary>
-    internal sealed class PoolAwareSocketAsyncEventArgs : SocketAsyncEventArgs
+    public sealed class PoolAwareSocketAsyncEventArgs : SocketAsyncEventArgs
     {
         private readonly SimpleObjectPool<SocketAsyncEventArgs> _parentPool;
 
