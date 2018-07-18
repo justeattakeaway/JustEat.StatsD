@@ -42,7 +42,7 @@ namespace JustEat.StatsD
 
             using (var target = new PooledUdpTransport(endPointSource))
             {
-                Parallel.For(0, 10_000, (_) =>
+                Parallel.For(0, 10_000, _ =>
                 {
                     target.Send("mycustommetric");
                 });

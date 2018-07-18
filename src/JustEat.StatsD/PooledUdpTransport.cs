@@ -10,10 +10,10 @@ namespace JustEat.StatsD
     /// </summary>
     public sealed class PooledUdpTransport : IStatsDTransport, IDisposable
     {
-        private const int PoolSize = 30;
-
         private readonly SimpleObjectPool<Socket> _socketPool
-            = new SimpleObjectPool<Socket>(PoolSize, pool => UdpTransport.CreateSocket());
+            = new SimpleObjectPool<Socket>(
+                Environment.ProcessorCount,
+                pool => UdpTransport.CreateSocket());
 
         private readonly IPEndPointSource _endpointSource;
         private bool _disposed;
@@ -28,6 +28,22 @@ namespace JustEat.StatsD
         public PooledUdpTransport(IPEndPointSource endPointSource)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
+        }
+
+        /// <inheritdoc />
+        public void Send(string metric)
+        {
+            if (string.IsNullOrWhiteSpace(metric))
+            {
+                return;
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(metric);
+            var endpoint = _endpointSource.GetEndpoint();
+
+            var socket = _socketPool.Pop();
+            socket.SendTo(bytes, endpoint);
+            _socketPool.Push(socket);
         }
 
         /// <summary>
@@ -45,34 +61,6 @@ namespace JustEat.StatsD
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
-        public void Send(string metric)
-        {
-            if (string.IsNullOrWhiteSpace(metric))
-            {
-                return;
-            }
-
-            var bytes = Encoding.UTF8.GetBytes(metric);
-            var endpoint = _endpointSource.GetEndpoint();
-
-            var socket = _socketPool.Pop();
-
-            if (socket == null)
-            {
-                return;
-            }
-
-            try
-            {
-                socket.SendTo(bytes, endpoint);
-            }
-            finally
-            {
-                _socketPool.Push(socket);
-            }
-        }
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -84,13 +72,15 @@ namespace JustEat.StatsD
         {
             if (!_disposed)
             {
-                Socket socket = null;
-
                 try
                 {
-                    while ((socket = _socketPool.Pop()) != null)
+                    while (_socketPool.Count > 0)
                     {
-                        socket.Dispose();
+                        var socket = _socketPool.Pop();
+                        if (socket != null)
+                        {
+                            socket.Dispose();
+                        }
                     }
                 }
                 catch (ObjectDisposedException)
