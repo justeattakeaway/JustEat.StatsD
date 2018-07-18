@@ -37,7 +37,7 @@ namespace Benchmark
             _udpSender.Increment("startup.ip");
         }
 
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public void RunUdp()
         {
             _udpSender.Increment("increment.ud");
