@@ -2,13 +2,14 @@ using BenchmarkDotNet.Running;
 
 namespace Benchmark
 {
-
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             BenchmarkRunner.Run<StatSendingBenchmark>();
             BenchmarkRunner.Run<FormatterBenchmark>();
+            BenchmarkRunner.Run<UdpTransportBenchmark>();
+            BenchmarkRunner.Run<UdpStatSendingBenchmark>();
         }
     }
 }

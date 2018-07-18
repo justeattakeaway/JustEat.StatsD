@@ -6,12 +6,13 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
-    public class StatSendingBenchmark
+    public class UdpStatSendingBenchmark
     {
-        private StatsDPublisher _udpSender;
-        private StatsDPublisher _ipSender;
-
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
+
+        private PooledUdpTransport _pooledTransport;
+        private StatsDPublisher _udpSender;
+        private StatsDPublisher _pooledUdpSender;
 
         [GlobalSetup]
         public void Setup()
@@ -25,42 +26,38 @@ namespace Benchmark
             };
 
             var endpointSource = EndpointParser.MakeEndPointSource(
-                config.Host, config.Port, config.DnsLookupInterval);
+                config.Host,
+                config.Port,
+                config.DnsLookupInterval);
 
+            _pooledTransport = new PooledUdpTransport(endpointSource);
             var udpTransport = new UdpTransport(endpointSource);
-            var ipTransport = new IpTransport(endpointSource);
 
             _udpSender = new StatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
 
-            _ipSender = new StatsDPublisher(config, ipTransport);
-            _udpSender.Increment("startup.ip");
+            _pooledUdpSender = new StatsDPublisher(config, _pooledTransport);
+            _pooledUdpSender.Increment("startup.ud");
         }
 
-        [Benchmark]
-        public void RunUdp()
+        [GlobalCleanup]
+        public void Cleanup()
+        {
+            _pooledTransport.Dispose();
+        }
+
+        [Benchmark(Baseline = true)]
+        public void SendStatUdp()
         {
             _udpSender.Increment("increment.ud");
             _udpSender.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]
-        public void RunUdpWithSampling()
+        public void SendStatPooledUdp()
         {
-            _udpSender.Increment(2, 0.5, "increment.ud");
-        }
-
-        [Benchmark]
-        public void RunIp()
-        {
-            _ipSender.Increment("increment.ip");
-            _ipSender.Timing(Timed, "timer.ip");
-        }
-
-        [Benchmark]
-        public void RunIpWithSampling()
-        {
-            _ipSender.Increment(2, 0.5, "increment.ip");
+            _pooledUdpSender.Increment("increment.ud");
+            _pooledUdpSender.Timing(Timed, "timer.ud");
         }
     }
 }
