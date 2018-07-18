@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Sockets;
 
 namespace JustEat.StatsD
@@ -6,7 +6,7 @@ namespace JustEat.StatsD
     /// <summary>
     ///     A SocketAsyncEventArgs derived class that is aware that it needs to be returned to an object pool when OnCompleted has been called.
     /// </summary>
-    public sealed class PoolAwareSocketAsyncEventArgs : SocketAsyncEventArgs
+    internal sealed class PoolAwareSocketAsyncEventArgs : SocketAsyncEventArgs
     {
         private readonly SimpleObjectPool<SocketAsyncEventArgs> _parentPool;
 

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace JustEat.StatsD
 {
     /// <summary>	A class that provides simple thread-safe object pooling semantics.  </summary>
-    public sealed class SimpleObjectPool<T>
+    internal sealed class SimpleObjectPool<T>
         where T : class
     {
         private readonly ConcurrentBag<T> _pool;
