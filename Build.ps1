@@ -1,5 +1,4 @@
 param(
-    [Parameter(Mandatory=$false)][bool]   $RestorePackages  = $false,
     [Parameter(Mandatory=$false)][string] $Configuration    = "Release",
     [Parameter(Mandatory=$false)][string] $OutputPath       = "",
     [Parameter(Mandatory=$false)][bool]   $RunTests         = $true,
@@ -9,18 +8,12 @@ param(
 $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$solutionFile  = Join-Path $solutionPath "JustEat.StatsD.sln"
 $sdkFile       = Join-Path $solutionPath "global.json"
 
 $dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
-}
-
-if ($env:CI -ne $null) {
-
-    $RestorePackages = $true
 }
 
 $installDotNetSdk = $false;
@@ -51,13 +44,6 @@ if ($installDotNetSdk -eq $true) {
     $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
 } else {
     $dotnet   = "dotnet"
-}
-
-function DotNetRestore { param([string]$Project)
-    & $dotnet restore $Project --verbosity minimal
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet restore failed with exit code $LASTEXITCODE"
-    }
 }
 
 function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework)
@@ -92,11 +78,6 @@ $testProjects = @(
 $packageProjects = @(
     (Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj")
 )
-
-if ($RestorePackages -eq $true) {
-    Write-Host "Restoring NuGet packages for solution..." -ForegroundColor Green
-    DotNetRestore $solutionFile
-}
 
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
