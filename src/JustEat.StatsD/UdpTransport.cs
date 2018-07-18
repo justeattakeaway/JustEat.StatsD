@@ -15,9 +15,6 @@ namespace JustEat.StatsD
     {
         private const int PoolSize = 30;
 
-        private static readonly SimpleObjectPool<SocketAsyncEventArgs> EventArgsPool
-            = new SimpleObjectPool<SocketAsyncEventArgs>(PoolSize, pool => new PoolAwareSocketAsyncEventArgs(pool));
-
         private readonly SimpleObjectPool<Socket> _socketPool
             = new SimpleObjectPool<Socket>(PoolSize, pool => CreateSocket());
 
@@ -62,9 +59,20 @@ namespace JustEat.StatsD
             var bytes = Encoding.UTF8.GetBytes(metric);
             var endpoint = _endpointSource.GetEndpoint();
 
-            using (var socket = CreateSocket())
+            var socket = _socketPool.Pop();
+
+            if (socket == null)
+            {
+                return;
+            }
+
+            try
             {
                 socket.SendTo(bytes, endpoint);
+            }
+            finally
+            {
+                _socketPool.Push(socket);
             }
         }
 
