@@ -8,6 +8,7 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class StatSendingBenchmark
     {
+        private UdpTransport _udpTransport;
         private IStatsDPublisher _udpSender;
         private IStatsDPublisher _ipSender;
 
@@ -27,14 +28,20 @@ namespace Benchmark
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var udpTransport = new UdpTransport(endpointSource);
+            _udpTransport = new UdpTransport(endpointSource);
             var ipTransport = new IpTransport(endpointSource);
 
-            _udpSender = new StatsDPublisher(config, udpTransport);
+            _udpSender = new StatsDPublisher(config, _udpTransport);
             _udpSender.Increment("startup.ud");
 
             _ipSender = new StatsDPublisher(config, ipTransport);
             _udpSender.Increment("startup.ip");
+        }
+
+        [GlobalCleanup]
+        public void Cleanup()
+        {
+            _udpTransport.Dispose();
         }
 
         [Benchmark]

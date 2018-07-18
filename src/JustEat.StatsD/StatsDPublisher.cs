@@ -1,5 +1,4 @@
 using System;
-using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
@@ -22,26 +21,6 @@ namespace JustEat.StatsD
             _transport = transport ?? throw new ArgumentNullException(nameof(transport));
 
             _formatter = new StatsDMessageFormatter(configuration.Prefix);
-            _onError = configuration.OnError;
-        }
-
-        public StatsDPublisher(StatsDConfiguration configuration)
-        {
-            if (configuration == null)
-            {
-               throw new ArgumentNullException(nameof(configuration));
-            }
-
-            if (string.IsNullOrWhiteSpace(configuration.Host))
-            {
-                throw new ArgumentNullException(nameof(configuration.Host));
-            }
-
-            _formatter = new StatsDMessageFormatter(configuration.Prefix);
-
-            var endpointSource = EndpointParser.MakeEndPointSource(
-                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
-            _transport = new UdpTransport(endpointSource);
             _onError = configuration.OnError;
         }
 
