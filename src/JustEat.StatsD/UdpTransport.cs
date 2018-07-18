@@ -89,9 +89,20 @@ namespace JustEat.StatsD
             {
                 Socket socket = null;
 
-                while ((socket = _socketPool.Pop()) != null)
+                try
                 {
-                    socket.Dispose();
+                    while ((socket = _socketPool.Pop()) != null)
+                    {
+                        socket.Dispose();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // If the pool has already been disposed by the finalizer, ignore the exception
+                    if (disposing)
+                    {
+                        throw;
+                    }
                 }
 
                 _disposed = true;
