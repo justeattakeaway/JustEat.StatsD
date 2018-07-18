@@ -9,7 +9,7 @@ using JustEat.StatsD.EndpointLookups;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// A class representing an implementation of <see cref="IStatsDTransport"/> uses UDP.
+    /// A class representing an implementation of <see cref="IStatsDTransport"/> that uses UDP.
     /// </summary>
     public class UdpTransport : IStatsDTransport
     {
