@@ -1,6 +1,3 @@
-using System;
-using System.Globalization;
-using Shouldly;
 using Xunit;
 
 namespace JustEat.StatsD
@@ -12,10 +9,28 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
-            var target = new UdpTransport(endPointSource);
 
-            // Act and Assert
-            target.Send("mycustommetric");
+            using (var target = new UdpTransport(endPointSource))
+            {
+                // Act and Assert
+                target.Send("mycustommetric");
+            }
+        }
+
+        [Fact]
+        public static void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrown()
+        {
+            // Arrange
+            var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+
+            using (var target = new UdpTransport(endPointSource))
+            {
+                for (int i = 0; i < 10_000; i++)
+                {
+                    // Act and Assert
+                    target.Send("mycustommetric");
+                }
+            }
         }
     }
 }
