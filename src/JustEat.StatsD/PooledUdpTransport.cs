@@ -42,7 +42,16 @@ namespace JustEat.StatsD
             var endpoint = _endpointSource.GetEndpoint();
 
             var socket = _socketPool.Pop();
-            socket.SendTo(bytes, endpoint);
+            try
+            {
+                socket.SendTo(bytes, endpoint);
+            }
+            catch (Exception)
+            {
+                socket.Dispose();
+                throw;
+            }
+
             _socketPool.Push(socket);
         }
 
