@@ -36,10 +36,10 @@ namespace JustEat.StatsD
             }
         }
 
-        public int Count => _pool.Count;
+        internal int Count => _pool.Count;
 
         /// <summary>Retrieves an object from the pool if one is available.
-        /// Expand the pool if need be </summary>
+        /// return null if the pool is empty</summary>
         /// <returns>An object from the pool. </returns>
         public T Pop()
         {
@@ -48,7 +48,15 @@ namespace JustEat.StatsD
                 return result;
             }
 
-            return _constructor(this);
+            return null;
+        }
+
+        /// <summary>Retrieves an object from the pool if one is available.
+        /// Creates a new object if the pool is empty </summary>
+        /// <returns>An object from the pool. </returns>
+        internal T PopOrCreate()
+        {
+            return Pop() ?? _constructor(this);
         }
 
         /// <summary>	Pushes an object back into the pool. </summary>

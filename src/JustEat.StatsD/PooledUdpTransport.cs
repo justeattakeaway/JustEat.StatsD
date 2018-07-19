@@ -41,7 +41,7 @@ namespace JustEat.StatsD
             var bytes = Encoding.UTF8.GetBytes(metric);
             var endpoint = _endpointSource.GetEndpoint();
 
-            var socket = _socketPool.Pop();
+            var socket = _socketPool.PopOrCreate();
             try
             {
                 socket.SendTo(bytes, endpoint);
