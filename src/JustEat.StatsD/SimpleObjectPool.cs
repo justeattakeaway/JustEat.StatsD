@@ -22,14 +22,14 @@ namespace JustEat.StatsD
             PrePopulate(initialSize);
         }
 
-        private void PrePopulate(int initialSize)
+        private void PrePopulate(int size)
         {
-            for (var i = 0; i < initialSize; ++i)
+            while (Count < size)
             {
                 var instance = _constructor(this);
                 if (instance == null)
                 {
-                    throw new ArgumentException("constructor produced null object");
+                    throw new InvalidOperationException("constructor produced null object");
                 }
 
                 _pool.Add(instance);
