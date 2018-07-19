@@ -8,8 +8,8 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class StatSendingBenchmark
     {
-        private IStatsDPublisher _udpSender;
-        private IStatsDPublisher _ipSender;
+        private StatsDPublisher _udpSender;
+        private StatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
         private StatsDPublisher _nullSender;
@@ -66,11 +66,23 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public void RunUdpWithSampling()
+        {
+            _udpSender.Increment(2, 0.5, "increment.ud");
+        }
+
+        [Benchmark]
         public void RunIp()
         {
             _ipSender.Increment("increment.ip");
             _ipSender.Timing(Timed, "timer.ip");
             _udpSender.Gauge(long.MaxValue / 2, "timer.ip", DateTime.Now);
+        }
+
+        [Benchmark]
+        public void RunIpWithSampling()
+        {
+            _ipSender.Increment(2, 0.5, "increment.ip");
         }
     }
 }

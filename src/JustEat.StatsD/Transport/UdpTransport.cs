@@ -5,16 +5,27 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-
+    /// <summary>
+    /// A class representing an implementation of <see cref="IStatsDTransport"/> that uses UDP.
+    /// </summary>
     public class UdpTransport : IStatsDTransport
     {
         private readonly IPEndPointSource _endpointSource;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UdpTransport"/> class.
+        /// </summary>
+        /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="endPointSource"/> is <see langword="null"/>.
+        /// </exception>
         public UdpTransport(IPEndPointSource endPointSource)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
 
+        
+        /// <inheritdoc />
         public void Send(in Data metric)
         {
             var endpoint = _endpointSource.GetEndpoint();
@@ -30,7 +41,7 @@ namespace JustEat.StatsD
             }
         }
 
-        private static Socket CreateSocket()
+        internal static Socket CreateSocket()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 #if !NET451

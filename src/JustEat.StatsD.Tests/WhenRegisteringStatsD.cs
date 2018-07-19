@@ -28,21 +28,31 @@ namespace JustEat.StatsD
                     services.AddStatsD();
                 });
 
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.ShouldBe(config);
+            try
+            {
+                // Assert
+                var configuration = provider.GetRequiredService<StatsDConfiguration>();
+                configuration.ShouldNotBeNull();
+                configuration.ShouldBe(config);
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
-            source.ShouldNotBeNull();
+                var source = provider.GetRequiredService<IPEndPointSource>();
+                source.ShouldNotBeNull();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<UdpTransport>();
+                var transport = provider.GetRequiredService<IStatsDTransport>();
+                transport.ShouldNotBeNull();
+                transport.ShouldBeOfType<UdpTransport>();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
+                var publisher = provider.GetRequiredService<IStatsDPublisher>();
+                publisher.ShouldNotBeNull();
+                publisher.ShouldBeOfType<StatsDPublisher>();
+            }
+            finally
+            {
+                if (provider is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Fact]
@@ -58,22 +68,32 @@ namespace JustEat.StatsD
                     services.AddStatsD(host);
                 });
 
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(host);
-            configuration.Prefix.ShouldBeEmpty();
+            try
+            {
+                // Assert
+                var configuration = provider.GetRequiredService<StatsDConfiguration>();
+                configuration.ShouldNotBeNull();
+                configuration.Host.ShouldBe(host);
+                configuration.Prefix.ShouldBeEmpty();
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
-            source.ShouldNotBeNull();
+                var source = provider.GetRequiredService<IPEndPointSource>();
+                source.ShouldNotBeNull();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<UdpTransport>();
+                var transport = provider.GetRequiredService<IStatsDTransport>();
+                transport.ShouldNotBeNull();
+                transport.ShouldBeOfType<UdpTransport>();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
+                var publisher = provider.GetRequiredService<IStatsDPublisher>();
+                publisher.ShouldNotBeNull();
+                publisher.ShouldBeOfType<StatsDPublisher>();
+            }
+            finally
+            {
+                if (provider is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Fact]
@@ -90,22 +110,32 @@ namespace JustEat.StatsD
                     services.AddStatsD(host, prefix);
                 });
 
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(host);
-            configuration.Prefix.ShouldBe(prefix);
+            try
+            {
+                // Assert
+                var configuration = provider.GetRequiredService<StatsDConfiguration>();
+                configuration.ShouldNotBeNull();
+                configuration.Host.ShouldBe(host);
+                configuration.Prefix.ShouldBe(prefix);
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
-            source.ShouldNotBeNull();
+                var source = provider.GetRequiredService<IPEndPointSource>();
+                source.ShouldNotBeNull();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<UdpTransport>();
+                var transport = provider.GetRequiredService<IStatsDTransport>();
+                transport.ShouldNotBeNull();
+                transport.ShouldBeOfType<UdpTransport>();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
+                var publisher = provider.GetRequiredService<IStatsDPublisher>();
+                publisher.ShouldNotBeNull();
+                publisher.ShouldBeOfType<StatsDPublisher>();
+            }
+            finally
+            {
+                if (provider is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Fact]
@@ -135,22 +165,32 @@ namespace JustEat.StatsD
                         });
                 });
 
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(options.StatsDHost);
-            configuration.Prefix.ShouldBeEmpty();
+            try
+            {
+                // Assert
+                var configuration = provider.GetRequiredService<StatsDConfiguration>();
+                configuration.ShouldNotBeNull();
+                configuration.Host.ShouldBe(options.StatsDHost);
+                configuration.Prefix.ShouldBeEmpty();
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
-            source.ShouldNotBeNull();
+                var source = provider.GetRequiredService<IPEndPointSource>();
+                source.ShouldNotBeNull();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<UdpTransport>();
+                var transport = provider.GetRequiredService<IStatsDTransport>();
+                transport.ShouldNotBeNull();
+                transport.ShouldBeOfType<UdpTransport>();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
+                var publisher = provider.GetRequiredService<IStatsDPublisher>();
+                publisher.ShouldNotBeNull();
+                publisher.ShouldBeOfType<StatsDPublisher>();
+            }
+            finally
+            {
+                if (provider is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Fact]

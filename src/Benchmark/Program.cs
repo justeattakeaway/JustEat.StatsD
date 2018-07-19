@@ -7,6 +7,7 @@ using BenchmarkDotNet.Toolchains.CsProj;
 
 namespace Benchmark
 {
+
     public class FastRunOnMultipleRuntimes : ManualConfig
     {
         public FastRunOnMultipleRuntimes(Job basis)
@@ -20,12 +21,14 @@ namespace Benchmark
         }
     }
 
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
-            BenchmarkRunner.Run<StatSendingBenchmark>(new FastRunOnMultipleRuntimes(Job.MediumRun));
-            BenchmarkRunner.Run<FormatterBenchmark>(new FastRunOnMultipleRuntimes(Job.MediumRun));
+            BenchmarkRunner.Run<StatSendingBenchmark>();
+            BenchmarkRunner.Run<FormatterBenchmark>();
+            BenchmarkRunner.Run<UdpTransportBenchmark>();
+            BenchmarkRunner.Run<UdpStatSendingBenchmark>();
         }
     }
 }

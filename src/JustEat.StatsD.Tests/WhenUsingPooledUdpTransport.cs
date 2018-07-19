@@ -3,7 +3,7 @@ using Xunit;
 
 namespace JustEat.StatsD
 {
-    public static class WhenUsingUdpTransport
+    public static class WhenUsingPooledUdpTransport
     {
         [Fact]
         public static void AMetricCanBeSentWithoutAnExceptionBeingThrown()
@@ -11,10 +11,11 @@ namespace JustEat.StatsD
             // Arrange
             var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
 
-            var target = new UdpTransport(endPointSource);
-
-            // Act and Assert
-            target.Send("mycustommetric");
+            using (var target = new PooledUdpTransport(endPointSource))
+            {
+                // Act and Assert
+                target.Send("mycustommetric");
+            }
         }
 
         [Fact]
@@ -23,12 +24,13 @@ namespace JustEat.StatsD
             // Arrange
             var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
 
-            var target = new UdpTransport(endPointSource);
-
-            for (int i = 0; i < 10_000; i++)
+            using (var target = new PooledUdpTransport(endPointSource))
             {
-                // Act and Assert
-                target.Send("mycustommetric");
+                for (int i = 0; i < 10_000; i++)
+                {
+                    // Act and Assert
+                    target.Send("mycustommetric");
+                }
             }
         }
 
@@ -38,12 +40,13 @@ namespace JustEat.StatsD
             // Arrange
             var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
 
-            var target = new UdpTransport(endPointSource);
-
-            Parallel.For(0, 10_000, (_) =>
+            using (var target = new PooledUdpTransport(endPointSource))
             {
-                target.Send("mycustommetric");
-            });
+                Parallel.For(0, 10_000, (_) =>
+                {
+                    target.Send("mycustommetric");
+                });
+            }
         }
     }
 }

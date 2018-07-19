@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
@@ -40,9 +40,7 @@ namespace JustEat.StatsD
         /// <returns>	An object or null if the pool has been exhausted. </returns>
         public T Pop()
         {
-            T result;
-
-            if (!_pool.TryTake(out result))
+            if (!_pool.TryTake(out T result))
             {
                 result = null;
             }
