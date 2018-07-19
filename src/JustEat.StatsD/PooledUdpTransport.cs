@@ -86,10 +86,7 @@ namespace JustEat.StatsD
                     while (_socketPool.Count > 0)
                     {
                         var socket = _socketPool.Pop();
-                        if (socket != null)
-                        {
-                            socket.Dispose();
-                        }
+                        socket?.Dispose();
                     }
                 }
                 catch (ObjectDisposedException)
