@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using JustEat.StatsD.EndpointLookups;
@@ -10,13 +11,71 @@ namespace JustEat.StatsD
     /// </summary>
     public sealed class PooledUdpTransport : IStatsDTransport, IDisposable
     {
-        private readonly SimpleObjectPool<Socket> _socketPool
-            = new SimpleObjectPool<Socket>(
-                Environment.ProcessorCount,
-                pool => UdpTransport.CreateSocket());
+        private sealed class ConnectedPool : IDisposable
+        {
+            private bool _disposed;
 
+            public ConnectedPool(IPEndPoint ipEndPoint)
+            {
+                IpEndPoint = ipEndPoint;
+
+                Pool = new SimpleObjectPool<Socket>(
+                    Environment.ProcessorCount,
+                    pool =>
+                    {
+                        var socket = UdpTransport.CreateSocket();
+                        socket.Connect(ipEndPoint);
+                        return socket;
+                    });
+            }
+
+            public SimpleObjectPool<Socket> Pool { get; }
+
+            public IPEndPoint IpEndPoint { get; }
+
+            /// <summary>
+            /// Finalizes an instance of the <see cref="PooledUdpTransport"/> class.
+            /// </summary>
+            ~ConnectedPool()
+            {
+                Dispose(false);
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private void Dispose(bool disposing)
+            {
+                if (!_disposed)
+                {
+                    try
+                    {
+                        while (Pool.Count > 0)
+                        {
+                            var socket = Pool.Pop();
+                            socket?.Dispose();
+                        }
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // If the pool has already been disposed by the finalizer, ignore the exception
+                        if (disposing)
+                        {
+                            throw;
+                        }
+                    }
+
+                    _disposed = true;
+                }
+            }
+        }
+
+        private ConnectedPool _pool;
         private readonly IPEndPointSource _endpointSource;
-        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PooledUdpTransport"/> class.
@@ -40,11 +99,12 @@ namespace JustEat.StatsD
 
             var bytes = Encoding.UTF8.GetBytes(metric);
             var endpoint = _endpointSource.GetEndpoint();
+            var pool = GetPool(endpoint);
+            var socket = pool.Pool.PopOrCreate();
 
-            var socket = _socketPool.PopOrCreate();
             try
             {
-                socket.SendTo(bytes, endpoint);
+                socket.Send(bytes);
             }
             catch (Exception)
             {
@@ -52,54 +112,45 @@ namespace JustEat.StatsD
                 throw;
             }
 
-            _socketPool.Push(socket);
+            pool.Pool.Push(socket);
         }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="PooledUdpTransport"/> class.
-        /// </summary>
-        ~PooledUdpTransport()
-        {
-            Dispose(false);
-        }
-
+        
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _pool?.Dispose();
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        /// <param name="disposing">
-        /// <see langword="true" /> to release both managed and unmanaged resources;
-        /// <see langword="false" /> to release only unmanaged resources.
-        /// </param>
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                try
-                {
-                    while (_socketPool.Count > 0)
-                    {
-                        var socket = _socketPool.Pop();
-                        socket?.Dispose();
-                    }
-                }
-                catch (ObjectDisposedException)
-                {
-                    // If the pool has already been disposed by the finalizer, ignore the exception
-                    if (disposing)
-                    {
-                        throw;
-                    }
-                }
+        private readonly object _lock = new object();
 
-                _disposed = true;
+        private ConnectedPool GetPool(IPEndPoint endPoint)
+        {
+            if (_pool == null)
+            {
+                lock (_lock)
+                {
+                    if (_pool == null)
+                    {
+                        _pool = new ConnectedPool(endPoint);
+                        return _pool;
+                    }
+                }
             }
+
+            if (endPoint.Equals(_pool.IpEndPoint))
+            {
+                return _pool;
+            }
+            else
+            {
+                lock (_lock)
+                {
+                    _pool.Dispose();
+                    _pool = new ConnectedPool(endPoint);
+                    return _pool;
+                }
+            }
+
         }
     }
 }
