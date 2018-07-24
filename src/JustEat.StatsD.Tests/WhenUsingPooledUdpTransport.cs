@@ -143,6 +143,41 @@ namespace JustEat.StatsD
             {
                 Parallel.For(0, 10_000, _ =>
                 {
+                    // Act and Assert
+                    target.Send("mycustommetric");
+                });
+            }
+        }
+
+        [Fact]
+        public static void EndpointSwitchShouldNotCauseExceptionsSequential()
+        {
+            // Arrange
+            var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+            var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
+            
+            using (var target = new PooledUdpTransport(new RandomSwitcher(endPointSource2, endPointSource1)))
+            {
+                for (int i = 0; i < 10_000; i++)
+                {
+                    // Act and Assert
+                    target.Send("mycustommetric");
+                }
+            }
+        }
+
+        [Fact]
+        public static void EndpointSwitchShouldNotCauseExceptionsParallel()
+        {
+            // Arrange
+            var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+            var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
+            
+            using (var target = new PooledUdpTransport(new RandomSwitcher(endPointSource2, endPointSource1)))
+            {
+                Parallel.For(0, 10_000, _ =>
+                {
+                    // Act and Assert
                     target.Send("mycustommetric");
                 });
             }

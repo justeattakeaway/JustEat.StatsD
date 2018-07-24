@@ -1,31 +1,11 @@
 using System;
 using System.Net;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Jobs;
 using JustEat.StatsD;
 using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
 {
-    public class MilisecondSwitcher : IPEndPointSource
-    {
-        private readonly IPEndPointSource _endpointSource1;
-        private readonly IPEndPointSource _endpointSource2;
-
-        public MilisecondSwitcher(IPEndPointSource endpointSource1, IPEndPointSource endpointSource2)
-        {
-            _endpointSource1 = endpointSource1;
-            _endpointSource2 = endpointSource2;
-        }
-
-        public IPEndPoint GetEndpoint()
-        {
-            return DateTime.Now.Millisecond % 2 == 0 ?
-                _endpointSource1.GetEndpoint() :
-                _endpointSource2.GetEndpoint();
-        }
-    }
-
     [MemoryDiagnoser]
     public class UdpTransportBenchmark
     {
@@ -34,6 +14,25 @@ namespace Benchmark
         private PooledUdpTransport _pooledTransport;
         private PooledUdpTransport _pooledTransportSwitched;
         private UdpTransport _unpooledTransport;
+
+        private class MilisecondSwitcher : IPEndPointSource
+        {
+            private readonly IPEndPointSource _endpointSource1;
+            private readonly IPEndPointSource _endpointSource2;
+
+            public MilisecondSwitcher(IPEndPointSource endpointSource1, IPEndPointSource endpointSource2)
+            {
+                _endpointSource1 = endpointSource1;
+                _endpointSource2 = endpointSource2;
+            }
+
+            public IPEndPoint GetEndpoint()
+            {
+                return DateTime.Now.Millisecond % 2 == 0 ?
+                    _endpointSource1.GetEndpoint() :
+                    _endpointSource2.GetEndpoint();
+            }
+        }
 
         [GlobalSetup]
         public void Setup()
