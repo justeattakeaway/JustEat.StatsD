@@ -51,7 +51,7 @@ namespace Benchmark
 
             var endpointSource2 = EndpointParser.MakeEndPointSource(
                 config.Host,
-                config.Port + 2,
+                config.Port + 1,
                 config.DnsLookupInterval);
 
             var switcher = new MilisecondSwitcher(endpointSource1, endpointSource2);

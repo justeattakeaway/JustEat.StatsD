@@ -1,7 +1,7 @@
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -11,70 +11,7 @@ namespace JustEat.StatsD
     /// </summary>
     public sealed class PooledUdpTransport : IStatsDTransport, IDisposable
     {
-        private sealed class ConnectedPool : IDisposable
-        {
-            private bool _disposed;
-
-            public ConnectedPool(IPEndPoint ipEndPoint)
-            {
-                IpEndPoint = ipEndPoint;
-
-                Pool = new SimpleObjectPool<Socket>(
-                    Environment.ProcessorCount,
-                    pool =>
-                    {
-                        var socket = UdpTransport.CreateSocket();
-                        socket.Connect(ipEndPoint);
-                        return socket;
-                    });
-            }
-
-            public SimpleObjectPool<Socket> Pool { get; }
-
-            public IPEndPoint IpEndPoint { get; }
-
-            /// <summary>
-            /// Finalizes an instance of the <see cref="PooledUdpTransport"/> class.
-            /// </summary>
-            ~ConnectedPool()
-            {
-                Dispose(false);
-            }
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                if (!_disposed)
-                {
-                    try
-                    {
-                        while (Pool.Count > 0)
-                        {
-                            var socket = Pool.Pop();
-                            socket?.Dispose();
-                        }
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // If the pool has already been disposed by the finalizer, ignore the exception
-                        if (disposing)
-                        {
-                            throw;
-                        }
-                    }
-
-                    _disposed = true;
-                }
-            }
-        }
-
-        private ConnectedPool _pool;
+        private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
 
         /// <summary>
@@ -98,9 +35,8 @@ namespace JustEat.StatsD
             }
 
             var bytes = Encoding.UTF8.GetBytes(metric);
-            var endpoint = _endpointSource.GetEndpoint();
-            var pool = GetPool(endpoint);
-            var socket = pool.Pool.PopOrCreate();
+            var pool = GetPool(_endpointSource.GetEndpoint());
+            var socket = pool.PopOrCreate();
 
             try
             {
@@ -112,45 +48,38 @@ namespace JustEat.StatsD
                 throw;
             }
 
-            pool.Pool.Push(socket);
+            pool.Push(socket);
         }
-        
+
         /// <inheritdoc />
         public void Dispose()
         {
             _pool?.Dispose();
         }
 
-        private readonly object _lock = new object();
-
-        private ConnectedPool GetPool(IPEndPoint endPoint)
+        private ConnectedSocketPool GetPool(IPEndPoint endPoint)
         {
-            if (_pool == null)
-            {
-                lock (_lock)
-                {
-                    if (_pool == null)
-                    {
-                        _pool = new ConnectedPool(endPoint);
-                        return _pool;
-                    }
-                }
-            }
+            var oldPool = _pool;
 
-            if (endPoint.Equals(_pool.IpEndPoint))
+            if (oldPool != null && (ReferenceEquals(oldPool.IpEndPoint, endPoint) || oldPool.IpEndPoint.Equals(endPoint)))
             {
-                return _pool;
+                return oldPool;
             }
             else
             {
-                lock (_lock)
+                var newPool = new ConnectedSocketPool(endPoint);
+
+                if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
                 {
-                    _pool.Dispose();
-                    _pool = new ConnectedPool(endPoint);
+                    oldPool?.Dispose();
+                    return newPool;
+                }
+                else
+                {
+                    newPool.Dispose();
                     return _pool;
                 }
             }
-
         }
     }
 }
