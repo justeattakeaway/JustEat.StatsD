@@ -17,7 +17,10 @@ namespace JustEat.StatsD
         public void AMetricCanBeSentWithoutAnExceptionBeingThrown()
         {
             // Arrange
-            var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+            var endPointSource = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointA.Address.ToString(),
+                UdpListeners.EndpointA.Port,
+                null);
 
             using (var target = new PooledUdpTransport(endPointSource))
             {
@@ -30,7 +33,10 @@ namespace JustEat.StatsD
         public void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrownSerial()
         {
             // Arrange
-            var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+            var endPointSource = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointA.Address.ToString(),
+                UdpListeners.EndpointA.Port,
+                null);
 
             using (var target = new PooledUdpTransport(endPointSource))
             {
@@ -46,7 +52,10 @@ namespace JustEat.StatsD
         public void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrownParallel()
         {
             // Arrange
-            var endPointSource = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
+            var endPointSource = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointA.Address.ToString(),
+                UdpListeners.EndpointA.Port,
+                null);
 
             using (var target = new PooledUdpTransport(endPointSource))
             {
@@ -62,8 +71,15 @@ namespace JustEat.StatsD
         public static void EndpointSwitchShouldNotCauseExceptionsSequential()
         {
             // Arrange
-            var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
-            var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
+            var endPointSource1 = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointA.Address.ToString(),
+                UdpListeners.EndpointA.Port,
+                null);
+
+            var endPointSource2 = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointB.Address.ToString(),
+                UdpListeners.EndpointB.Port,
+                null);
             
             using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
             {
@@ -79,8 +95,15 @@ namespace JustEat.StatsD
         public static void EndpointSwitchShouldNotCauseExceptionsParallel()
         {
             // Arrange
-            var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
-            var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
+            var endPointSource1 = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointA.Address.ToString(),
+                UdpListeners.EndpointA.Port,
+                null);
+
+            var endPointSource2 = EndpointParser.MakeEndPointSource(
+                UdpListeners.EndpointB.Address.ToString(),
+                UdpListeners.EndpointB.Port,
+                null);
             
             using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
             {

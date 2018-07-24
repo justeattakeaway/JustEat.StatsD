@@ -6,20 +6,24 @@ namespace JustEat.StatsD
 {
     public sealed class UdpListeners : IDisposable
     {
-        private readonly UdpListener _one;
-        private readonly UdpListener _two;
+        private readonly UdpListener _listenerA;
+        private readonly UdpListener _listenerB;
 
         public UdpListeners()
         {
-            _one = new UdpListener(8125);
-            _two = new UdpListener(8126);
+            _listenerA = new UdpListener(EndpointA.Port);
+            _listenerB = new UdpListener(EndpointB.Port);
         }
 
         public void Dispose()
         {
-            _one.Dispose();
-            _two.Dispose();
+            _listenerA.Dispose();
+            _listenerB.Dispose();
         }
+
+        public static IPEndPoint EndpointA { get; } = new IPEndPoint(IPAddress.Loopback, 7125);
+
+        public static IPEndPoint EndpointB { get; } = new IPEndPoint(IPAddress.Loopback, 7126);
 
         private sealed class UdpListener : IDisposable
         {
