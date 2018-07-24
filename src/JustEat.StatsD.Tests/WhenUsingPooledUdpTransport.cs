@@ -9,45 +9,7 @@ using Xunit;
 
 namespace JustEat.StatsD
 {
-    public sealed class UdpListener : IDisposable
-    {
-        private readonly Socket _socket;
-        private EndPoint _endPoint;
-
-        public class State
-        {
-            public const int BufSize = 8 * 1024;
-            public readonly byte[] Buffer = new byte[BufSize];
-        }
-
-        public UdpListener(int port)
-        {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            _endPoint = new IPEndPoint(IPAddress.Loopback, port);
-            _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-        }
-
-        public void Start()
-        {
-            var state = new State();
-            AsyncCallback recv = null;
-            
-            _socket.Bind(_endPoint);
-            _socket.BeginReceiveFrom(state.Buffer, 0, State.BufSize, SocketFlags.None, ref _endPoint, recv = (ar) =>
-            {
-                var so = (State)ar.AsyncState;
-                int _ = _socket.EndReceiveFrom(ar, ref _endPoint);
-                _socket.BeginReceiveFrom(so.Buffer, 0, State.BufSize, SocketFlags.None, ref _endPoint, recv, so);
-            }, state);
-        }
-
-        public void Dispose()
-        {
-            _socket.Dispose();
-        }
-    }
-
-    public sealed class Servers : IDisposable
+    internal sealed class Servers : IDisposable
     {
         private readonly UdpListener _one;
         private readonly UdpListener _two;
@@ -56,14 +18,6 @@ namespace JustEat.StatsD
         {
             _one = new UdpListener(8125);
             _two = new UdpListener(8126);
-
-            Start();
-        }
-
-        public void Start()
-        {
-            _one.Start();
-            _two.Start();
         }
 
         public void Dispose()
@@ -71,24 +25,22 @@ namespace JustEat.StatsD
             _one.Dispose();
             _two.Dispose();
         }
-    }
 
-    public class MilisecondSwitcher : IPEndPointSource
-    {
-        private readonly IPEndPointSource _endpointSource1;
-        private readonly IPEndPointSource _endpointSource2;
-
-        public MilisecondSwitcher(IPEndPointSource endpointSource1, IPEndPointSource endpointSource2)
+        private sealed class UdpListener : IDisposable
         {
-            _endpointSource1 = endpointSource1;
-            _endpointSource2 = endpointSource2;
-        }
+            private readonly Socket _socket;
 
-        public IPEndPoint GetEndpoint()
-        {
-            return DateTime.Now.Millisecond % 2 == 0 ?
-                _endpointSource1.GetEndpoint() :
-                _endpointSource2.GetEndpoint();
+            public UdpListener(int port)
+            {
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                var endPoint = new IPEndPoint(IPAddress.Loopback, port);
+                _socket.Bind(endPoint);            
+            }      
+
+            public void Dispose()
+            {
+                _socket.Dispose();
+            }
         }
     }
 
@@ -119,7 +71,7 @@ namespace JustEat.StatsD
             }
         }
 
-        public WhenUsingPooledUdpTransport(Servers servers)
+        internal WhenUsingPooledUdpTransport(Servers servers)
         {
         }
 
