@@ -73,6 +73,25 @@ namespace JustEat.StatsD
         }
     }
 
+    public class MilisecondSwitcher : IPEndPointSource
+    {
+        private readonly IPEndPointSource _endpointSource1;
+        private readonly IPEndPointSource _endpointSource2;
+
+        public MilisecondSwitcher(IPEndPointSource endpointSource1, IPEndPointSource endpointSource2)
+        {
+            _endpointSource1 = endpointSource1;
+            _endpointSource2 = endpointSource2;
+        }
+
+        public IPEndPoint GetEndpoint()
+        {
+            return DateTime.Now.Millisecond % 2 == 0 ?
+                _endpointSource1.GetEndpoint() :
+                _endpointSource2.GetEndpoint();
+        }
+    }
+
     [CollectionDefinition("REAL_UDP", DisableParallelization = true)]
     public class DatabaseCollection : ICollectionFixture<Servers>
     {
@@ -156,7 +175,7 @@ namespace JustEat.StatsD
             var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
             var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
             
-            using (var target = new PooledUdpTransport(new RandomSwitcher(endPointSource2, endPointSource1)))
+            using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
             {
                 for (int i = 0; i < 10_000; i++)
                 {
@@ -173,7 +192,7 @@ namespace JustEat.StatsD
             var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
             var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
             
-            using (var target = new PooledUdpTransport(new RandomSwitcher(endPointSource2, endPointSource1)))
+            using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
             {
                 Parallel.For(0, 10_000, _ =>
                 {
@@ -182,24 +201,5 @@ namespace JustEat.StatsD
                 });
             }
         }
-
-        [Fact]
-        public void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrownParallel_WithChangingEndpoints()
-        {
-            // Arrange
-            var endPointSource1 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8125, null);
-            var endPointSource2 = EndpointLookups.EndpointParser.MakeEndPointSource("127.0.0.1", 8126, null);
-
-            var endPointSource = new MilisecondSwitcher(endPointSource1, endPointSource2);
-
-            using (var target = new PooledUdpTransport(endPointSource))
-            {
-                Parallel.For(0, 10_000, _ =>
-                {
-                    target.Send("mycustommetric");
-                });
-            }
-        }
-
     }
 }

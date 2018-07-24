@@ -78,10 +78,10 @@ namespace Benchmark
             _pooledTransport.Send(MetricName);
         }
 
-        //[Benchmark]
-        //public void SendWithPoolSwitcher()
-        //{
-        //    _pooledTransportSwitched.Send(MetricName);
-        //}
+        [Benchmark]
+        public void SendWithPoolSwitcher()
+        {
+            _pooledTransportSwitched.Send(MetricName);
+        }
     }
 }
