@@ -27,7 +27,6 @@ namespace Benchmark
     }
 
     [MemoryDiagnoser]
-    [ShortRunJob]
     public class UdpTransportBenchmark
     {
         private const string MetricName = "this.is.a.metric";
@@ -80,10 +79,10 @@ namespace Benchmark
             _pooledTransport.Send(MetricName);
         }
 
-        [Benchmark]
-        public void SendWithPoolSwitcher()
-        {
-            _pooledTransportSwitched.Send(MetricName);
-        }
+        //[Benchmark]
+        //public void SendWithPoolSwitcher()
+        //{
+        //    _pooledTransportSwitched.Send(MetricName);
+        //}
     }
 }
