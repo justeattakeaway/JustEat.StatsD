@@ -34,13 +34,11 @@ namespace JustEat.StatsD
 
         public IPEndPoint IpEndPoint { get; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Socket PopOrCreate()
         {
             return _pool.PopOrCreate();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Push(Socket item)
         {
             _pool.Push(item);
