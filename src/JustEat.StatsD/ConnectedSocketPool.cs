@@ -26,7 +26,7 @@ namespace JustEat.StatsD
                     }
                     catch
                     {
-                        socket?.Dispose();
+                        socket.Dispose();
                         throw;
                     }
                 });
