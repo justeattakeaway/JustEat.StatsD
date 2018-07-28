@@ -6,10 +6,9 @@ namespace Benchmark
     {
         internal static void Main(string[] args)
         {
-            BenchmarkRunner.Run<StatSendingBenchmark>();
-            BenchmarkRunner.Run<FormatterBenchmark>();
-            BenchmarkRunner.Run<UdpTransportBenchmark>();
-            BenchmarkRunner.Run<UdpStatSendingBenchmark>();
+            BenchmarkSwitcher
+                .FromAssembly(typeof(Program).Assembly)
+                .Run(args);
         }
     }
 }
