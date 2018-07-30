@@ -1,10 +1,20 @@
-﻿using System;
+using System;
 using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
 {
     public static class EndpointParser
     {
+        public static IPEndPointSource MakeEndPointSource(IPEndPoint endpoint, TimeSpan? endpointCacheDuration)
+        {
+            if (endpoint == null)
+            {
+                throw new ArgumentNullException(nameof(endpoint));
+            }
+
+            return MakeEndPointSource(endpoint.Address.ToString(), endpoint.Port, endpointCacheDuration);
+        }
+
         public static IPEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
         {
             if (string.IsNullOrWhiteSpace(host))

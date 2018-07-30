@@ -18,8 +18,7 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointA.Address.ToString(),
-                UdpListeners.EndpointA.Port,
+                UdpListeners.EndpointA,
                 null);
 
             using (var target = new PooledUdpTransport(endPointSource))
@@ -34,8 +33,7 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointA.Address.ToString(),
-                UdpListeners.EndpointA.Port,
+                UdpListeners.EndpointA,
                 null);
 
             using (var target = new PooledUdpTransport(endPointSource))
@@ -53,8 +51,7 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointA.Address.ToString(),
-                UdpListeners.EndpointA.Port,
+                UdpListeners.EndpointA,
                 null);
 
             using (var target = new PooledUdpTransport(endPointSource))
@@ -72,13 +69,11 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource1 = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointA.Address.ToString(),
-                UdpListeners.EndpointA.Port,
+                UdpListeners.EndpointA,
                 null);
 
             var endPointSource2 = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointB.Address.ToString(),
-                UdpListeners.EndpointB.Port,
+                UdpListeners.EndpointB,
                 null);
             
             using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
@@ -96,13 +91,11 @@ namespace JustEat.StatsD
         {
             // Arrange
             var endPointSource1 = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointA.Address.ToString(),
-                UdpListeners.EndpointA.Port,
+                UdpListeners.EndpointA,
                 null);
 
             var endPointSource2 = EndpointParser.MakeEndPointSource(
-                UdpListeners.EndpointB.Address.ToString(),
-                UdpListeners.EndpointB.Port,
+                UdpListeners.EndpointB,
                 null);
             
             using (var target = new PooledUdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
