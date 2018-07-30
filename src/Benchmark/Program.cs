@@ -7,28 +7,25 @@ using BenchmarkDotNet.Toolchains.CsProj;
 
 namespace Benchmark
 {
-
-    public class FastRunOnMultipleRuntimes : ManualConfig
-    {
-        public FastRunOnMultipleRuntimes(Job basis)
-        {
-            Add(basis.With(Runtime.Core).With(Jit.RyuJit).WithGcServer(true).With(CsProjCoreToolchain.NetCoreApp21));
-            Add(basis.With(Runtime.Core).With(Jit.RyuJit).WithGcServer(true).With(CsProjCoreToolchain.NetCoreApp20));
-            Add(basis.With(Runtime.Clr).With(Jit.RyuJit).WithGcServer(true));
-
-            Add(DefaultConfig.Instance);
-            Add(MemoryDiagnoser.Default);
-        }
-    }
-
     internal static class Program
     {
         internal static void Main(string[] args)
         {
-            BenchmarkRunner.Run<StatSendingBenchmark>();
-            BenchmarkRunner.Run<FormatterBenchmark>();
-            BenchmarkRunner.Run<UdpTransportBenchmark>();
-            BenchmarkRunner.Run<UdpStatSendingBenchmark>();
+            BenchmarkSwitcher
+                .FromAssembly(typeof(Program).Assembly)
+                .Run(args, new MultipleRuntimes(Job.ShortRun));
+        }
+
+        private class MultipleRuntimes : ManualConfig
+        {
+            public MultipleRuntimes(Job basis)
+            {
+                Add(basis.With(Runtime.Core).With(Jit.RyuJit).WithGcServer(true).With(CsProjCoreToolchain.NetCoreApp21));
+                Add(basis.With(Runtime.Core).With(Jit.RyuJit).WithGcServer(true).With(CsProjCoreToolchain.NetCoreApp20));
+
+                Add(DefaultConfig.Instance);
+                Add(MemoryDiagnoser.Default);
+            }
         }
     }
 }

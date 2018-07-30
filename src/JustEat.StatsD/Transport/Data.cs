@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace JustEat.StatsD
 {
@@ -31,6 +32,11 @@ namespace JustEat.StatsD
         public static implicit operator Data(Span<byte> source)
         {
             return new Data(source);
+        }
+
+        public static implicit operator Data(string source)
+        {
+            return new Data(Encoding.UTF8.GetBytes(source));
         }
     }
 }
