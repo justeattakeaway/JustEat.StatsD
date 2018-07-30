@@ -12,7 +12,14 @@ namespace JustEat.StatsD.EndpointLookups
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            return MakeEndPointSource(endpoint.Address.ToString(), endpoint.Port, endpointCacheDuration);
+            IPEndPointSource source = new SimpleIpEndpoint(endpoint);
+
+            if (!endpointCacheDuration.HasValue)
+            {
+                return source;
+            }
+
+            return new CachedIpEndpointSource(source, endpointCacheDuration.Value);
         }
 
         public static IPEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
@@ -22,18 +29,17 @@ namespace JustEat.StatsD.EndpointLookups
                 throw new ArgumentException("statsd host is null or empty");
             }
 
-            IPAddress address;
-            if (IPAddress.TryParse(host, out address))
+            if (IPAddress.TryParse(host, out IPAddress address))
             {
-                //if we were given an IP instead of a hostname, 
+                // If we were given an IP instead of a hostname, 
                 // we can happily keep it the life of this class
                 var endpoint = new IPEndPoint(address, port);
                 return new SimpleIpEndpoint(endpoint);
             }
 
-            // we have a host name,
-            // so we use DNS lookup
+            // We have a host name, so we use DNS lookup
             var uncachedLookup = new DnsLookupIpEndpointSource(host, port);
+
             if (!endpointCacheDuration.HasValue)
             {
                 return uncachedLookup;
