@@ -27,9 +27,9 @@ if ($env:APPVEYOR_REPO_TAG -ne "true") {
   }
 }
 else {
-  if ($APPVEYOR_REPO_TAG_NAME.Contains("-")) {
-    $dashIndex = $APPVEYOR_REPO_TAG_NAME.IndexOf("-")
-    $versionSuffix = $APPVEYOR_REPO_TAG_NAME.Substring($dashIndex + 1)
+  if ($env:APPVEYOR_REPO_TAG_NAME.Contains("-")) {
+    $dashIndex = $env:APPVEYOR_REPO_TAG_NAME.IndexOf("-")
+    $versionSuffix = $env:APPVEYOR_REPO_TAG_NAME.Substring($dashIndex + 1)
   }
 
 }
