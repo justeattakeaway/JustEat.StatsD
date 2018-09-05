@@ -6,10 +6,11 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [ShortRunJob]
     public class StatSendingBenchmark
     {
         private StatsDPublisher _udpSender;
-        private StatsDPublisher _ipSender;
+        private SenderV2 _newSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -27,21 +28,23 @@ namespace Benchmark
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var udpTransport = new UdpTransport(endpointSource);
-            var ipTransport = new IpTransport(endpointSource);
+            var udpTransport = new PooledUdpTransport(endpointSource);
 
             _udpSender = new StatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
-
-            _ipSender = new StatsDPublisher(config, ipTransport);
-            _udpSender.Increment("startup.ip");
+            
+            _newSender = new SenderV2(config);
+            _newSender.Increment("startup.ip");
         }
 
         [Benchmark]
         public void RunUdp()
         {
-            _udpSender.Increment("increment.ud");
+            _udpSender.MarkEvent("hello.ud");
+            _udpSender.Increment(20, "increment.ud");
             _udpSender.Timing(Timed, "timer.ud");
+            _udpSender.Gauge(354654, "gauge.ud");
+            _udpSender.Gauge(25.1, "free-space.ud");
         }
 
         [Benchmark]
@@ -51,16 +54,19 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public void RunIp()
+        public void RunV2()
         {
-            _ipSender.Increment("increment.ip");
-            _ipSender.Timing(Timed, "timer.ip");
+            _newSender.MarkEvent("hello.ip");
+            _newSender.Increment(20, "increment.ip");
+            _newSender.Timing(Timed, "timer.ip");
+            _newSender.Gauge(354654, "gauge.ip");
+            _newSender.Gauge(25.1, "free-space.ip");
         }
 
         [Benchmark]
-        public void RunIpWithSampling()
+        public void RunV2WithSampling()
         {
-            _ipSender.Increment(2, 0.5, "increment.ip");
+            _newSender.Increment(2, 0.5, "increment.ip");
         }
     }
 }
