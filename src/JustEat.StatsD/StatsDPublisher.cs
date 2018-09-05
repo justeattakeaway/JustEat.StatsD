@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -40,7 +41,10 @@ namespace JustEat.StatsD
             _formatter = new StatsDMessageFormatter(configuration.Prefix);
 
             var endpointSource = EndpointParser.MakeEndPointSource(
-                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
+                configuration.Host,
+                configuration.Port,
+                configuration.DnsLookupInterval);
+
             _transport = new UdpTransport(endpointSource);
             _onError = configuration.OnError;
         }
@@ -129,9 +133,26 @@ namespace JustEat.StatsD
 
         private void Send(string metric)
         {
+            if (string.IsNullOrEmpty(metric))
+            {
+                return;
+            }
+
             try
             {
-                _transport.Send(metric);
+#if NETCOREAPP2_1
+                const int MaxStackallockThresholdInBytes = 256;
+                const int MaxUTF16CharsToFitOnStack = MaxStackallockThresholdInBytes / 2;
+                if (metric.Length <= MaxUTF16CharsToFitOnStack)
+                {
+                    int maxBytes = metric.Length * 2;
+                    Span<byte> destination = stackalloc byte[maxBytes];
+                    var written = Encoding.UTF8.GetBytes(metric, destination);
+                    _transport.Send(destination.Slice(0, written));
+                    return;
+                }
+#endif
+                _transport.Send(Encoding.UTF8.GetBytes(metric));
             }
             catch (Exception ex)
             {

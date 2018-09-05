@@ -12,6 +12,15 @@ namespace Benchmark
         private StatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
+        private StatsDPublisher _nullSender;
+
+        private class NullTransport : IStatsDTransport
+        {
+            public void Send(in Data metric)
+            {
+
+            }
+        }
 
         [GlobalSetup]
         public void Setup()
@@ -34,7 +43,18 @@ namespace Benchmark
             _udpSender.Increment("startup.ud");
 
             _ipSender = new StatsDPublisher(config, ipTransport);
-            _udpSender.Increment("startup.ip");
+            _ipSender.Increment("startup.ip");
+
+            _nullSender = new StatsDPublisher(config, new NullTransport());
+
+        }
+
+        [Benchmark]
+        public void RunNull()
+        {
+            _nullSender.Increment("increment.null");
+            _nullSender.Timing(Timed, "timer.null");
+            _nullSender.Gauge(long.MaxValue / 2, "timer.null", DateTime.Now);
         }
 
         [Benchmark]
@@ -42,6 +62,7 @@ namespace Benchmark
         {
             _udpSender.Increment("increment.ud");
             _udpSender.Timing(Timed, "timer.ud");
+            _udpSender.Gauge(long.MaxValue / 2, "timer.ud", DateTime.Now);
         }
 
         [Benchmark]
@@ -55,6 +76,7 @@ namespace Benchmark
         {
             _ipSender.Increment("increment.ip");
             _ipSender.Timing(Timed, "timer.ip");
+            _udpSender.Gauge(long.MaxValue / 2, "timer.ip", DateTime.Now);
         }
 
         [Benchmark]

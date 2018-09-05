@@ -7,7 +7,7 @@ namespace JustEat.StatsD
 {
     public class ThrowingTransport : IStatsDTransport
     {
-        public void Send(string metric)
+        public void Send(in Data metric)
         {
             throw new SocketException(42);
         }

@@ -27,20 +27,18 @@ namespace JustEat.StatsD
         }
 
         /// <inheritdoc />
-        public void Send(string metric)
+        public void Send(in Data metric)
         {
-            if (string.IsNullOrWhiteSpace(metric))
-            {
-                return;
-            }
-
-            var bytes = Encoding.UTF8.GetBytes(metric);
             var pool = GetPool(_endpointSource.GetEndpoint());
             var socket = pool.PopOrCreate();
 
             try
             {
-                socket.Send(bytes);
+#if NETCOREAPP2_1
+                socket.Send(metric.GetSpan());
+#else
+                socket.Send(metric.GetArray());
+#endif
             }
             catch (Exception)
             {

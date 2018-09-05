@@ -1,6 +1,5 @@
-#if !NET451
+#if !NET471
 using System;
-using System.Collections.Generic;
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -341,11 +340,7 @@ namespace JustEat.StatsD
             {
             }
 
-            public void Send(string metric)
-            {
-            }
-
-            public void Send(IEnumerable<string> metrics)
+            public void Send(in Data metric)
             {
             }
         }
