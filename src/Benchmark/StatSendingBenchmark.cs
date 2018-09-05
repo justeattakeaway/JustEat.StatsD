@@ -11,7 +11,8 @@ namespace Benchmark
     public class StatSendingBenchmark
     {
         private StatsDPublisher _udpSender;
-        private StatsDPublisherV2 _newStatsDPublisher;
+        private StatsDPublisherV2 _v2Publisher;
+        private StatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -29,13 +30,17 @@ namespace Benchmark
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var udpTransport = new PooledUdpTransport(endpointSource);
-
+            var udpTransport = new UdpTransport(endpointSource);
             _udpSender = new StatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
-            
-            _newStatsDPublisher = new StatsDPublisherV2(config);
-            _newStatsDPublisher.Increment("startup.ip");
+
+            var ipTransport = new IpTransport(endpointSource);
+            _ipSender = new StatsDPublisher(config, ipTransport);
+            _ipSender.Increment("startup.ip");
+
+            var pooledUdpV2 = new PooledUdpTransportV2(endpointSource);
+            _v2Publisher = new StatsDPublisherV2(config, pooledUdpV2);
+            _v2Publisher.Increment("startup.v2");
         }
 
         [Benchmark]
@@ -55,19 +60,35 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public void RunIp()
+        {
+            _ipSender.MarkEvent("hello.ip");
+            _ipSender.Increment(20, "increment.ip");
+            _ipSender.Timing(Timed, "timer.ip");
+            _ipSender.Gauge(354654, "gauge.ip");
+            _ipSender.Gauge(25.1, "free-space.ip");
+        }
+
+        [Benchmark]
+        public void RunIpWithSampling()
+        {
+            _udpSender.Increment(2, 0.5, "increment.ip");
+        }
+
+        [Benchmark]
         public void RunV2()
         {
-            _newStatsDPublisher.MarkEvent("hello.ip");
-            _newStatsDPublisher.Increment(20, "increment.ip");
-            _newStatsDPublisher.Timing(Timed, "timer.ip");
-            _newStatsDPublisher.Gauge(354654, "gauge.ip");
-            _newStatsDPublisher.Gauge(25.1, "free-space.ip");
+            _v2Publisher.MarkEvent("hello.v2");
+            _v2Publisher.Increment(20, "increment.v2");
+            _v2Publisher.Timing(Timed, "timer.v2");
+            _v2Publisher.Gauge(354654, "gauge.v2");
+            _v2Publisher.Gauge(25.1, "free-space.v2");
         }
 
         [Benchmark]
         public void RunV2WithSampling()
         {
-            _newStatsDPublisher.Increment(2, 0.5, "increment.ip");
+            _v2Publisher.Increment(2, 0.5, "increment.v2");
         }
     }
 }

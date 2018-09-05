@@ -19,7 +19,7 @@ namespace JustEat.StatsD.V2
         private static Random Random() => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;
-        private readonly IStatsDTransportV2 _statsDTransport;
+        private readonly IStatsDTransportV2 _transport;
 
         public StatsDPublisherV2(StatsDConfiguration configuration)
         {
@@ -31,24 +31,30 @@ namespace JustEat.StatsD.V2
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
-            _statsDTransport = new PooledUdpStatsDTransportV2(endpointSource);
+            _transport = new PooledUdpTransportV2(endpointSource);
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);
         }
 
-        public StatsDPublisherV2(StatsDConfiguration configuration, IStatsDTransportV2 transportV2)
+        public StatsDPublisherV2(StatsDConfiguration configuration, IStatsDTransportV2 transport)
         {
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
             
-            _statsDTransport = transportV2;
+            _transport = transport;
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);
         }
 
-        public void Increment(string bucket) => Increment(1, bucket);
+        public void Increment(string bucket)
+        {
+            Increment(1, bucket);
+        }
 
-        public void Increment(long value, string bucket) => Increment(value, DefaultSampleRate, bucket);
+        public void Increment(long value, string bucket)
+        {
+            Increment(value, DefaultSampleRate, bucket);
+        }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
@@ -67,11 +73,20 @@ namespace JustEat.StatsD.V2
             }
         }
 
-        public void Decrement(string bucket) => Increment(-1, DefaultSampleRate, bucket);
+        public void Decrement(string bucket)
+        {
+            Increment(-1, DefaultSampleRate, bucket);
+        }
 
-        public void Decrement(long value, string bucket) => Increment(value > 0 ? -value : value, DefaultSampleRate, bucket);
+        public void Decrement(long value, string bucket)
+        {
+            Increment(value > 0 ? -value : value, DefaultSampleRate, bucket);
+        }
 
-        public void Decrement(long value, double sampleRate, string bucket) => Increment(value > 0 ? -value : value, sampleRate, bucket);
+        public void Decrement(long value, double sampleRate, string bucket)
+        {
+            Increment(value > 0 ? -value : value, sampleRate, bucket);
+        }
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
@@ -86,17 +101,35 @@ namespace JustEat.StatsD.V2
             SendMessage(DefaultSampleRate, StatsDMessage.Gauge(value, bucket));
         }
 
-        public void Gauge(double value, string bucket, DateTime timestamp) => Gauge(value, bucket);
+        public void Gauge(double value, string bucket, DateTime timestamp)
+        {
+            Gauge(value, bucket);
+        }
 
-        public void Gauge(long value, string bucket) => Gauge((double)value, bucket);
+        public void Gauge(long value, string bucket)
+        {
+            Gauge((double) value, bucket);
+        }
 
-        public void Gauge(long value, string bucket, DateTime timestamp) => Gauge(value, bucket);
+        public void Gauge(long value, string bucket, DateTime timestamp)
+        {
+            Gauge(value, bucket);
+        }
 
-        public void Timing(TimeSpan duration, string bucket) => Timing(duration.Ticks, bucket);
+        public void Timing(TimeSpan duration, string bucket)
+        {
+            Timing(duration.Ticks, bucket);
+        }
 
-        public void Timing(TimeSpan duration, double sampleRate, string bucket) => Timing(duration.Ticks, sampleRate, bucket);
+        public void Timing(TimeSpan duration, double sampleRate, string bucket)
+        {
+            Timing(duration.Ticks, sampleRate, bucket);
+        }
 
-        public void Timing(long duration, string bucket) => Timing(duration, DefaultSampleRate, bucket);
+        public void Timing(long duration, string bucket)
+        {
+            Timing(duration, DefaultSampleRate, bucket);
+        }
 
         public void Timing(long duration, double sampleRate, string bucket)
         {
@@ -104,7 +137,10 @@ namespace JustEat.StatsD.V2
             SendMessage(sampleRate, msg);
         }
 
-        public void MarkEvent(string name) => Increment(name);
+        public void MarkEvent(string name)
+        {
+            Increment(name);
+        }
 
         private void SendMessage(double sampleRate, StatsDMessage msg)
         {
@@ -112,7 +148,7 @@ namespace JustEat.StatsD.V2
 
             if (_formatter.TryFormat(msg, sampleRate, buffer, out int written))
             {
-                _statsDTransport.Send(new ArraySegment<byte>(buffer, 0, written));
+                _transport.Send(new ArraySegment<byte>(buffer, 0, written));
             }
             else
             {
@@ -122,7 +158,7 @@ namespace JustEat.StatsD.V2
 
                 if (_formatter.TryFormat(msg, sampleRate, Buffer(), out written))
                 {
-                    _statsDTransport.Send(new ArraySegment<byte>(buffer, 0, written));
+                    _transport.Send(new ArraySegment<byte>(buffer, 0, written));
                 }
                 else
                 {

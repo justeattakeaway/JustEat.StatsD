@@ -6,12 +6,12 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD.V2
 {
-    public sealed class PooledUdpStatsDTransportV2 : IDisposable, IStatsDTransportV2
+    public sealed class PooledUdpTransportV2 : IDisposable, IStatsDTransportV2
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
 
-        public PooledUdpStatsDTransportV2(IPEndPointSource endPointSource)
+        public PooledUdpTransportV2(IPEndPointSource endPointSource)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }
