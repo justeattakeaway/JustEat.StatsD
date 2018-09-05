@@ -2,6 +2,7 @@ using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
 using JustEat.StatsD.EndpointLookups;
+using JustEat.StatsD.V2;
 
 namespace Benchmark
 {
@@ -10,7 +11,7 @@ namespace Benchmark
     public class StatSendingBenchmark
     {
         private StatsDPublisher _udpSender;
-        private SenderV2 _newSender;
+        private StatsDPublisherV2 _newStatsDPublisher;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -33,8 +34,8 @@ namespace Benchmark
             _udpSender = new StatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
             
-            _newSender = new SenderV2(config);
-            _newSender.Increment("startup.ip");
+            _newStatsDPublisher = new StatsDPublisherV2(config);
+            _newStatsDPublisher.Increment("startup.ip");
         }
 
         [Benchmark]
@@ -56,17 +57,17 @@ namespace Benchmark
         [Benchmark]
         public void RunV2()
         {
-            _newSender.MarkEvent("hello.ip");
-            _newSender.Increment(20, "increment.ip");
-            _newSender.Timing(Timed, "timer.ip");
-            _newSender.Gauge(354654, "gauge.ip");
-            _newSender.Gauge(25.1, "free-space.ip");
+            _newStatsDPublisher.MarkEvent("hello.ip");
+            _newStatsDPublisher.Increment(20, "increment.ip");
+            _newStatsDPublisher.Timing(Timed, "timer.ip");
+            _newStatsDPublisher.Gauge(354654, "gauge.ip");
+            _newStatsDPublisher.Gauge(25.1, "free-space.ip");
         }
 
         [Benchmark]
         public void RunV2WithSampling()
         {
-            _newSender.Increment(2, 0.5, "increment.ip");
+            _newStatsDPublisher.Increment(2, 0.5, "increment.ip");
         }
     }
 }

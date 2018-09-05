@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using JustEat.StatsD.V2;
 using Xunit;
 
 namespace JustEat.StatsD
