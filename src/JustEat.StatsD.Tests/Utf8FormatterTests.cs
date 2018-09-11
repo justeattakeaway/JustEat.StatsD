@@ -31,7 +31,7 @@ namespace JustEat.StatsD
             var message = StatsDMessage.Counter(-128, "bucket");
             Check(message, "prefix.bucket:-128|c");
         }
-        
+
         [Fact]
         public static void Timing()
         {
@@ -45,7 +45,6 @@ namespace JustEat.StatsD
             var message = StatsDMessage.Timing(128, "bucket");
             Check(message, 0.5, "prefix.bucket:128|ms|@0.5");
         }
-
 
         [Fact]
         public static void GaugeIntegral()
@@ -69,7 +68,7 @@ namespace JustEat.StatsD
         private static void Check(StatsDMessage message, double sampleRate, string expected)
         {
             Formatter.TryFormat(message, sampleRate, Buffer, out int written).ShouldBe(true);
-            var result = Encoding.UTF8.GetString(Buffer.AsSpan().Slice(0, written));
+            var result = Encoding.UTF8.GetString(Buffer.AsSpan(0, written));
             result.ShouldBe(expected);
         }
     }

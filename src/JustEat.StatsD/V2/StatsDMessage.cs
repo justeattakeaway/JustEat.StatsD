@@ -1,12 +1,19 @@
 namespace JustEat.StatsD.V2
 {
+    internal enum StatsDMessageKind
+    {
+        Counter,
+        Timing,
+        Gauge
+    }
+
     internal readonly struct StatsDMessage
     {
         public readonly string StatBucket;
         public readonly double Magnitude;
-        public readonly Kind MessageKind;
+        public readonly StatsDMessageKind MessageKind;
 
-        private StatsDMessage(string statBucket, double magnitude, Kind messageKind)
+        private StatsDMessage(string statBucket, double magnitude, StatsDMessageKind messageKind)
         {
             StatBucket = statBucket;
             Magnitude = magnitude;
@@ -15,19 +22,17 @@ namespace JustEat.StatsD.V2
 
         public static StatsDMessage Timing(long milliseconds, string statBucket)
         {
-            return new StatsDMessage(statBucket, milliseconds, Kind.Timing);
+            return new StatsDMessage(statBucket, milliseconds, StatsDMessageKind.Timing);
         }
 
         public static StatsDMessage Counter(long magnitude, string statBucket)
         {
-            return new StatsDMessage(statBucket, magnitude, Kind.Counter);
+            return new StatsDMessage(statBucket, magnitude, StatsDMessageKind.Counter);
         }
 
         public static StatsDMessage Gauge(double magnitude, string statBucket)
         {
-            return new StatsDMessage(statBucket, magnitude, Kind.Gauge);
+            return new StatsDMessage(statBucket, magnitude, StatsDMessageKind.Gauge);
         }
-
-        internal enum Kind { Counter, Timing, Gauge }
     }
 }

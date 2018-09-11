@@ -7,59 +7,60 @@ namespace JustEat.StatsD.V2
     {
         private readonly byte[] _utf8Prefix;
 
-        public StatsDUtf8Formatter(string prefix = "")
+        public StatsDUtf8Formatter(string prefix)
         {
             _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ? new byte[0] : Encoding.UTF8.GetBytes(prefix + ".");
         }
 
         public int GetBufferSize(in StatsDMessage msg)
         {
-            const int maxSerializedDoubleSymbols = 20;
-            const int maxUtf8BytesPerChar = 4;
-            const int colonBytes = 1;
+            const int MaxSerializedDoubleSymbols = 32;
+            const int MaxUtf8BytesPerChar = 4;
+            const int ColonBytes = 1;
 
-            const int maxMessageKindSuffixSize = 3;
-            const int maxSamplingSuffixSize = 2;
+            const int MaxMessageKindSuffixSize = 3;
+            const int MaxSamplingSuffixSize = 2;
 
-            return _utf8Prefix.Length + msg.StatBucket.Length * maxUtf8BytesPerChar
-              + colonBytes
-              + maxSerializedDoubleSymbols
-              + maxMessageKindSuffixSize
-              + maxSamplingSuffixSize
-              + maxSerializedDoubleSymbols;
+            return _utf8Prefix.Length + (msg.StatBucket.Length * MaxUtf8BytesPerChar)
+                + ColonBytes
+                + MaxSerializedDoubleSymbols
+                + MaxMessageKindSuffixSize
+                + MaxSamplingSuffixSize
+                + MaxSerializedDoubleSymbols;
         }
 
-        // prefix + msg.Bucket + ":" + msg.Value + (<oneOf> "|ms", "|c", "|g") + {<optional> "|@" + sampleRate }
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
         {
+            // prefix + msg.Bucket + ":" + msg.Value + (<oneOf> "|ms", "|c", "|g") + {<optional> "|@" + sampleRate }
+
             written = 0;
             var buffer = new Buffer(destination);
 
             if (!buffer.TryWriteBytes(_utf8Prefix)) return false;
             if (!buffer.TryWriteUtf8String(msg.StatBucket)) return false;
-            if (!buffer.TryWriteBytes((byte)':')) return false;
+            if (!buffer.TryWriteByte((byte)':')) return false;
 
             var magnitudeIntegral = (long) msg.Magnitude;
 
             switch (msg.MessageKind)
             {
-                case StatsDMessage.Kind.Counter:
+                case StatsDMessageKind.Counter:
                 {
-                    if (!buffer.TryWriteLong(magnitudeIntegral)) return false;
+                    if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
                     if (!buffer.TryWriteBytes((byte)'|', (byte)'c')) return false;
                     break;
                 }
-                case StatsDMessage.Kind.Timing:
+                case StatsDMessageKind.Timing:
                 {
-                    if (!buffer.TryWriteLong(magnitudeIntegral)) return false;
+                    if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
                     if (!buffer.TryWriteBytes((byte)'|', (byte)'m', (byte)'s')) return false;
                     break;
                 }
-                case StatsDMessage.Kind.Gauge:
+                case StatsDMessageKind.Gauge:
                 {
                     if (msg.Magnitude == (double)magnitudeIntegral)
                     {
-                        if (!buffer.TryWriteLong(magnitudeIntegral)) return false;
+                        if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
                     }
                     else
                     {
@@ -70,7 +71,7 @@ namespace JustEat.StatsD.V2
                     break;
                 }
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(msg.MessageKind), "Unknown StatsD message kind encountered");
             }
 
             if (sampleRate < 1.0 && sampleRate > 0.0)
@@ -82,6 +83,5 @@ namespace JustEat.StatsD.V2
             written = buffer.Written;
             return true;
         }
-        
     }
 }

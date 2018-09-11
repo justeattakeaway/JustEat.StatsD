@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
@@ -8,7 +7,7 @@ namespace Benchmark
 {
     [MemoryDiagnoser]
     [ShortRunJob]
-    public class Utf8FormatterBench
+    public class Utf8FormatterBenchmark
     {
         private static readonly StatsDMessageFormatter FormatterString = new StatsDMessageFormatter("hello.world");
         private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world");

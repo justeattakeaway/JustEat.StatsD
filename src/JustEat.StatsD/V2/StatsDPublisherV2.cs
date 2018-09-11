@@ -67,6 +67,11 @@ namespace JustEat.StatsD.V2
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
+            if (buckets == null)
+            {
+                return;
+            }
+
             foreach (var bucket in buckets)
             {
                 Increment(value, sampleRate, bucket);
@@ -90,6 +95,11 @@ namespace JustEat.StatsD.V2
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
+            if (buckets == null)
+            {
+                return;
+            }
+
             foreach (var bucket in buckets)
             {
                 Increment(value > 0 ? -value : value, sampleRate, bucket);
@@ -156,13 +166,17 @@ namespace JustEat.StatsD.V2
                 var size = Interlocked.CompareExchange(ref _bufferSize, buffer.Length, newSize);
                 _buffer = new byte[size];
 
-                if (_formatter.TryFormat(msg, sampleRate, Buffer(), out written))
+                if (_formatter.TryFormat(msg, sampleRate, _buffer, out written))
                 {
                     _transport.Send(new ArraySegment<byte>(buffer, 0, written));
                 }
                 else
                 {
-                    throw new Exception("TODO");
+                    // so we was not able to write to resized buffer
+                    // that means there is a bug in formatter
+                    throw new Exception("Utf8 Formatting Error. This probably is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
+                    // we need to decide do we even need to resize above 512 bytes
+                    // we probably do to keep current public contract with unbound bucket names
                 }
             }
         }

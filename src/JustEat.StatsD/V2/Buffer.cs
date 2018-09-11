@@ -17,85 +17,106 @@ namespace JustEat.StatsD.V2
         public int Written;
     }
 
-    internal static class BufferImpl
+    internal static class BufferExtensions
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, Span<byte> bytes)
-        {
-            if (bytes.Length > src.Tail.Length) return false;
+        private static readonly Encoding UTF8 = Encoding.UTF8;
 
-            bytes.CopyTo(src.Tail);
-            src.Tail = src.Tail.Slice(bytes.Length);
-            src.Written += bytes.Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWriteBytes(this ref Buffer src, Span<byte> destination)
+        {
+            if (destination.Length > src.Tail.Length)
+            {
+                return false;
+            }
+
+            destination.CopyTo(src.Tail);
+            src.Tail = src.Tail.Slice(destination.Length);
+            src.Written += destination.Length;
             return true;
         }
 
         public static bool TryWriteUtf8String(this ref Buffer src, string str)
         {
 #if NETCOREAPP2_1
+            int written = 0;
             try
             {
-                var written = Encoding.UTF8.GetBytes(str, src.Tail);
-                src.Tail = src.Tail.Slice(written);
-                src.Written += written;
-                return true;
+                written = Encoding.UTF8.GetBytes(str, src.Tail);
             }
-            catch
+            catch (ArgumentException)
             {
                 return false;
             }
+
+            src.Tail = src.Tail.Slice(written);
+            src.Written += written;
+            return true;
+
 #else
-            var bucketBytes = Encoding.UTF8.GetBytes(str);
+            var bucketBytes = UTF8.GetBytes(str);
             return src.TryWriteBytes(bucketBytes);
 #endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, byte chr)
+        public static bool TryWriteByte(this ref Buffer src, byte ch)
         {
-            const int length = 1;
-            if (src.Tail.Length < length) return false;
+            const int OneByte = 1;
+            if (src.Tail.Length < OneByte)
+            {
+                return false;
+            }
 
-            src.Tail[0] = chr;
-            src.Tail = src.Tail.Slice(length);
-            src.Written += length;
+            src.Tail[0] = ch;
+            src.Tail = src.Tail.Slice(OneByte);
+            src.Written += OneByte;
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, byte chr1, byte chr2)
+        public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2)
         {
-            const int length = 2;
-            if (src.Tail.Length < length) return false;
+            const int TwoBytes = 2;
+            if (src.Tail.Length < TwoBytes)
+            {
+                return false;
+            }
 
-            src.Tail[0] = chr1;
-            src.Tail[1] = chr2;
-            src.Tail = src.Tail.Slice(length);
-            src.Written += length;
+            src.Tail[0] = ch1;
+            src.Tail[1] = ch2;
+            src.Tail = src.Tail.Slice(TwoBytes);
+            src.Written += TwoBytes;
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, byte chr1, byte chr2, byte chr3)
+        public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2, byte ch3)
         {
-            const int length = 3;
-            if (src.Tail.Length < length) return false;
+            const int ThreeBytes = 3;
+            if (src.Tail.Length < ThreeBytes)
+            {
+                return false;
+            }
 
-            src.Tail[0] = chr1;
-            src.Tail[1] = chr2;
-            src.Tail[2] = chr3;
-            src.Tail = src.Tail.Slice(length);
-            src.Written += length;
+            src.Tail[0] = ch1;
+            src.Tail[1] = ch2;
+            src.Tail[2] = ch3;
+            src.Tail = src.Tail.Slice(ThreeBytes);
+            src.Written += ThreeBytes;
 
             return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteLong(this ref Buffer src, long val)
+        public static bool TryWriteInt64(this ref Buffer src, long val)
         {
-            if (!Utf8Formatter.TryFormat(val, src.Tail, out var consumed)) return false;
+            if (!Utf8Formatter.TryFormat(val, src.Tail, out var consumed))
+            {
+                return false;
+            }
+
             src.Tail = src.Tail.Slice(consumed);
             src.Written += consumed;
 
@@ -105,7 +126,11 @@ namespace JustEat.StatsD.V2
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteDouble(this ref Buffer src, double val)
         {
-            if (!Utf8Formatter.TryFormat((decimal) val, src.Tail, out var consumed)) return false;
+            if (!Utf8Formatter.TryFormat((decimal) val, src.Tail, out var consumed))
+            {
+                return false;
+            }
+
             src.Tail = src.Tail.Slice(consumed);
             src.Written += consumed;
 
