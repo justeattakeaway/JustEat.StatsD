@@ -1,12 +1,5 @@
 namespace JustEat.StatsD.V2
 {
-    internal enum StatsDMessageKind
-    {
-        Counter,
-        Timing,
-        Gauge
-    }
-
     internal readonly struct StatsDMessage
     {
         public readonly string StatBucket;

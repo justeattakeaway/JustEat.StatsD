@@ -2,10 +2,11 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using JustEat.StatsD.EndpointLookups;
+using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
-    public class IpTransport : IStatsDTransport
+    public class IpTransport : IStatsDTransport, IStatsDTransportV2
     {
         private readonly IPEndPointSource _endpointSource;
 
@@ -33,6 +34,20 @@ namespace JustEat.StatsD
         private static Socket CreateSocket()
         {
             return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
+        }
+
+        public void Send(ArraySegment<byte> metric)
+        {
+            if (metric.Count == 0)
+            {
+                return;
+            }
+
+            var endpoint = _endpointSource.GetEndpoint();
+            using (var socket = CreateSocket())
+            {
+                socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
+            }
         }
     }
 }

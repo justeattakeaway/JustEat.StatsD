@@ -14,7 +14,7 @@ namespace JustEat.StatsD
                 Host = "someserver.somewhere.com"
             };
 
-            var stats = new StatsDPublisher(validConfig);
+            var stats = new StringBasedStatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -27,7 +27,7 @@ namespace JustEat.StatsD
                 Host = "10.0.1.2"
             };
 
-            var stats = new StatsDPublisher(validConfig);
+            var stats = new StringBasedStatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -38,7 +38,7 @@ namespace JustEat.StatsD
             StatsDConfiguration noConfig = null;
 
             Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(noConfig));
+             () => new StringBasedStatsDPublisher(noConfig));
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace JustEat.StatsD
             };
 
             Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(badConfig));
+             () => new StringBasedStatsDPublisher(badConfig));
         }
     }
 }

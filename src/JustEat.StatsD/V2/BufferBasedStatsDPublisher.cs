@@ -1,12 +1,11 @@
 using System;
 using System.Threading;
-using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD.V2
 {
-    public sealed class StatsDPublisherV2 : IStatsDPublisher
+    internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
     {
-        private const int DefaultSampleRate = 1;
+        private const double DefaultSampleRate = 1.0;
 
         private static int _bufferSize = 512; // safe max size of udp packet
 
@@ -20,28 +19,16 @@ namespace JustEat.StatsD.V2
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransportV2 _transport;
+        private readonly Func<Exception, bool> _onError;
 
-        public StatsDPublisherV2(StatsDConfiguration configuration)
+        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransportV2 transport)
         {
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var endpointSource = EndpointParser.MakeEndPointSource(
-                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
-
-            _transport = new PooledUdpTransportV2(endpointSource);
-            _formatter = new StatsDUtf8Formatter(configuration.Prefix);
-        }
-
-        public StatsDPublisherV2(StatsDConfiguration configuration, IStatsDTransportV2 transport)
-        {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-            
+            _onError = configuration.OnError;
             _transport = transport;
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);
         }
@@ -58,11 +45,8 @@ namespace JustEat.StatsD.V2
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            if (sampleRate >= 1 || sampleRate >= Random().NextDouble())
-            {
-                var msg = StatsDMessage.Counter(value, bucket);
-                SendMessage(sampleRate, msg);
-            }
+            var msg = StatsDMessage.Counter(value, bucket);
+            SendMessage(sampleRate, msg);
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
@@ -152,31 +136,52 @@ namespace JustEat.StatsD.V2
             Increment(name);
         }
 
-        private void SendMessage(double sampleRate, StatsDMessage msg)
+        private void SendMessage(double sampleRate, in StatsDMessage msg)
         {
-            var buffer = Buffer();
+            bool shouldSendMessage = sampleRate >= 1.0 || sampleRate > Random().NextDouble();
 
-            if (_formatter.TryFormat(msg, sampleRate, buffer, out int written))
+            if (!shouldSendMessage)
             {
-                _transport.Send(new ArraySegment<byte>(buffer, 0, written));
+                return;
             }
-            else
-            {
-                var newSize = _formatter.GetBufferSize(msg);
-                var size = Interlocked.CompareExchange(ref _bufferSize, buffer.Length, newSize);
-                _buffer = new byte[size];
 
-                if (_formatter.TryFormat(msg, sampleRate, _buffer, out written))
+            try
+            {
+                var buffer = Buffer();
+
+                if (_formatter.TryFormat(msg, sampleRate, buffer, out int written))
                 {
                     _transport.Send(new ArraySegment<byte>(buffer, 0, written));
                 }
                 else
                 {
-                    // so we was not able to write to resized buffer
-                    // that means there is a bug in formatter
-                    throw new Exception("Utf8 Formatting Error. This probably is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
-                    // we need to decide do we even need to resize above 512 bytes
-                    // we probably do to keep current public contract with unbound bucket names
+                    var newSize = _formatter.GetBufferSize(msg);
+
+                    // TODO: this line needs careful review
+                    var size = Interlocked.CompareExchange(ref _bufferSize, buffer.Length, newSize);
+                    _buffer = new byte[size];
+
+                    if (_formatter.TryFormat(msg, sampleRate, _buffer, out written))
+                    {
+                        _transport.Send(new ArraySegment<byte>(buffer, 0, written));
+                    }
+                    else
+                    {
+                        // so we was not able to write to resized buffer
+                        // that means there is a bug in formatter
+                        throw new Exception(
+                            "Utf8 Formatting Error. This probably is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
+                        // we need to decide do we even need to resize above 512 bytes
+                        // we probably do to keep current public contract with unbound bucket names
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var handled = _onError?.Invoke(ex) ?? true;
+                if (!handled)
+                {
+                    throw;
                 }
             }
         }

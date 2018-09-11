@@ -79,7 +79,7 @@ namespace JustEat.StatsD
 
         private static IStatsDPublisher MakeThrowingPublisher(StatsDConfiguration config)
         {
-            return new StatsDPublisher(config, new ThrowingTransport());
+            return new StringBasedStatsDPublisher(config, new ThrowingTransport());
         }
 
         private static StatsDConfiguration MakeValidConfig()

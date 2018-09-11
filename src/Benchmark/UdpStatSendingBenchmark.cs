@@ -11,8 +11,8 @@ namespace Benchmark
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
         private PooledUdpTransport _pooledTransport;
-        private StatsDPublisher _udpSender;
-        private StatsDPublisher _pooledUdpSender;
+        private StringBasedStatsDPublisher _udpSender;
+        private StringBasedStatsDPublisher _pooledUdpSender;
 
         [GlobalSetup]
         public void Setup()
@@ -33,10 +33,10 @@ namespace Benchmark
             _pooledTransport = new PooledUdpTransport(endpointSource);
             var udpTransport = new UdpTransport(endpointSource);
 
-            _udpSender = new StatsDPublisher(config, udpTransport);
+            _udpSender = new StringBasedStatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
 
-            _pooledUdpSender = new StatsDPublisher(config, _pooledTransport);
+            _pooledUdpSender = new StringBasedStatsDPublisher(config, _pooledTransport);
             _pooledUdpSender.Increment("startup.ud");
         }
 

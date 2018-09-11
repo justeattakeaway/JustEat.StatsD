@@ -122,7 +122,7 @@ namespace JustEat.StatsD
             var config = provider.GetRequiredService<StatsDConfiguration>();
             var transport = provider.GetRequiredService<IStatsDTransport>();
 
-            return new StatsDPublisher(config, transport);
+            return new StringBasedStatsDPublisher(config, transport);
         }
 
         private static IStatsDTransport ResolveStatsDTransport(IServiceProvider provider)

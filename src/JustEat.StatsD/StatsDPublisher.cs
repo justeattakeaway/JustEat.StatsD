@@ -1,5 +1,6 @@
 using System;
 using JustEat.StatsD.EndpointLookups;
+using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
@@ -8,139 +9,129 @@ namespace JustEat.StatsD
     /// </summary>
     public class StatsDPublisher : IStatsDPublisher
     {
-        private readonly StatsDMessageFormatter _formatter;
-        private readonly IStatsDTransport _transport;
-        private readonly Func<Exception, bool> _onError;
+        private readonly IStatsDPublisher _publisher;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
             if (configuration == null)
             {
-               throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configuration));
             }
 
-            _transport = transport ?? throw new ArgumentNullException(nameof(transport));
+            if (transport == null)
+            {
+                throw new ArgumentNullException(nameof(transport));
+            }
 
-            _formatter = new StatsDMessageFormatter(configuration.Prefix);
-            _onError = configuration.OnError;
+            switch (transport)
+            {
+                case IStatsDTransportV2 transportV2:
+                    _publisher = new BufferBasedStatsDPublisher(configuration, transportV2);
+                    break;
+                default:
+                    _publisher = new StringBasedStatsDPublisher(configuration, transport);
+                    break;
+            }
         }
 
         public StatsDPublisher(StatsDConfiguration configuration)
         {
             if (configuration == null)
             {
-               throw new ArgumentNullException(nameof(configuration));
+                throw new ArgumentNullException(nameof(configuration));
             }
-
-            if (string.IsNullOrWhiteSpace(configuration.Host))
-            {
-                throw new ArgumentNullException(nameof(configuration.Host));
-            }
-
-            _formatter = new StatsDMessageFormatter(configuration.Prefix);
 
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
-            _transport = new UdpTransport(endpointSource);
-            _onError = configuration.OnError;
+
+            var transport = new PooledUdpTransport(endpointSource);
+
+            _publisher = new BufferBasedStatsDPublisher(configuration, transport);
         }
 
         public void Increment(string bucket)
         {
-            Send(_formatter.Increment(bucket));
+            _publisher.Increment(bucket);
         }
 
         public void Increment(long value, string bucket)
         {
-            Send(_formatter.Increment(value, bucket));
+            _publisher.Increment(value, bucket);
         }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            Send(_formatter.Increment(value, sampleRate, bucket));
+            _publisher.Increment(value, sampleRate, bucket);
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
-            Send(_formatter.Increment(value, sampleRate, buckets));
+            _publisher.Increment(value, sampleRate, buckets);
         }
 
         public void Decrement(string bucket)
         {
-            Send(_formatter.Decrement(bucket));
+            _publisher.Decrement(bucket);
         }
 
         public void Decrement(long value, string bucket)
         {
-            Send(_formatter.Decrement(value, bucket));
+            _publisher.Decrement(value, bucket);
         }
 
         public void Decrement(long value, double sampleRate, string bucket)
         {
-            Send(_formatter.Decrement(value, sampleRate, bucket));
+            _publisher.Decrement(value, sampleRate, bucket);
         }
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
-            Send(_formatter.Decrement(value, sampleRate, buckets));
+            _publisher.Decrement(value, sampleRate, buckets);
         }
-        public void Gauge(double  value, string bucket)
+
+        public void Gauge(double value, string bucket)
         {
-            Send(_formatter.Gauge(value, bucket));
+            _publisher.Gauge(value, bucket);
         }
+
         public void Gauge(double value, string bucket, DateTime timestamp)
         {
-            Send(_formatter.Gauge(value, bucket, timestamp));
+            _publisher.Gauge(value, bucket, timestamp);
         }
+
         public void Gauge(long value, string bucket)
         {
-            Send(_formatter.Gauge(value, bucket));
+            _publisher.Gauge(value, bucket);
         }
 
         public void Gauge(long value, string bucket, DateTime timestamp)
         {
-            Send(_formatter.Gauge(value, bucket, timestamp));
+            _publisher.Gauge(value, bucket, timestamp);
         }
 
         public void Timing(TimeSpan duration, string bucket)
         {
-            Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), bucket));
+            _publisher.Timing(duration, bucket);
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
-            Send(_formatter.Timing(Convert.ToInt64(duration.TotalMilliseconds), sampleRate, bucket));
+            _publisher.Timing(duration, sampleRate, bucket);
         }
 
         public void Timing(long duration, string bucket)
         {
-            Send(_formatter.Timing(duration, bucket));
+            _publisher.Timing(duration, bucket);
         }
 
         public void Timing(long duration, double sampleRate, string bucket)
         {
-            Send(_formatter.Timing(duration, sampleRate, bucket));
+            _publisher.Timing(duration, sampleRate, bucket);
         }
 
         public void MarkEvent(string name)
         {
-            Send(_formatter.Event(name));
-        }
-
-        private void Send(string metric)
-        {
-            try
-            {
-                _transport.Send(metric);
-            }
-            catch (Exception ex)
-            {
-                var handled = _onError?.Invoke(ex) ?? true;
-                if (!handled)
-                {
-                    throw;
-                }
-            }
+            _publisher.MarkEvent(name);
         }
     }
 }

@@ -5,13 +5,14 @@ using System.Text;
 using System.Runtime.InteropServices;
 #endif
 using JustEat.StatsD.EndpointLookups;
+using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IStatsDTransport"/> that uses UDP.
     /// </summary>
-    public class UdpTransport : IStatsDTransport
+    public class UdpTransport : IStatsDTransport, IStatsDTransportV2
     {
         private readonly IPEndPointSource _endpointSource;
 
@@ -41,6 +42,21 @@ namespace JustEat.StatsD
             using (var socket = CreateSocket())
             {
                 socket.SendTo(bytes, endpoint);
+            }
+        }
+
+        public void Send(ArraySegment<byte> metric)
+        {
+            if (metric.Count == 0)
+            {
+                return;
+            }
+
+            var endpoint = _endpointSource.GetEndpoint();
+
+            using (var socket = CreateSocket())
+            {
+                socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
             }
         }
 
