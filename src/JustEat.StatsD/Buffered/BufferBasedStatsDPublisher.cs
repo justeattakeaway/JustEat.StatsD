@@ -165,7 +165,9 @@ namespace JustEat.StatsD.Buffered
                     {
                         // so we was not able to write to resized buffer
                         // that means there is a bug in formatter
-                        throw new Exception("Utf8 Formatting Error. This is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
+                        throw new Exception("Utf8 Formatting Error. This is a bug." +
+                                            " Please report it to https://github.com/justeat/JustEat.StatsD/issues." +
+                                            " Meanwhile you can switch to string based transport.");
                     }
                 }
             }

@@ -29,7 +29,7 @@ namespace JustEat.StatsD.Buffered
             int written = 0;
             try
             {
-                written = Encoding.UTF8.GetBytes(str, src.Tail);
+                written = UTF8.GetBytes(str, src.Tail);
             }
             catch (ArgumentException)
             {
