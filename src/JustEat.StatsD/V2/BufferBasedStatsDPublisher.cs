@@ -11,11 +11,11 @@ namespace JustEat.StatsD.V2
 
         [ThreadStatic]
         private static byte[] _buffer;
-        private static byte[] Buffer() => _buffer ?? (_buffer = new byte[_bufferSize]);
+        private static byte[] Buffer => _buffer ?? (_buffer = new byte[_bufferSize]);
 
         [ThreadStatic]
         private static Random _random;
-        private static Random Random() => _random ?? (_random = new Random());
+        private static Random Random => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransportV2 _transport;
@@ -138,7 +138,7 @@ namespace JustEat.StatsD.V2
 
         private void SendMessage(double sampleRate, in StatsDMessage msg)
         {
-            bool shouldSendMessage = sampleRate >= 1.0 || sampleRate > Random().NextDouble();
+            bool shouldSendMessage = sampleRate >= DefaultSampleRate || sampleRate > Random.NextDouble();
 
             if (!shouldSendMessage)
             {
@@ -147,7 +147,7 @@ namespace JustEat.StatsD.V2
 
             try
             {
-                var buffer = Buffer();
+                var buffer = Buffer;
 
                 if (_formatter.TryFormat(msg, sampleRate, buffer, out int written))
                 {
@@ -155,7 +155,7 @@ namespace JustEat.StatsD.V2
                 }
                 else
                 {
-                    var newSize = _formatter.GetBufferSize(msg);
+                    var newSize = _formatter.GetMaxBufferSize(msg);
 
                     // TODO: this line needs careful review
                     var size = Interlocked.CompareExchange(ref _bufferSize, buffer.Length, newSize);
@@ -170,9 +170,7 @@ namespace JustEat.StatsD.V2
                         // so we was not able to write to resized buffer
                         // that means there is a bug in formatter
                         throw new Exception(
-                            "Utf8 Formatting Error. This probably is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
-                        // we need to decide do we even need to resize above 512 bytes
-                        // we probably do to keep current public contract with unbound bucket names
+                            "Utf8 Formatting Error. This is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
                     }
                 }
             }

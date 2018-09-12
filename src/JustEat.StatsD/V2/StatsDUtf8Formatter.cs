@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace JustEat.StatsD.V2
@@ -12,7 +13,7 @@ namespace JustEat.StatsD.V2
             _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ? new byte[0] : Encoding.UTF8.GetBytes(prefix + ".");
         }
 
-        public int GetBufferSize(in StatsDMessage msg)
+        public int GetMaxBufferSize(in StatsDMessage msg)
         {
             const int MaxSerializedDoubleSymbols = 32;
             const int MaxUtf8BytesPerChar = 4;
@@ -31,56 +32,73 @@ namespace JustEat.StatsD.V2
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
         {
-            // prefix + msg.Bucket + ":" + msg.Value + (<oneOf> "|ms", "|c", "|g") + {<optional> "|@" + sampleRate }
-
-            written = 0;
             var buffer = new Buffer(destination);
 
-            if (!buffer.TryWriteBytes(_utf8Prefix)) return false;
-            if (!buffer.TryWriteUtf8String(msg.StatBucket)) return false;
-            if (!buffer.TryWriteByte((byte)':')) return false;
+            bool isFormattingSuccessful =
+                  TryWriteBucketNameWithColon(ref buffer, msg.StatBucket) 
+               && TryWritePayloadWithMessageKindSuffix(ref buffer, msg) 
+               && TryWriteSampleRateIfNeeded(ref buffer, sampleRate); 
 
-            var magnitudeIntegral = (long) msg.Magnitude;
+            written = isFormattingSuccessful ? buffer.Written : 0;
+            return isFormattingSuccessful;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteBucketNameWithColon(ref Buffer buffer, string statBucket)
+        {
+            // prefix + msg.Bucket + ":"
+
+            return buffer.TryWriteBytes(_utf8Prefix)
+                && buffer.TryWriteUtf8String(statBucket)
+                && buffer.TryWriteByte((byte) ':');
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryWritePayloadWithMessageKindSuffix(ref Buffer buffer, in StatsDMessage msg)
+        {
+            // msg.Value + (<oneOf> "|ms", "|c", "|g")
+
+            var integralMagnitude = (long) msg.Magnitude;
 
             switch (msg.MessageKind)
             {
                 case StatsDMessageKind.Counter:
                 {
-                    if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
-                    if (!buffer.TryWriteBytes((byte)'|', (byte)'c')) return false;
-                    break;
+                    return buffer.TryWriteInt64(integralMagnitude)
+                        && buffer.TryWriteBytes((byte) '|', (byte) 'c');
                 }
                 case StatsDMessageKind.Timing:
                 {
-                    if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
-                    if (!buffer.TryWriteBytes((byte)'|', (byte)'m', (byte)'s')) return false;
-                    break;
+                    return buffer.TryWriteInt64(integralMagnitude)
+                        && buffer.TryWriteBytes((byte) '|', (byte) 'm', (byte) 's');
                 }
                 case StatsDMessageKind.Gauge:
                 {
-                    if (msg.Magnitude == (double)magnitudeIntegral)
-                    {
-                        if (!buffer.TryWriteInt64(magnitudeIntegral)) return false;
-                    }
-                    else
-                    {
-                        if (!buffer.TryWriteDouble(msg.Magnitude)) return false;;
-                    }
+                    // check if magnitude is integral, integers are written significantly faster
+                    bool isMagnitudeIntegral = msg.Magnitude == integralMagnitude;
 
-                    if (!buffer.TryWriteBytes((byte)'|', (byte)'g')) return false;
-                    break;
+                    var successSoFar = isMagnitudeIntegral ?
+                        buffer.TryWriteInt64(integralMagnitude) :
+                        buffer.TryWriteDouble(msg.Magnitude);
+
+                    return successSoFar && buffer.TryWriteBytes((byte) '|', (byte) 'g');
                 }
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(msg.MessageKind), "Unknown StatsD message kind encountered");
+                    throw new ArgumentOutOfRangeException(nameof(msg.MessageKind), $"Unknown StatsD message kind encountered {msg.MessageKind}");
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryWriteSampleRateIfNeeded(ref Buffer buffer, double sampleRate)
+        {
+            // {<optional> "|@" + sampleRate}
 
             if (sampleRate < 1.0 && sampleRate > 0.0)
             {
-                if (!buffer.TryWriteBytes((byte)'|', (byte)'@')) return false;
-                if (!buffer.TryWriteDouble(sampleRate)) return false;
+                return buffer.TryWriteBytes((byte) '|', (byte) '@')
+                    && buffer.TryWriteDouble(sampleRate);
             }
 
-            written = buffer.Written;
             return true;
         }
     }
