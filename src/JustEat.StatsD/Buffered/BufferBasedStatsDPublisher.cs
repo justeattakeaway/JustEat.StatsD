@@ -1,13 +1,11 @@
 using System;
-using System.Threading;
 
-namespace JustEat.StatsD.V2
+namespace JustEat.StatsD.Buffered
 {
     internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
     {
         private const double DefaultSampleRate = 1.0;
         private const int SafeUdpPacketSize = 512;
-
         [ThreadStatic]
         private static byte[] _buffer;
         private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
@@ -17,10 +15,10 @@ namespace JustEat.StatsD.V2
         private static Random Random => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;
-        private readonly IStatsDTransportV2 _transport;
+        private readonly IStatsDBufferedTransport _transport;
         private readonly Func<Exception, bool> _onError;
 
-        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransportV2 transport)
+        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDBufferedTransport transport)
         {
             if (configuration == null)
             {

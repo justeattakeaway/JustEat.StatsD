@@ -3,7 +3,7 @@ using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace JustEat.StatsD.V2
+namespace JustEat.StatsD.Buffered
 {
     internal static class BufferExtensions
     {

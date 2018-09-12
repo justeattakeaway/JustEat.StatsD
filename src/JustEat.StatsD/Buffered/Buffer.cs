@@ -1,6 +1,6 @@
 using System;
 
-namespace JustEat.StatsD.V2
+namespace JustEat.StatsD.Buffered
 {
     internal ref struct Buffer
     {

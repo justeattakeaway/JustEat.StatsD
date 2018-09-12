@@ -3,15 +3,15 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
-using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IStatsDTransport"/> uses UDP and pools sockets. This class cannot be inherited.
     /// </summary>
-    public sealed class PooledUdpTransport : IStatsDTransport, IStatsDTransportV2, IDisposable
+    public sealed class PooledUdpTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;

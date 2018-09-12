@@ -1,8 +1,8 @@
 using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
+using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
-using JustEat.StatsD.V2;
 
 namespace Benchmark
 {

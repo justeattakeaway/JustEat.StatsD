@@ -1,4 +1,6 @@
 using System;
+using JustEat.StatsD.Buffered;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -51,6 +53,78 @@ namespace JustEat.StatsD
 
             Should.Throw<ArgumentNullException>(
              () => new StringBasedStatsDPublisher(badConfig));
+        }
+
+        private class BothVersionsTransportMock : IStatsDTransport, IStatsDBufferedTransport
+        {
+            public int StringCalls { get; private set; }
+            public int BufferedCalls { get; private set; }
+
+            public void Send(string metric)
+            {
+                StringCalls++;
+            }
+
+            public void Send(ArraySegment<byte> metric)
+            {
+                BufferedCalls++;
+            }
+        }
+
+        [Fact]
+        public void BufferBasedTransportShouldBeChosenIfAvailableAndAskedFor()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1"
+            };
+
+            var transport = new BothVersionsTransportMock();
+
+            var publisher = new StatsDPublisher(config, transport, true);
+
+            publisher.MarkEvent("test");
+
+            transport.BufferedCalls.ShouldBe(1);
+            transport.StringCalls.ShouldBe(0);
+        }
+
+        [Fact]
+        public void StringBasedTransportShouldBeChosenByDefault()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1"
+            };
+
+            var transport = new BothVersionsTransportMock();
+
+            var publisher = new StatsDPublisher(config, transport);
+
+            publisher.MarkEvent("test");
+
+            transport.BufferedCalls.ShouldBe(0);
+            transport.StringCalls.ShouldBe(1);
+        }
+
+        [Fact]
+        public void StringBasedTransportShouldBeUsedIfBufferedIsNotAvailable()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1"
+            };
+
+            var transport = new Mock<IStatsDTransport>(MockBehavior.Loose);
+
+            var publisher = new StatsDPublisher(config, transport.Object);
+
+            publisher.MarkEvent("test");
+
+            transport.Verify(x => x.Send(It.IsAny<string>()), Times.Once);
         }
     }
 }

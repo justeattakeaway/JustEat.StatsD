@@ -1,12 +1,12 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
-using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
-    public class IpTransport : IStatsDTransport, IStatsDTransportV2
+    public class IpTransport : IStatsDTransport, IStatsDBufferedTransport
     {
         private readonly IPEndPointSource _endpointSource;
 

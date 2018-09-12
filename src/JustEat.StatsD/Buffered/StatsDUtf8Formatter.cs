@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace JustEat.StatsD.V2
+namespace JustEat.StatsD.Buffered
 {
     internal class StatsDUtf8Formatter
     {

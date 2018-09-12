@@ -1,18 +1,18 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using JustEat.StatsD.Buffered;
 #if !NET451
 using System.Runtime.InteropServices;
 #endif
 using JustEat.StatsD.EndpointLookups;
-using JustEat.StatsD.V2;
 
 namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IStatsDTransport"/> that uses UDP.
     /// </summary>
-    public class UdpTransport : IStatsDTransport, IStatsDTransportV2
+    public class UdpTransport : IStatsDTransport, IStatsDBufferedTransport
     {
         private readonly IPEndPointSource _endpointSource;
 

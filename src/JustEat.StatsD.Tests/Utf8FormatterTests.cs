@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using JustEat.StatsD.V2;
+using JustEat.StatsD.Buffered;
 using Shouldly;
 using Xunit;
 

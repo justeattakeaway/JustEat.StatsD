@@ -1,7 +1,7 @@
 using System.Text;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
-using JustEat.StatsD.V2;
+using JustEat.StatsD.Buffered;
 
 namespace Benchmark
 {
