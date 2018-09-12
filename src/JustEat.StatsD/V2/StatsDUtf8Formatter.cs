@@ -16,18 +16,18 @@ namespace JustEat.StatsD.V2
         public int GetMaxBufferSize(in StatsDMessage msg)
         {
             const int MaxSerializedDoubleSymbols = 32;
-            const int MaxUtf8BytesPerChar = 4;
             const int ColonBytes = 1;
 
             const int MaxMessageKindSuffixSize = 3;
             const int MaxSamplingSuffixSize = 2;
 
-            return _utf8Prefix.Length + (msg.StatBucket.Length * MaxUtf8BytesPerChar)
-                + ColonBytes
-                + MaxSerializedDoubleSymbols
-                + MaxMessageKindSuffixSize
-                + MaxSamplingSuffixSize
-                + MaxSerializedDoubleSymbols;
+            return _utf8Prefix.Length
+                    + Encoding.UTF8.GetByteCount(msg.StatBucket)
+                    + ColonBytes
+                    + MaxSerializedDoubleSymbols
+                    + MaxMessageKindSuffixSize
+                    + MaxSamplingSuffixSize
+                    + MaxSerializedDoubleSymbols;
         }
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)

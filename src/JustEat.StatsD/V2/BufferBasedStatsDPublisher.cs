@@ -6,12 +6,11 @@ namespace JustEat.StatsD.V2
     internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
     {
         private const double DefaultSampleRate = 1.0;
-
-        private static int _bufferSize = 512; // safe max size of udp packet
+        private const int SafeUdpPacketSize = 512;
 
         [ThreadStatic]
         private static byte[] _buffer;
-        private static byte[] Buffer => _buffer ?? (_buffer = new byte[_bufferSize]);
+        private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
 
         [ThreadStatic]
         private static Random _random;
@@ -156,21 +155,18 @@ namespace JustEat.StatsD.V2
                 else
                 {
                     var newSize = _formatter.GetMaxBufferSize(msg);
-
-                    // TODO: this line needs careful review
-                    var size = Interlocked.CompareExchange(ref _bufferSize, buffer.Length, newSize);
-                    _buffer = new byte[size];
+                    
+                    _buffer = new byte[newSize];
 
                     if (_formatter.TryFormat(msg, sampleRate, _buffer, out written))
                     {
-                        _transport.Send(new ArraySegment<byte>(buffer, 0, written));
+                        _transport.Send(new ArraySegment<byte>(_buffer, 0, written));
                     }
                     else
                     {
                         // so we was not able to write to resized buffer
                         // that means there is a bug in formatter
-                        throw new Exception(
-                            "Utf8 Formatting Error. This is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
+                        throw new Exception("Utf8 Formatting Error. This is a bug. Please report it to https://github.com/justeat/JustEat.StatsD");
                     }
                 }
             }

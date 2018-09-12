@@ -60,6 +60,44 @@ namespace JustEat.StatsD
             Check(message, "prefix.bucket:128.5|g");
         }
 
+        [Theory]
+        [InlineData(1, 'z')]
+        [InlineData(2, 'z')]
+        [InlineData(4, 'z')]
+        [InlineData(8, 'z')]
+        [InlineData(16, 'z')]
+        [InlineData(32, 'z')]
+        [InlineData(64, 'z')]
+        [InlineData(128, 'z')]
+        [InlineData(256, 'z')]
+        [InlineData(512, 'z')]
+        [InlineData(1024, 'z')]
+        [InlineData(2048, 'z')]
+        [InlineData(1, 'Ж')]
+        [InlineData(2, 'Ж')]
+        [InlineData(4, 'Ж')]
+        [InlineData(8, 'Ж')]
+        [InlineData(16, 'Ж')]
+        [InlineData(32, 'Ж')]
+        [InlineData(64, 'Ж')]
+        [InlineData(128, 'Ж')]
+        [InlineData(256, 'Ж')]
+        [InlineData(512, 'Ж')]
+        [InlineData(1024, 'Ж')]
+        [InlineData(2048, 'Ж')]
+        public static void GetMaxBufferSizeCalculatesValidBufferSizes(int bucketSize, char ch)
+        {
+            var hugeBucket = new string(ch, bucketSize);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket);
+            var expected = $"prefix.{hugeBucket}:128.5|g";
+
+            var buffer = new byte[Formatter.GetMaxBufferSize(message)];
+
+            Formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
+            var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
+            actual.ShouldBe(expected);
+        }
+
         private static void Check(StatsDMessage message,  string expected)
         {
             Check(message, 1, expected);
