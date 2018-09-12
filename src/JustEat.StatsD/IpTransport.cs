@@ -31,11 +31,6 @@ namespace JustEat.StatsD
             }
         }
 
-        private static Socket CreateSocket()
-        {
-            return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-        }
-
         public void Send(ArraySegment<byte> metric)
         {
             if (metric.Count == 0)
@@ -48,6 +43,11 @@ namespace JustEat.StatsD
             {
                 socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
             }
+        }
+
+        private static Socket CreateSocket()
+        {
+            return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
         }
     }
 }

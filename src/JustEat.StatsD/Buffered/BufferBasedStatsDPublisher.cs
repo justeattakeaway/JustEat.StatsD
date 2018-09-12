@@ -6,6 +6,7 @@ namespace JustEat.StatsD.Buffered
     {
         private const double DefaultSampleRate = 1.0;
         private const int SafeUdpPacketSize = 512;
+
         [ThreadStatic]
         private static byte[] _buffer;
         private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);

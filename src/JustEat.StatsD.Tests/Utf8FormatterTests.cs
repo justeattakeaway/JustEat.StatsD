@@ -60,6 +60,16 @@ namespace JustEat.StatsD
             Check(message, "prefix.bucket:128.5|g");
         }
 
+        [Fact]
+        public static void MessagesLargerThenAvailableBufferShouldNotBeFormatted()
+        {
+            var buffer = new byte[128];
+            var hugeBucket = new string('x', 256);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket);
+            Formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(false);
+            written.ShouldBe(0);
+        }
+
         [Theory]
         [InlineData(1, 'z')]
         [InlineData(2, 'z')]

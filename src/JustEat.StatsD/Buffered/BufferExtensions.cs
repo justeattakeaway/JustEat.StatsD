@@ -39,7 +39,6 @@ namespace JustEat.StatsD.Buffered
             src.Tail = src.Tail.Slice(written);
             src.Written += written;
             return true;
-
 #else
             var bucketBytes = UTF8.GetBytes(str);
             return src.TryWriteBytes(bucketBytes);
