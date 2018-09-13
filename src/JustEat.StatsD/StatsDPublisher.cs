@@ -4,6 +4,9 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
+    // ReSharper disable IntroduceOptionalParameters.Global to preserve binary compatibility
+
+
     /// <summary>
     ///     Will synchronously publish stats at statsd as you make calls; will not batch sends.
     /// </summary>
@@ -11,7 +14,12 @@ namespace JustEat.StatsD
     {
         private readonly IStatsDPublisher _publisher;
 
-        public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport, bool preferBufferedTransport = false)
+        public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
+            : this (configuration, transport, false)
+        {
+        }
+
+        public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport, bool preferBufferedTransport)
         {
             if (configuration == null)
             {
@@ -34,7 +42,12 @@ namespace JustEat.StatsD
             }
         }
 
-        public StatsDPublisher(StatsDConfiguration configuration, bool preferBufferedTransport = false)
+        public StatsDPublisher(StatsDConfiguration configuration)
+            : this(configuration, false)
+        {
+        }
+
+        public StatsDPublisher(StatsDConfiguration configuration, bool preferBufferedTransport)
         {
             if (configuration == null)
             {

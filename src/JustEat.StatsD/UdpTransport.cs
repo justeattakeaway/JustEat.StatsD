@@ -47,7 +47,7 @@ namespace JustEat.StatsD
 
         public void Send(ArraySegment<byte> metric)
         {
-            if (metric.Count == 0)
+            if (metric.Array == null || metric.Count == 0)
             {
                 return;
             }

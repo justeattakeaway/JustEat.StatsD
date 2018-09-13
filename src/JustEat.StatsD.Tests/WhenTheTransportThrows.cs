@@ -21,13 +21,11 @@ namespace JustEat.StatsD
         }
     }
     
-    public delegate IStatsDPublisher Factory(StatsDConfiguration config);
-
     public class WhenTheTransportThrows
     {
         [Theory]
         [MemberData(nameof(Publishers))]
-        public void DefaultConfigurationSwallowsThrownExceptions(string name, Factory factory)
+        public void DefaultConfigurationSwallowsThrownExceptions(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
 
@@ -38,7 +36,7 @@ namespace JustEat.StatsD
 
         [Theory]
         [MemberData(nameof(Publishers))]
-        public void NullErrorHandlerSwallowsThrownExceptions(string name, Factory factory)
+        public void NullErrorHandlerSwallowsThrownExceptions(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
             validConfig.OnError = null;
@@ -50,7 +48,7 @@ namespace JustEat.StatsD
 
         [Theory]
         [MemberData(nameof(Publishers))]
-        public void TrueReturningErrorHandlerSwallowsThrownExceptions(string name, Factory factory)
+        public void TrueReturningErrorHandlerSwallowsThrownExceptions(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
             validConfig.OnError = e => true;
@@ -62,7 +60,7 @@ namespace JustEat.StatsD
 
         [Theory]
         [MemberData(nameof(Publishers))]
-        public void FalseReturningErrorHandlerThrowsExceptions(string name, Factory factory)
+        public void FalseReturningErrorHandlerThrowsExceptions(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
             validConfig.OnError = e => false;
@@ -75,7 +73,7 @@ namespace JustEat.StatsD
 
         [Theory]
         [MemberData(nameof(Publishers))]
-        public void ThrownExceptionCanBeCaptured(string name, Factory factory)
+        public void ThrownExceptionCanBeCaptured(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
             Exception capturedEx = null; 
@@ -92,7 +90,8 @@ namespace JustEat.StatsD
             capturedEx.ShouldNotBeNull();
         }
 
-        public static TheoryData<string, Factory> Publishers => new TheoryData<string, Factory>
+        public static TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>> Publishers =>
+            new TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>>
         {
             {
                 "BufferBasedStatsDPublisher",

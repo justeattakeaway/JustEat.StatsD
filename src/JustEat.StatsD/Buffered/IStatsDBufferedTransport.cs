@@ -2,7 +2,7 @@ using System;
 
 namespace JustEat.StatsD.Buffered
 {
-    internal interface IStatsDBufferedTransport
+    public interface IStatsDBufferedTransport
     {
         void Send(ArraySegment<byte> metric);
     }

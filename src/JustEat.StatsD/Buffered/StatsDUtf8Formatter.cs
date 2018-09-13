@@ -84,7 +84,7 @@ namespace JustEat.StatsD.Buffered
                     return successSoFar && buffer.TryWriteBytes((byte) '|', (byte) 'g');
                 }
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(msg.MessageKind), $"Unknown StatsD message kind encountered {msg.MessageKind}");
+                    throw new ArgumentOutOfRangeException(nameof(msg));
             }
         }
 

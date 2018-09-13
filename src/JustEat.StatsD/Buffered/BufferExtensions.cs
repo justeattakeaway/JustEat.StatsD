@@ -1,14 +1,14 @@
 using System;
 using System.Buffers.Text;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace JustEat.StatsD.Buffered
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal static class BufferExtensions
     {
-        private static readonly Encoding UTF8 = Encoding.UTF8;
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteBytes(this ref Buffer src, Span<byte> destination)
         {
@@ -29,7 +29,7 @@ namespace JustEat.StatsD.Buffered
             int written = 0;
             try
             {
-                written = UTF8.GetBytes(str, src.Tail);
+                written = Encoding.UTF8.GetBytes(str, src.Tail);
             }
             catch (ArgumentException)
             {
@@ -40,7 +40,7 @@ namespace JustEat.StatsD.Buffered
             src.Written += written;
             return true;
 #else
-            var bucketBytes = UTF8.GetBytes(str);
+            var bucketBytes = Encoding.UTF8.GetBytes(str);
             return src.TryWriteBytes(bucketBytes);
 #endif
         }

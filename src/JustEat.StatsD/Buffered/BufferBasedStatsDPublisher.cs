@@ -49,7 +49,7 @@ namespace JustEat.StatsD.Buffered
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
-            if (buckets == null)
+            if (buckets == null || buckets.Length == 0)
             {
                 return;
             }
@@ -77,7 +77,7 @@ namespace JustEat.StatsD.Buffered
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
-            if (buckets == null)
+            if (buckets == null || buckets.Length == 0)
             {
                 return;
             }
@@ -163,11 +163,7 @@ namespace JustEat.StatsD.Buffered
                     }
                     else
                     {
-                        // so we was not able to write to resized buffer
-                        // that means there is a bug in formatter
-                        throw new Exception("Utf8 Formatting Error. This is a bug." +
-                                            " Please report it to https://github.com/justeat/JustEat.StatsD/issues." +
-                                            " Meanwhile you can switch to string based transport.");
+                        throw new Exception("Utf8 Formatting Error");
                     }
                 }
             }
