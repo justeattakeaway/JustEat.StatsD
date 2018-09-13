@@ -1,6 +1,6 @@
 using System;
 
-namespace JustEat.StatsD.Buffered
+namespace JustEat.StatsD
 {
     public interface IStatsDBufferedTransport
     {
