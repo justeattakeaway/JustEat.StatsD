@@ -11,7 +11,7 @@ namespace JustEat.StatsD
     /// </summary>
     public class StatsDPublisher : IStatsDPublisher
     {
-        private readonly IStatsDPublisher _publisher;
+        private readonly IStatsDPublisher _inner;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
@@ -27,11 +27,11 @@ namespace JustEat.StatsD
 
             switch (transport)
             {
-                case IStatsDBufferedTransport transportV2 when configuration.PreferBufferedTransport:
-                    _publisher = new BufferBasedStatsDPublisher(configuration, transportV2);
+                case IStatsDBufferedTransport bufferedTransport when configuration.PreferBufferedTransport:
+                    _inner = new BufferBasedStatsDPublisher(configuration, bufferedTransport);
                     break;
                 default:
-                    _publisher = new StringBasedStatsDPublisher(configuration, transport);
+                    _inner = new StringBasedStatsDPublisher(configuration, transport);
                     break;
             }
         }
@@ -50,97 +50,97 @@ namespace JustEat.StatsD
 
             if (configuration.PreferBufferedTransport)
             {
-                _publisher = new BufferBasedStatsDPublisher(configuration, transport);
+                _inner = new BufferBasedStatsDPublisher(configuration, transport);
             }
             else
             {
-                _publisher = new StringBasedStatsDPublisher(configuration, transport);
+                _inner = new StringBasedStatsDPublisher(configuration, transport);
             }
         }
 
         public void MarkEvent(string name)
         {
-            _publisher.MarkEvent(name);
+            _inner.MarkEvent(name);
         }
 
         public void Increment(string bucket)
         {
-            _publisher.Increment(bucket);
+            _inner.Increment(bucket);
         }
 
         public void Increment(long value, string bucket)
         {
-            _publisher.Increment(value, bucket);
+            _inner.Increment(value, bucket);
         }
 
         public void Increment(long value, double sampleRate, string bucket)
         {
-            _publisher.Increment(value, sampleRate, bucket);
+            _inner.Increment(value, sampleRate, bucket);
         }
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
-            _publisher.Increment(value, sampleRate, buckets);
+            _inner.Increment(value, sampleRate, buckets);
         }
 
         public void Decrement(string bucket)
         {
-            _publisher.Decrement(bucket);
+            _inner.Decrement(bucket);
         }
 
         public void Decrement(long value, string bucket)
         {
-            _publisher.Decrement(value, bucket);
+            _inner.Decrement(value, bucket);
         }
 
         public void Decrement(long value, double sampleRate, string bucket)
         {
-            _publisher.Decrement(value, sampleRate, bucket);
+            _inner.Decrement(value, sampleRate, bucket);
         }
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
-            _publisher.Decrement(value, sampleRate, buckets);
+            _inner.Decrement(value, sampleRate, buckets);
         }
 
         public void Gauge(double value, string bucket)
         {
-            _publisher.Gauge(value, bucket);
+            _inner.Gauge(value, bucket);
         }
 
         public void Gauge(double value, string bucket, DateTime timestamp)
         {
-            _publisher.Gauge(value, bucket, timestamp);
+            _inner.Gauge(value, bucket, timestamp);
         }
 
         public void Gauge(long value, string bucket)
         {
-            _publisher.Gauge(value, bucket);
+            _inner.Gauge(value, bucket);
         }
 
         public void Gauge(long value, string bucket, DateTime timestamp)
         {
-            _publisher.Gauge(value, bucket, timestamp);
+            _inner.Gauge(value, bucket, timestamp);
         }
 
         public void Timing(TimeSpan duration, string bucket)
         {
-            _publisher.Timing(duration, bucket);
+            _inner.Timing(duration, bucket);
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
-            _publisher.Timing(duration, sampleRate, bucket);
+            _inner.Timing(duration, sampleRate, bucket);
         }
 
         public void Timing(long duration, string bucket)
         {
-            _publisher.Timing(duration, bucket);
+            _inner.Timing(duration, bucket);
         }
 
         public void Timing(long duration, double sampleRate, string bucket)
         {
-            _publisher.Timing(duration, sampleRate, bucket);
+            _inner.Timing(duration, sampleRate, bucket);
         }
     }
 }
