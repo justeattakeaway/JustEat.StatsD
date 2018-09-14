@@ -1,7 +1,6 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
-using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -31,7 +30,7 @@ namespace JustEat.StatsD
             }
         }
 
-        public void Send(ArraySegment<byte> metric)
+        public void Send(in ArraySegment<byte> metric)
         {
             if (metric.Array == null || metric.Count == 0)
             {

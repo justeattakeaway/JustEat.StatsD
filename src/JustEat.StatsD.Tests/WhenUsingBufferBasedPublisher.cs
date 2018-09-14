@@ -37,7 +37,7 @@ namespace JustEat.StatsD
         {
             public int TimesCalled { get; private set; }
 
-            public void Send(ArraySegment<byte> metric)
+            public void Send(in ArraySegment<byte> metric)
             {
                 TimesCalled++;
             }

@@ -15,7 +15,7 @@ namespace JustEat.StatsD
             throw new SocketException(42);
         }
 
-        public void Send(ArraySegment<byte> metric)
+        public void Send(in ArraySegment<byte> metric)
         {
             throw new SocketException(42);
         }

@@ -65,7 +65,7 @@ namespace JustEat.StatsD
                 StringCalls++;
             }
 
-            public void Send(ArraySegment<byte> metric)
+            public void Send(in ArraySegment<byte> metric)
             {
                 BufferedCalls++;
             }
@@ -91,7 +91,7 @@ namespace JustEat.StatsD
         }
 
         [Fact]
-        public void StringBasedTransportShouldBeChosenByDefault()
+        public void BufferBasedTransportShouldBeChosenByDefault()
         {
             var config = new StatsDConfiguration
             {
@@ -105,8 +105,8 @@ namespace JustEat.StatsD
 
             publisher.MarkEvent("test");
 
-            transport.BufferedCalls.ShouldBe(0);
-            transport.StringCalls.ShouldBe(1);
+            transport.BufferedCalls.ShouldBe(1);
+            transport.StringCalls.ShouldBe(0);
         }
 
         [Fact]

@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
@@ -53,7 +52,7 @@ namespace JustEat.StatsD
             pool.Push(socket);
         }
 
-        public void Send(ArraySegment<byte> metric)
+        public void Send(in ArraySegment<byte> metric)
         {
             if (metric.Array == null || metric.Count == 0)
             {
