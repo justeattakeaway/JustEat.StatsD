@@ -6,7 +6,6 @@ using JustEat.StatsD.Buffered;
 namespace Benchmark
 {
     [MemoryDiagnoser]
-    [ShortRunJob]
     public class Utf8FormatterBenchmark
     {
         private static readonly StatsDMessageFormatter FormatterString = new StatsDMessageFormatter("hello.world");

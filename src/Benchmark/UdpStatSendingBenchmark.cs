@@ -1,6 +1,7 @@
 using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
+using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
@@ -13,6 +14,7 @@ namespace Benchmark
         private PooledUdpTransport _pooledTransport;
         private StringBasedStatsDPublisher _udpSender;
         private StringBasedStatsDPublisher _pooledUdpSender;
+        private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
         private IStatsDPublisher _adaptedStatsDPublisher;
 
         [GlobalSetup]
@@ -42,6 +44,9 @@ namespace Benchmark
 
             _adaptedStatsDPublisher = new StatsDPublisher(config);
             _adaptedStatsDPublisher.Increment("startup.ud");
+
+            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _pooledTransport);
+            _bufferBasedStatsDPublisher.Increment("startup.ud");
         }
 
         [GlobalCleanup]
@@ -62,6 +67,13 @@ namespace Benchmark
         {
             _pooledUdpSender.Increment("increment.ud");
             _pooledUdpSender.Timing(Timed, "timer.ud");
+        }
+
+        [Benchmark]
+        public void SendStatPooledUdpBuffered()
+        {
+            _bufferBasedStatsDPublisher.Increment("increment.ud");
+            _bufferBasedStatsDPublisher.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]

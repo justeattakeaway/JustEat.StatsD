@@ -7,7 +7,6 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
-    [ShortRunJob]
     public class StatSendingBenchmark
     {
         private BufferBasedStatsDPublisher _pooledUdpSender;
@@ -78,7 +77,7 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public void RunV2()
+        public void RunBuffered()
         {
             _pooledUdpSender.MarkEvent("hello.v2");
             _pooledUdpSender.Increment(20, "increment.v2");
@@ -88,7 +87,7 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public void RunV2WithSampling()
+        public void RunBufferedWithSampling()
         {
             _pooledUdpSender.Increment(2, 0.2, "increment.v2");
             _pooledUdpSender.Timing(2, 0.2, "increment.v2");
