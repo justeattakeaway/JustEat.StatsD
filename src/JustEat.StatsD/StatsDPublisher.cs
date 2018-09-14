@@ -14,11 +14,6 @@ namespace JustEat.StatsD
         private readonly IStatsDPublisher _publisher;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
-            : this (configuration, transport, true)
-        {
-        }
-
-        public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport, bool preferBufferedTransport)
         {
             if (configuration == null)
             {
@@ -32,7 +27,7 @@ namespace JustEat.StatsD
 
             switch (transport)
             {
-                case IStatsDBufferedTransport transportV2 when preferBufferedTransport:
+                case IStatsDBufferedTransport transportV2 when configuration.PreferBufferedTransport:
                     _publisher = new BufferBasedStatsDPublisher(configuration, transportV2);
                     break;
                 default:
@@ -42,11 +37,6 @@ namespace JustEat.StatsD
         }
 
         public StatsDPublisher(StatsDConfiguration configuration)
-            : this(configuration, true)
-        {
-        }
-
-        public StatsDPublisher(StatsDConfiguration configuration, bool preferBufferedTransport)
         {
             if (configuration == null)
             {
@@ -58,7 +48,7 @@ namespace JustEat.StatsD
 
             var transport = new PooledUdpTransport(endpointSource);
 
-            if (preferBufferedTransport)
+            if (configuration.PreferBufferedTransport)
             {
                 _publisher = new BufferBasedStatsDPublisher(configuration, transport);
             }

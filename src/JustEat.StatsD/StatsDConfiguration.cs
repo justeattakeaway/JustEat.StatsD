@@ -41,5 +41,13 @@ namespace JustEat.StatsD
         /// The default behaviour is to ignore the error
         /// </summary>
         public Func<Exception, bool> OnError { get; set; }
+
+        /// <summary>
+        /// If true will prefer to use <see cref="IStatsDBufferedTransport"/> interface implementation
+        /// if transport implementation provides both 
+        /// <see cref="IStatsDBufferedTransport"/> and <see cref="IStatsDTransport"/> interfaces.
+        /// Default is true.
+        /// </summary>
+        public bool PreferBufferedTransport { get; set; } = true;
     }
 }
