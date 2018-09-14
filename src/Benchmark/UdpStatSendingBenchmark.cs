@@ -13,6 +13,7 @@ namespace Benchmark
         private PooledUdpTransport _pooledTransport;
         private StringBasedStatsDPublisher _udpSender;
         private StringBasedStatsDPublisher _pooledUdpSender;
+        private IStatsDPublisher _adaptedStatsDPublisher;
 
         [GlobalSetup]
         public void Setup()
@@ -38,6 +39,9 @@ namespace Benchmark
 
             _pooledUdpSender = new StringBasedStatsDPublisher(config, _pooledTransport);
             _pooledUdpSender.Increment("startup.ud");
+
+            _adaptedStatsDPublisher = new StatsDPublisher(config);
+            _adaptedStatsDPublisher.Increment("startup.ud");
         }
 
         [GlobalCleanup]
@@ -58,6 +62,13 @@ namespace Benchmark
         {
             _pooledUdpSender.Increment("increment.ud");
             _pooledUdpSender.Timing(Timed, "timer.ud");
+        }
+
+        [Benchmark]
+        public void SendStatPooledUdpCoveredByAdapter()
+        {
+            _adaptedStatsDPublisher.Increment("increment.ud");
+            _adaptedStatsDPublisher.Timing(Timed, "timer.ud");
         }
     }
 }
