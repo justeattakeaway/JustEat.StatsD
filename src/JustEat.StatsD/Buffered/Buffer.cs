@@ -4,7 +4,7 @@ namespace JustEat.StatsD.Buffered
 {
     internal ref struct Buffer
     {
-        public Buffer(Span<byte> source) : this()
+        public Buffer(Span<byte> source)
         {
             Tail = source;
             Written = 0;
