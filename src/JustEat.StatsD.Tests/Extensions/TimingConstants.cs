@@ -7,6 +7,6 @@ namespace JustEat.StatsD.Extensions
         public const int DelayMilliseconds = 500;
 
         public static readonly TimeSpan DeltaFast = TimeSpan.FromMilliseconds(DelayMilliseconds / 4);
-        public static readonly TimeSpan DeltaSlow = TimeSpan.FromMilliseconds(DelayMilliseconds * 2.5);
+        public static readonly TimeSpan DeltaSlow = TimeSpan.FromMilliseconds(DelayMilliseconds * 3);
     }
 }
