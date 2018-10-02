@@ -5,7 +5,7 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    public class IpTransport : IStatsDTransport
+    public class IpTransport : IStatsDTransport, IStatsDBufferedTransport
     {
         private readonly IPEndPointSource _endpointSource;
 
@@ -27,6 +27,20 @@ namespace JustEat.StatsD
             using (var socket = CreateSocket())
             {
                 socket.SendTo(bytes, endpoint);
+            }
+        }
+
+        public void Send(in ArraySegment<byte> metric)
+        {
+            if (metric.Array == null || metric.Count == 0)
+            {
+                return;
+            }
+
+            var endpoint = _endpointSource.GetEndpoint();
+            using (var socket = CreateSocket())
+            {
+                socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
             }
         }
 

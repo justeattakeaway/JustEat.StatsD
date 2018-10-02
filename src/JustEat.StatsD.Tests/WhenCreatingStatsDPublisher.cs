@@ -1,4 +1,6 @@
 using System;
+using JustEat.StatsD.Buffered;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -14,7 +16,7 @@ namespace JustEat.StatsD
                 Host = "someserver.somewhere.com"
             };
 
-            var stats = new StatsDPublisher(validConfig);
+            var stats = new StringBasedStatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -27,7 +29,7 @@ namespace JustEat.StatsD
                 Host = "10.0.1.2"
             };
 
-            var stats = new StatsDPublisher(validConfig);
+            var stats = new StringBasedStatsDPublisher(validConfig);
 
             stats.ShouldNotBeNull();
         }
@@ -38,7 +40,7 @@ namespace JustEat.StatsD
             StatsDConfiguration noConfig = null;
 
             Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(noConfig));
+             () => new StringBasedStatsDPublisher(noConfig));
         }
 
         [Fact]
@@ -50,7 +52,82 @@ namespace JustEat.StatsD
             };
 
             Should.Throw<ArgumentNullException>(
-             () => new StatsDPublisher(badConfig));
+             () => new StringBasedStatsDPublisher(badConfig));
+        }
+
+        private class BothVersionsTransportMock : IStatsDTransport, IStatsDBufferedTransport
+        {
+            public int StringCalls { get; private set; }
+            public int BufferedCalls { get; private set; }
+
+            public void Send(string metric)
+            {
+                StringCalls++;
+            }
+
+            public void Send(in ArraySegment<byte> metric)
+            {
+                BufferedCalls++;
+            }
+        }
+
+        [Fact]
+        public void BufferBasedTransportShouldBeChosenIfAvailableAndAskedFor()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1",
+                PreferBufferedTransport = true
+            };
+
+            var transport = new BothVersionsTransportMock();
+
+            var publisher = new StatsDPublisher(config, transport);
+
+            publisher.MarkEvent("test");
+
+            transport.BufferedCalls.ShouldBe(1);
+            transport.StringCalls.ShouldBe(0);
+        }
+
+        [Fact]
+        public void BufferBasedTransportShouldBeChosenByDefault()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1",
+                PreferBufferedTransport = true
+            };
+
+            var transport = new BothVersionsTransportMock();
+
+            var publisher = new StatsDPublisher(config, transport);
+
+            publisher.MarkEvent("test");
+
+            transport.BufferedCalls.ShouldBe(1);
+            transport.StringCalls.ShouldBe(0);
+        }
+
+        [Fact]
+        public void StringBasedTransportShouldBeUsedIfBufferedIsNotAvailable()
+        {
+            var config = new StatsDConfiguration
+            {
+                Prefix = "test",
+                Host = "127.0.0.1",
+                PreferBufferedTransport = false
+            };
+
+            var transport = new Mock<IStatsDTransport>(MockBehavior.Loose);
+
+            var publisher = new StatsDPublisher(config, transport.Object);
+
+            publisher.MarkEvent("test");
+
+            transport.Verify(x => x.Send(It.IsAny<string>()), Times.Once);
         }
     }
 }

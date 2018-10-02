@@ -1,6 +1,7 @@
 using System;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
+using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
@@ -11,8 +12,10 @@ namespace Benchmark
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
         private PooledUdpTransport _pooledTransport;
-        private StatsDPublisher _udpSender;
-        private StatsDPublisher _pooledUdpSender;
+        private StringBasedStatsDPublisher _udpSender;
+        private StringBasedStatsDPublisher _pooledUdpSender;
+        private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
+        private IStatsDPublisher _adaptedStatsDPublisher;
 
         [GlobalSetup]
         public void Setup()
@@ -33,11 +36,17 @@ namespace Benchmark
             _pooledTransport = new PooledUdpTransport(endpointSource);
             var udpTransport = new UdpTransport(endpointSource);
 
-            _udpSender = new StatsDPublisher(config, udpTransport);
+            _udpSender = new StringBasedStatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.ud");
 
-            _pooledUdpSender = new StatsDPublisher(config, _pooledTransport);
+            _pooledUdpSender = new StringBasedStatsDPublisher(config, _pooledTransport);
             _pooledUdpSender.Increment("startup.ud");
+
+            _adaptedStatsDPublisher = new StatsDPublisher(config);
+            _adaptedStatsDPublisher.Increment("startup.ud");
+
+            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _pooledTransport);
+            _bufferBasedStatsDPublisher.Increment("startup.ud");
         }
 
         [GlobalCleanup]
@@ -58,6 +67,20 @@ namespace Benchmark
         {
             _pooledUdpSender.Increment("increment.ud");
             _pooledUdpSender.Timing(Timed, "timer.ud");
+        }
+
+        [Benchmark]
+        public void SendStatPooledUdpBuffered()
+        {
+            _bufferBasedStatsDPublisher.Increment("increment.ud");
+            _bufferBasedStatsDPublisher.Timing(Timed, "timer.ud");
+        }
+
+        [Benchmark]
+        public void SendStatPooledUdpCoveredByAdapter()
+        {
+            _adaptedStatsDPublisher.Increment("increment.ud");
+            _adaptedStatsDPublisher.Timing(Timed, "timer.ud");
         }
     }
 }
