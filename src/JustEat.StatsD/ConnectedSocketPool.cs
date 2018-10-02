@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 
 namespace JustEat.StatsD
 {
@@ -13,23 +12,24 @@ namespace JustEat.StatsD
         public ConnectedSocketPool(IPEndPoint ipEndPoint)
         {
             IpEndPoint = ipEndPoint;
-
             _pool = new SimpleObjectPool<Socket>(
-                Environment.ProcessorCount,
-                pool =>
-                {
-                    var socket = UdpTransport.CreateSocket();
-                    try
-                    {
-                        socket.Connect(ipEndPoint);
-                        return socket;
-                    }
-                    catch
-                    {
-                        socket.Dispose();
-                        throw;
-                    }
-                });
+                () => CreateSocket(ipEndPoint),
+                Environment.ProcessorCount);
+        }
+
+        private static Socket CreateSocket(IPEndPoint ipEndPoint)
+        {
+            var socket = UdpTransport.CreateSocket();
+            try
+            {
+                socket.Connect(ipEndPoint);
+                return socket;
+            }
+            catch
+            {
+                socket.Dispose();
+                throw;
+            }
         }
 
         public IPEndPoint IpEndPoint { get; }
