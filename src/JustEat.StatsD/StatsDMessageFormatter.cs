@@ -111,21 +111,10 @@ namespace JustEat.StatsD
             var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
             return Format(DefaultSampleRate, stat);
         }
-        public string Gauge(double magnitude, string statBucket, DateTime timestamp)
-        {
-            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
-            return Format(DefaultSampleRate, stat);
-        }
 
         public string Gauge(long magnitude, string statBucket)
         {
             var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g", _prefix, statBucket, magnitude);
-            return Format(DefaultSampleRate, stat);
-        }
-
-        public string Gauge(long magnitude, string statBucket, DateTime timestamp)
-        {
-            var stat = string.Format(InvariantCulture, "{0}{1}:{2}|g|@{3}", _prefix, statBucket, magnitude, timestamp.AsUnixTime());
             return Format(DefaultSampleRate, stat);
         }
 

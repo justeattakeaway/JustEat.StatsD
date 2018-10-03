@@ -108,19 +108,9 @@ namespace JustEat.StatsD
             _inner.Gauge(value, bucket);
         }
 
-        public void Gauge(double value, string bucket, DateTime timestamp)
-        {
-            _inner.Gauge(value, bucket, timestamp);
-        }
-
         public void Gauge(long value, string bucket)
         {
             _inner.Gauge(value, bucket);
-        }
-
-        public void Gauge(long value, string bucket, DateTime timestamp)
-        {
-            _inner.Gauge(value, bucket, timestamp);
         }
 
         public void Timing(TimeSpan duration, string bucket)

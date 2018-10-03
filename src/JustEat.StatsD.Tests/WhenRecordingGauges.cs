@@ -33,38 +33,5 @@ namespace JustEat.StatsD
 
             actual.ShouldBe(string.Format(CultureInfo.InvariantCulture, "{0}:{1}|g", statBucket, magnitude));
         }
-
-        [Fact]
-        public static void GaugeMetricsAreFormattedCorrectlyWhenTheyContainATimestamp()
-        {
-            string statBucket = "gauge-bucket";
-            //generate a random double value between 0.1 and 100
-            double magnitude = new Random().NextDouble() * (100 - 0.1) + 0.1;
-
-            var target = new StatsDMessageFormatter();
-
-            var timestamp = DateTime.Now;
-
-            string actual = target.Gauge(magnitude, statBucket, timestamp);
-
-            actual.ShouldBe(string.Format(CultureInfo.InvariantCulture, "{0}:{1}|g|@{2}", statBucket, magnitude, timestamp.AsUnixTime()));
-
-        }
-
-        [Fact]
-        public static void GaugeMetricsAreFormattedCorrectlyWhenTheyContainATimestampUsingDouble()
-        {
-            string statBucket = "gauge-bucket";
-            long magnitude = new Random().Next(100);
-
-            var target = new StatsDMessageFormatter();
-
-            var timestamp = DateTime.Now;
-
-            string actual = target.Gauge(magnitude, statBucket, timestamp);
-
-            actual.ShouldBe(string.Format(CultureInfo.InvariantCulture, "{0}:{1}|g|@{2}", statBucket, magnitude, timestamp.AsUnixTime()));
-
-        }
     }
 }
