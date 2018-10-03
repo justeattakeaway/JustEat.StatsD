@@ -110,12 +110,12 @@ namespace JustEat.StatsD.Buffered
 
         public void Timing(TimeSpan duration, string bucket)
         {
-            Timing(duration.Ticks, bucket);
+            Timing((long)duration.TotalMilliseconds, bucket);
         }
 
         public void Timing(TimeSpan duration, double sampleRate, string bucket)
         {
-            Timing(duration.Ticks, sampleRate, bucket);
+            Timing((long)duration.TotalMilliseconds, sampleRate, bucket);
         }
 
         public void Timing(long duration, string bucket)
