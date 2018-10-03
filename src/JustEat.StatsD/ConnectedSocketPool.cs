@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 
@@ -7,22 +8,35 @@ namespace JustEat.StatsD
     internal sealed class ConnectedSocketPool : IDisposable
     {
         private bool _disposed;
-        private readonly SimpleObjectPool<Socket> _pool;
+        private readonly ConcurrentBag<Socket> _pool = new ConcurrentBag<Socket>();
+
+        public IPEndPoint IpEndPoint { get; }
 
         public ConnectedSocketPool(IPEndPoint ipEndPoint)
         {
             IpEndPoint = ipEndPoint;
-            _pool = new SimpleObjectPool<Socket>(
-                () => CreateSocket(ipEndPoint),
-                Environment.ProcessorCount);
+            PrePopulateSocketPool(Environment.ProcessorCount);
         }
 
-        private static Socket CreateSocket(IPEndPoint ipEndPoint)
+        private void PrePopulateSocketPool(int size)
+        {
+            while (_pool.Count < size)
+            {
+                _pool.Add(CreateSocket());
+            }
+        }
+
+        private Socket CreateSocket()
         {
             var socket = UdpTransport.CreateSocket();
+            if (socket == null)
+            {
+                throw new InvalidOperationException("CreateSocket produced null socket");
+            }
+
             try
             {
-                socket.Connect(ipEndPoint);
+                socket.Connect(IpEndPoint);
                 return socket;
             }
             catch
@@ -32,20 +46,42 @@ namespace JustEat.StatsD
             }
         }
 
-        public IPEndPoint IpEndPoint { get; }
-
-        public Socket PopOrCreate()
+        /// <summary>Retrieves an object from the pool if one is available.
+        /// return null if the pool is empty</summary>
+        /// <returns>An object from the pool. </returns>
+        private Socket Pop()
         {
-            return _pool.PopOrCreate();
+            if (_pool.TryTake(out Socket result))
+            {
+                return result;
+            }
+
+            return null;
         }
 
+        /// <summary>Retrieves an Socket from the pool if one is available.
+        /// Creates a new Socket if the pool is empty </summary>
+        /// <returns>A Socket from the pool. </returns>
+        internal Socket PopOrCreate()
+        {
+            return Pop() ?? CreateSocket();
+        }
+
+        /// <summary>Pushes an object back into the pool. </summary>
+        /// <exception cref="ArgumentNullException"> Thrown when the item is null.</exception>
+        /// <param name="item">The Socket to push.</param>
         public void Push(Socket item)
         {
-            _pool.Push(item);
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item), "Items added to a ConnectedSocketPool cannot be null");
+            }
+
+            _pool.Add(item);
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="PooledUdpTransport"/> class.
+        /// Finalizes an instance of the <see cref="ConnectedSocketPool"/> class.
         /// </summary>
         ~ConnectedSocketPool()
         {
@@ -67,7 +103,7 @@ namespace JustEat.StatsD
                 {
                     while (_pool.Count > 0)
                     {
-                        var socket = _pool.Pop();
+                        var socket = Pop();
                         socket?.Dispose();
                     }
                 }
