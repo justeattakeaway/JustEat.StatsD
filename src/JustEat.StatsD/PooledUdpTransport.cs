@@ -91,7 +91,8 @@ namespace JustEat.StatsD
             }
             else
             {
-                var newPool = new ConnectedSocketPool(endPoint);
+                var newPool = new ConnectedSocketPool(
+                    endPoint, Environment.ProcessorCount);
 
                 if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
                 {

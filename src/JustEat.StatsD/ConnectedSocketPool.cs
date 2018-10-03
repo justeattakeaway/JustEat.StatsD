@@ -12,15 +12,15 @@ namespace JustEat.StatsD
 
         public IPEndPoint IpEndPoint { get; }
 
-        public ConnectedSocketPool(IPEndPoint ipEndPoint)
+        public ConnectedSocketPool(IPEndPoint ipEndPoint, int initialSize)
         {
             IpEndPoint = ipEndPoint;
-            PrePopulateSocketPool(Environment.ProcessorCount);
+            PrePopulateSocketPool(initialSize);
         }
 
-        private void PrePopulateSocketPool(int size)
+        private void PrePopulateSocketPool(int initialSize)
         {
-            while (_pool.Count < size)
+            while (_pool.Count < initialSize)
             {
                 _pool.Add(CreateSocket());
             }
@@ -29,11 +29,6 @@ namespace JustEat.StatsD
         private Socket CreateSocket()
         {
             var socket = UdpTransport.CreateSocket();
-            if (socket == null)
-            {
-                throw new InvalidOperationException("CreateSocket produced null socket");
-            }
-
             try
             {
                 socket.Connect(IpEndPoint);
