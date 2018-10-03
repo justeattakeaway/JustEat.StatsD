@@ -6,18 +6,18 @@ namespace JustEat.StatsD
     /// <summary>
     /// A class that provides simple thread-safe object pooling semantics.
     /// </summary>
-    public sealed class SimpleObjectPool<T> where T : class
+    internal sealed class SimpleObjectPool<T> where T : class
     {
-        private readonly Func<SimpleObjectPool<T>, T> _constructor;
+        private readonly Func<T> _itemConstructor;
         private readonly ConcurrentBag<T> _pool;
 
-        /// <summary>	Constructor that populates a pool with the given number of items. </summary>
-        /// <exception cref="ArgumentNullException"> Thrown when the constructor is null. </exception>
+        /// <summary>Constructor that populates a pool with the given number of items. </summary>
+        /// <exception cref="ArgumentNullException"> Thrown when the itemConstructor is null. </exception>
+        /// <param name="itemConstructor"> The factory method used to create new instances of the object to populate the pool. </param>
         /// <param name="initialSize"> Number of items in the pool at start </param>
-        /// <param name="constructor"> The factory method used to create new instances of the object to populate the pool. </param>
-        public SimpleObjectPool(int initialSize, Func<SimpleObjectPool<T>, T> constructor)
+        public SimpleObjectPool(Func<T> itemConstructor, int initialSize = 0)
         {
-            _constructor = constructor ?? throw new ArgumentNullException(nameof(constructor));
+            _itemConstructor = itemConstructor ?? throw new ArgumentNullException(nameof(itemConstructor));
             _pool = new ConcurrentBag<T>();
             PrePopulate(initialSize);
         }
@@ -26,10 +26,10 @@ namespace JustEat.StatsD
         {
             while (Count < size)
             {
-                var instance = _constructor(this);
+                var instance = _itemConstructor();
                 if (instance == null)
                 {
-                    throw new InvalidOperationException("constructor produced null object");
+                    throw new InvalidOperationException("itemConstructor produced null object");
                 }
 
                 _pool.Add(instance);
@@ -56,7 +56,7 @@ namespace JustEat.StatsD
         /// <returns>An object from the pool. </returns>
         internal T PopOrCreate()
         {
-            return Pop() ?? _constructor(this);
+            return Pop() ?? _itemConstructor();
         }
 
         /// <summary>	Pushes an object back into the pool. </summary>
