@@ -6,7 +6,7 @@ namespace JustEat.StatsD
     /// <summary>
     /// A class that provides simple thread-safe object pooling semantics.
     /// </summary>
-    public sealed class SimpleObjectPool<T> where T : class
+    internal sealed class SimpleObjectPool<T> where T : class
     {
         private readonly Func<T> _itemConstructor;
         private readonly ConcurrentBag<T> _pool;
