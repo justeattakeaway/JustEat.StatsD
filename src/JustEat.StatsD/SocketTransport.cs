@@ -9,26 +9,26 @@ namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IStatsDTransport"/>
-    /// that uses UDP and pools sockets. This class cannot be inherited.
+    /// that uses sockets and pools sockets. This class cannot be inherited.
     /// </summary>
-    public sealed class UdpTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
+    public sealed class SocketTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
-        private readonly SocketTransport _socketTransport;
+        private readonly SocketProtocol _socketProtocol;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UdpTransport"/> class.
+        /// Initializes a new instance of the <see cref="SocketTransport"/> class.
         /// </summary>
         /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
-        /// <param name="socketTransport">Udp or Ip sockets</param>
+        /// <param name="socketProtocol">Udp or Ip sockets</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endPointSource"/> is <see langword="null"/>.
         /// </exception>
-        public UdpTransport(IPEndPointSource endPointSource, SocketTransport socketTransport)
+        public SocketTransport(IPEndPointSource endPointSource, SocketProtocol socketProtocol)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
-            _socketTransport = socketTransport;
+            _socketProtocol = socketProtocol;
         }
 
         /// <inheritdoc />
@@ -96,7 +96,7 @@ namespace JustEat.StatsD
             else
             {
                 var newPool = new ConnectedSocketPool(
-                    endPoint, _socketTransport, Environment.ProcessorCount);
+                    endPoint, _socketProtocol, Environment.ProcessorCount);
 
                 if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
                 {

@@ -11,8 +11,8 @@ namespace Benchmark
     {
         private const string MetricName = "this.is.a.metric";
 
-        private UdpTransport _transport;
-        private UdpTransport _transportSwitched;
+        private SocketTransport _transport;
+        private SocketTransport _transportSwitched;
 
         private class MilisecondSwitcher : IPEndPointSource
         {
@@ -53,8 +53,8 @@ namespace Benchmark
 
             var switcher = new MilisecondSwitcher(endpointSource1, endpointSource2);
 
-            _transport = new UdpTransport(endpointSource1, SocketTransport.Udp);
-            _transportSwitched = new UdpTransport(switcher, SocketTransport.Udp);
+            _transport = new SocketTransport(endpointSource1, SocketProtocol.Udp);
+            _transportSwitched = new SocketTransport(switcher, SocketProtocol.Udp);
         }
 
         [GlobalCleanup]

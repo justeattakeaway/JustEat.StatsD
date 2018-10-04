@@ -41,7 +41,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<UdpTransport>();
+                transport.ShouldBeOfType<SocketTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -82,7 +82,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<UdpTransport>();
+                transport.ShouldBeOfType<SocketTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -124,7 +124,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<UdpTransport>();
+                transport.ShouldBeOfType<SocketTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -179,7 +179,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<UdpTransport>();
+                transport.ShouldBeOfType<SocketTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -296,10 +296,10 @@ namespace JustEat.StatsD
             string host = "127.0.0.1";
 
             var provider = Configure(
-                (services) =>
+                services =>
                 {
                     // Act
-                    services.AddSingleton<IStatsDTransport, IpTransport>();
+                    services.AddSingleton<IStatsDTransport, SocketTransport>();
                     services.AddStatsD(host);
                 });
 
@@ -314,7 +314,7 @@ namespace JustEat.StatsD
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
             transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<IpTransport>();
+            transport.ShouldBeOfType<SocketTransport>();
 
             var publisher = provider.GetRequiredService<IStatsDPublisher>();
             publisher.ShouldNotBeNull();

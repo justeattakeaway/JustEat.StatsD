@@ -11,7 +11,7 @@ namespace Benchmark
     {
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
-        private UdpTransport _transport;
+        private SocketTransport _transport;
         private StringBasedStatsDPublisher _udpSender;
         private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
         private IStatsDPublisher _adaptedStatsDPublisher;
@@ -32,7 +32,7 @@ namespace Benchmark
                 config.Port,
                 config.DnsLookupInterval);
 
-            _transport = new UdpTransport(endpointSource, SocketTransport.Udp);
+            _transport = new SocketTransport(endpointSource, SocketProtocol.Udp);
 
             _udpSender = new StringBasedStatsDPublisher(config, _transport);
             _udpSender.Increment("startup.ud");
