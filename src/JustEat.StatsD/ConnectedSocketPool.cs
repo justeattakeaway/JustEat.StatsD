@@ -9,12 +9,14 @@ namespace JustEat.StatsD
     {
         private bool _disposed;
         private readonly ConcurrentBag<Socket> _pool = new ConcurrentBag<Socket>();
+        private SocketTransport _socketTransport;
 
         public IPEndPoint IpEndPoint { get; }
 
-        public ConnectedSocketPool(IPEndPoint ipEndPoint, int initialSize)
+        public ConnectedSocketPool(IPEndPoint ipEndPoint, SocketTransport socketTransport, int initialSize)
         {
             IpEndPoint = ipEndPoint;
+            _socketTransport = socketTransport;
             PrePopulateSocketPool(initialSize);
         }
 
@@ -28,7 +30,7 @@ namespace JustEat.StatsD
 
         private Socket CreateSocket()
         {
-            var socket = SocketFactory.ForUdp();
+            var socket = SocketFactory.For(_socketTransport);
             try
             {
                 socket.Connect(IpEndPoint);

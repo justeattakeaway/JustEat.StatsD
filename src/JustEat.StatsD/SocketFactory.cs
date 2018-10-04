@@ -1,10 +1,32 @@
+using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace JustEat.StatsD
 {
+    public enum SocketTransport
+    {
+        Udp,
+        Ip
+    }
+
     internal static class SocketFactory
     {
+        internal static Socket For(SocketTransport transport)
+        {
+            switch (transport)
+            {
+                case SocketTransport.Ip:
+                    return ForIp();
+
+                case SocketTransport.Udp:
+                    return ForUdp();
+
+                default:
+                    throw new InvalidOperationException($"Unknown transport {transport}"); 
+            }
+        }
+
         internal static Socket ForUdp()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
