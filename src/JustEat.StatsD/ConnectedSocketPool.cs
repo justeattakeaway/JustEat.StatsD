@@ -28,7 +28,7 @@ namespace JustEat.StatsD
 
         private Socket CreateSocket()
         {
-            var socket = Transport.UdpSocket();
+            var socket = SocketFactory.ForUdp();
             try
             {
                 socket.Connect(IpEndPoint);

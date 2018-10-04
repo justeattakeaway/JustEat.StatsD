@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace JustEat.StatsD
 {
-    internal static class Transport
+    internal static class SocketFactory
     {
-        internal static Socket UdpSocket()
+        internal static Socket ForUdp()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -22,7 +22,7 @@ namespace JustEat.StatsD
             return socket;
         }
 
-        internal static Socket IpSocket()
+        internal static Socket ForIp()
         {
             return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
         }

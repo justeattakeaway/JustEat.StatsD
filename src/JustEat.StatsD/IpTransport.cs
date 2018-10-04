@@ -24,7 +24,7 @@ namespace JustEat.StatsD
             var endpoint = _endpointSource.GetEndpoint();
             var bytes = Encoding.UTF8.GetBytes(metric);
 
-            using (var socket = Transport.IpSocket())
+            using (var socket = SocketFactory.ForIp())
             {
                 socket.SendTo(bytes, endpoint);
             }
@@ -38,7 +38,7 @@ namespace JustEat.StatsD
             }
 
             var endpoint = _endpointSource.GetEndpoint();
-            using (var socket = Transport.IpSocket())
+            using (var socket = SocketFactory.ForIp())
             {
                 socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
             }
