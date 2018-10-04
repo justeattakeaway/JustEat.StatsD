@@ -11,8 +11,8 @@ namespace Benchmark
     {
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
-        private PooledUdpTransport _pooledTransport;
-        private StringBasedStatsDPublisher _pooledUdpSender;
+        private UdpTransport _transport;
+        private StringBasedStatsDPublisher _udpSender;
         private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
         private IStatsDPublisher _adaptedStatsDPublisher;
 
@@ -21,7 +21,7 @@ namespace Benchmark
         {
             var config = new StatsDConfiguration
             {
-                // if you want verify that stats are recevied,
+                // if you want to verify that stats are received,
                 // you will need the IP of suitable local test stats server
                 Host = "127.0.0.1",
                 Prefix = "testmetric"
@@ -32,40 +32,40 @@ namespace Benchmark
                 config.Port,
                 config.DnsLookupInterval);
 
-            _pooledTransport = new PooledUdpTransport(endpointSource);
+            _transport = new UdpTransport(endpointSource);
 
-            _pooledUdpSender = new StringBasedStatsDPublisher(config, _pooledTransport);
-            _pooledUdpSender.Increment("startup.ud");
+            _udpSender = new StringBasedStatsDPublisher(config, _transport);
+            _udpSender.Increment("startup.ud");
 
             _adaptedStatsDPublisher = new StatsDPublisher(config);
             _adaptedStatsDPublisher.Increment("startup.ud");
 
-            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _pooledTransport);
+            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _transport);
             _bufferBasedStatsDPublisher.Increment("startup.ud");
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
-            _pooledTransport.Dispose();
+            _transport.Dispose();
         }
 
         [Benchmark]
-        public void SendStatPooledUdp()
+        public void SendStatUdp()
         {
-            _pooledUdpSender.Increment("increment.ud");
-            _pooledUdpSender.Timing(Timed, "timer.ud");
+            _udpSender.Increment("increment.ud");
+            _udpSender.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]
-        public void SendStatPooledUdpBuffered()
+        public void SendStatUdpBuffered()
         {
             _bufferBasedStatsDPublisher.Increment("increment.ud");
             _bufferBasedStatsDPublisher.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]
-        public void SendStatPooledUdpCoveredByAdapter()
+        public void SendStatUdpCoveredByAdapter()
         {
             _adaptedStatsDPublisher.Increment("increment.ud");
             _adaptedStatsDPublisher.Timing(Timed, "timer.ud");

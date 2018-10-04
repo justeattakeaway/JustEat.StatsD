@@ -9,7 +9,7 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class StatSendingBenchmark
     {
-        private BufferBasedStatsDPublisher _pooledUdpSender;
+        private BufferBasedStatsDPublisher _udpSender;
         private StringBasedStatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
@@ -19,7 +19,7 @@ namespace Benchmark
         {
             var config = new StatsDConfiguration
             {
-                // if you want verify that stats are received,
+                // if you want to verify that stats are received,
                 // you will need the IP of suitable local test stats server
                 Host = "127.0.0.1",
                 Prefix = "testmetric"
@@ -32,9 +32,9 @@ namespace Benchmark
             _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
             _ipSender.Increment("startup.ip");
 
-            var pooledUdpTransport = new PooledUdpTransport(endpointSource);
-            _pooledUdpSender = new BufferBasedStatsDPublisher(config, pooledUdpTransport);
-            _pooledUdpSender.Increment("startup.v2");
+            var udpTransport = new UdpTransport(endpointSource);
+            _udpSender = new BufferBasedStatsDPublisher(config, udpTransport);
+            _udpSender.Increment("startup.v2");
         }
 
 
@@ -51,18 +51,18 @@ namespace Benchmark
         [Benchmark]
         public void RunBuffered()
         {
-            _pooledUdpSender.MarkEvent("hello.v2");
-            _pooledUdpSender.Increment(20, "increment.v2");
-            _pooledUdpSender.Timing(Timed, "timer.v2");
-            _pooledUdpSender.Gauge(354654, "gauge.v2");
-            _pooledUdpSender.Gauge(25.1, "free-space.v2");
+            _udpSender.MarkEvent("hello.v2");
+            _udpSender.Increment(20, "increment.v2");
+            _udpSender.Timing(Timed, "timer.v2");
+            _udpSender.Gauge(354654, "gauge.v2");
+            _udpSender.Gauge(25.1, "free-space.v2");
         }
 
         [Benchmark]
         public void RunBufferedWithSampling()
         {
-            _pooledUdpSender.Increment(2, 0.2, "increment.v2");
-            _pooledUdpSender.Timing(2, 0.2, "increment.v2");
+            _udpSender.Increment(2, 0.2, "increment.v2");
+            _udpSender.Timing(2, 0.2, "increment.v2");
         }
     }
 }

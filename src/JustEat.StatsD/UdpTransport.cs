@@ -8,21 +8,22 @@ using JustEat.StatsD.EndpointLookups;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// A class representing an implementation of <see cref="IStatsDTransport"/> uses UDP and pools sockets. This class cannot be inherited.
+    /// A class representing an implementation of <see cref="IStatsDTransport"/>
+    /// that uses UDP and pools sockets. This class cannot be inherited.
     /// </summary>
-    public sealed class PooledUdpTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
+    public sealed class UdpTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PooledUdpTransport"/> class.
+        /// Initializes a new instance of the <see cref="UdpTransport"/> class.
         /// </summary>
         /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endPointSource"/> is <see langword="null"/>.
         /// </exception>
-        public PooledUdpTransport(IPEndPointSource endPointSource)
+        public UdpTransport(IPEndPointSource endPointSource)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
         }

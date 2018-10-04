@@ -46,7 +46,7 @@ namespace JustEat.StatsD
             var endpointSource = EndpointParser.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
-            var transport = new PooledUdpTransport(endpointSource);
+            var transport = new UdpTransport(endpointSource);
 
             if (configuration.PreferBufferedTransport)
             {

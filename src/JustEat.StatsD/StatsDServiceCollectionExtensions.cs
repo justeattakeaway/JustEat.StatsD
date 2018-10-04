@@ -128,7 +128,7 @@ namespace JustEat.StatsD
         private static IStatsDTransport ResolveStatsDTransport(IServiceProvider provider)
         {
             var endpointSource = provider.GetRequiredService<IPEndPointSource>();
-            return new PooledUdpTransport(endpointSource);
+            return new UdpTransport(endpointSource);
         }
     }
 }
