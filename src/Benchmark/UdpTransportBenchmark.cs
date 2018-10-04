@@ -65,13 +65,13 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public void SendWithPool()
+        public void Send()
         {
             _transport.Send(MetricName);
         }
 
         [Benchmark]
-        public void SendWithPoolSwitcher()
+        public void SendWithSwitcher()
         {
             _transportSwitched.Send(MetricName);
         }
