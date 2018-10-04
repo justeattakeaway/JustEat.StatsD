@@ -15,17 +15,20 @@ namespace JustEat.StatsD
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
+        private readonly SocketTransport _socketTransport;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UdpTransport"/> class.
         /// </summary>
         /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
+        /// <param name="socketTransport">Udp or Ip sockets</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endPointSource"/> is <see langword="null"/>.
         /// </exception>
-        public UdpTransport(IPEndPointSource endPointSource)
+        public UdpTransport(IPEndPointSource endPointSource, SocketTransport socketTransport)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
+            _socketTransport = socketTransport;
         }
 
         /// <inheritdoc />
@@ -92,9 +95,8 @@ namespace JustEat.StatsD
             }
             else
             {
-                var newPool = new ConnectedSocketPool(endPoint,
-                    SocketTransport.Udp,
-                    Environment.ProcessorCount);
+                var newPool = new ConnectedSocketPool(
+                    endPoint, _socketTransport, Environment.ProcessorCount);
 
                 if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
                 {

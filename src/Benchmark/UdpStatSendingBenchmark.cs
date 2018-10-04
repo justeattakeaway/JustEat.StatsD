@@ -32,7 +32,7 @@ namespace Benchmark
                 config.Port,
                 config.DnsLookupInterval);
 
-            _transport = new UdpTransport(endpointSource);
+            _transport = new UdpTransport(endpointSource, SocketTransport.Udp);
 
             _udpSender = new StringBasedStatsDPublisher(config, _transport);
             _udpSender.Increment("startup.ud");

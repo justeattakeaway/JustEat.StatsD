@@ -53,8 +53,8 @@ namespace Benchmark
 
             var switcher = new MilisecondSwitcher(endpointSource1, endpointSource2);
 
-            _transport = new UdpTransport(endpointSource1);
-            _transportSwitched = new UdpTransport(switcher);
+            _transport = new UdpTransport(endpointSource1, SocketTransport.Udp);
+            _transportSwitched = new UdpTransport(switcher, SocketTransport.Udp);
         }
 
         [GlobalCleanup]

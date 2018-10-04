@@ -21,7 +21,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointA,
                 null);
 
-            using (var target = new UdpTransport(endPointSource))
+            using (var target = new UdpTransport(endPointSource, SocketTransport.Udp))
             {
                 // Act and Assert
                 target.Send("mycustommetric");
@@ -36,7 +36,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointA,
                 null);
 
-            using (var target = new UdpTransport(endPointSource))
+            using (var target = new UdpTransport(endPointSource, SocketTransport.Udp))
             {
                 for (int i = 0; i < 10_000; i++)
                 {
@@ -54,7 +54,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointA,
                 null);
 
-            using (var target = new UdpTransport(endPointSource))
+            using (var target = new UdpTransport(endPointSource, SocketTransport.Udp))
             {
                 Parallel.For(0, 10_000, _ =>
                 {
@@ -76,7 +76,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointB,
                 null);
             
-            using (var target = new UdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
+            using (var target = new UdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1), SocketTransport.Udp))
             {
                 for (int i = 0; i < 10_000; i++)
                 {
@@ -98,7 +98,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointB,
                 null);
             
-            using (var target = new UdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1)))
+            using (var target = new UdpTransport(new MilisecondSwitcher(endPointSource2, endPointSource1), SocketTransport.Udp))
             {
                 Parallel.For(0, 10_000, _ =>
                 {

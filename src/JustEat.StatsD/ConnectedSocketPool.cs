@@ -9,7 +9,7 @@ namespace JustEat.StatsD
     {
         private bool _disposed;
         private readonly ConcurrentBag<Socket> _pool = new ConcurrentBag<Socket>();
-        private SocketTransport _socketTransport;
+        private readonly SocketTransport _socketTransport;
 
         public IPEndPoint IpEndPoint { get; }
 
