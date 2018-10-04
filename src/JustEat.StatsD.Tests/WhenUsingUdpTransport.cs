@@ -7,9 +7,9 @@ using Xunit;
 namespace JustEat.StatsD
 {
     [Collection("ActiveUdpListeners")]
-    public class WhenUsingPooledUdpTransport 
+    public class WhenUsingUdpTransport 
     {
-        public WhenUsingPooledUdpTransport(UdpListeners _)
+        public WhenUsingUdpTransport(UdpListeners _)
         {
         }
 
