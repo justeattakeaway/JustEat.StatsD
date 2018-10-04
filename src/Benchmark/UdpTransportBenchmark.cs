@@ -11,8 +11,8 @@ namespace Benchmark
     {
         private const string MetricName = "this.is.a.metric";
 
-        private PooledUdpTransport _pooledTransport;
-        private PooledUdpTransport _pooledTransportSwitched;
+        private UdpTransport _transport;
+        private UdpTransport _transportSwitched;
 
         private class MilisecondSwitcher : IPEndPointSource
         {
@@ -53,27 +53,27 @@ namespace Benchmark
 
             var switcher = new MilisecondSwitcher(endpointSource1, endpointSource2);
 
-            _pooledTransport = new PooledUdpTransport(endpointSource1);
-            _pooledTransportSwitched = new PooledUdpTransport(switcher);
+            _transport = new UdpTransport(endpointSource1);
+            _transportSwitched = new UdpTransport(switcher);
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
-            _pooledTransport?.Dispose();
-            _pooledTransportSwitched?.Dispose();
+            _transport?.Dispose();
+            _transportSwitched?.Dispose();
         }
 
         [Benchmark]
         public void SendWithPool()
         {
-            _pooledTransport.Send(MetricName);
+            _transport.Send(MetricName);
         }
 
         [Benchmark]
         public void SendWithPoolSwitcher()
         {
-            _pooledTransportSwitched.Send(MetricName);
+            _transportSwitched.Send(MetricName);
         }
     }
 }

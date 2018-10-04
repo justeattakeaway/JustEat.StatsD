@@ -11,7 +11,7 @@ namespace Benchmark
     {
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
-        private PooledUdpTransport _pooledTransport;
+        private UdpTransport _transport;
         private StringBasedStatsDPublisher _pooledUdpSender;
         private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
         private IStatsDPublisher _adaptedStatsDPublisher;
@@ -32,22 +32,22 @@ namespace Benchmark
                 config.Port,
                 config.DnsLookupInterval);
 
-            _pooledTransport = new PooledUdpTransport(endpointSource);
+            _transport = new UdpTransport(endpointSource);
 
-            _pooledUdpSender = new StringBasedStatsDPublisher(config, _pooledTransport);
+            _pooledUdpSender = new StringBasedStatsDPublisher(config, _transport);
             _pooledUdpSender.Increment("startup.ud");
 
             _adaptedStatsDPublisher = new StatsDPublisher(config);
             _adaptedStatsDPublisher.Increment("startup.ud");
 
-            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _pooledTransport);
+            _bufferBasedStatsDPublisher = new BufferBasedStatsDPublisher(config, _transport);
             _bufferBasedStatsDPublisher.Increment("startup.ud");
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
-            _pooledTransport.Dispose();
+            _transport.Dispose();
         }
 
         [Benchmark]

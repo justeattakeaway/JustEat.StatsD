@@ -41,7 +41,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<PooledUdpTransport>();
+                transport.ShouldBeOfType<UdpTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -82,7 +82,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<PooledUdpTransport>();
+                transport.ShouldBeOfType<UdpTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -124,7 +124,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<PooledUdpTransport>();
+                transport.ShouldBeOfType<UdpTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();
@@ -179,7 +179,7 @@ namespace JustEat.StatsD
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
                 transport.ShouldNotBeNull();
-                transport.ShouldBeOfType<PooledUdpTransport>();
+                transport.ShouldBeOfType<UdpTransport>();
 
                 var publisher = provider.GetRequiredService<IStatsDPublisher>();
                 publisher.ShouldNotBeNull();

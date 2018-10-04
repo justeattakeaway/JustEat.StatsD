@@ -32,7 +32,7 @@ namespace Benchmark
             _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
             _ipSender.Increment("startup.ip");
 
-            var pooledUdpTransport = new PooledUdpTransport(endpointSource);
+            var pooledUdpTransport = new UdpTransport(endpointSource);
             _pooledUdpSender = new BufferBasedStatsDPublisher(config, pooledUdpTransport);
             _pooledUdpSender.Increment("startup.v2");
         }
