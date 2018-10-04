@@ -10,7 +10,6 @@ namespace Benchmark
     public class StatSendingBenchmark
     {
         private BufferBasedStatsDPublisher _pooledUdpSender;
-        private StringBasedStatsDPublisher _udpSender;
         private StringBasedStatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
@@ -20,7 +19,7 @@ namespace Benchmark
         {
             var config = new StatsDConfiguration
             {
-                // if you want verify that stats are recevied,
+                // if you want verify that stats are received,
                 // you will need the IP of suitable local test stats server
                 Host = "127.0.0.1",
                 Prefix = "testmetric"
@@ -28,10 +27,6 @@ namespace Benchmark
 
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
-
-            var udpTransport = new UdpTransport(endpointSource);
-            _udpSender = new StringBasedStatsDPublisher(config, udpTransport);
-            _udpSender.Increment("startup.ud");
 
             var ipTransport = new IpTransport(endpointSource);
             _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
@@ -42,22 +37,6 @@ namespace Benchmark
             _pooledUdpSender.Increment("startup.v2");
         }
 
-        [Benchmark]
-        public void RunUdp()
-        {
-            _udpSender.MarkEvent("hello.ud");
-            _udpSender.Increment(20, "increment.ud");
-            _udpSender.Timing(Timed, "timer.ud");
-            _udpSender.Gauge(354654, "gauge.ud");
-            _udpSender.Gauge(25.1, "free-space.ud");
-        }
-
-        [Benchmark]
-        public void RunUdpWithSampling()
-        {
-            _udpSender.Increment(2, 0.2, "increment.ud");
-            _udpSender.Timing(2, 0.2, "increment.ud");
-        }
 
         [Benchmark]
         public void RunIp()
@@ -67,13 +46,6 @@ namespace Benchmark
             _ipSender.Timing(Timed, "timer.ip");
             _ipSender.Gauge(354654, "gauge.ip");
             _ipSender.Gauge(25.1, "free-space.ip");
-        }
-
-        [Benchmark]
-        public void RunIpWithSampling()
-        {
-            _udpSender.Increment(2, 0.2, "increment.ip");
-            _udpSender.Timing(2, 0.2, "increment.ip");
         }
 
         [Benchmark]
