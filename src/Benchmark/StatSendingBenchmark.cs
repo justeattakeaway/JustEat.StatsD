@@ -19,7 +19,7 @@ namespace Benchmark
         {
             var config = new StatsDConfiguration
             {
-                // if you want verify that stats are received,
+                // if you want to verify that stats are received,
                 // you will need the IP of suitable local test stats server
                 Host = "127.0.0.1",
                 Prefix = "testmetric"
