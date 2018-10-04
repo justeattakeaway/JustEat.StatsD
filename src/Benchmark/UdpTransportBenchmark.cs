@@ -13,7 +13,6 @@ namespace Benchmark
 
         private PooledUdpTransport _pooledTransport;
         private PooledUdpTransport _pooledTransportSwitched;
-        private UdpTransport _unpooledTransport;
 
         private class MilisecondSwitcher : IPEndPointSource
         {
@@ -56,7 +55,6 @@ namespace Benchmark
 
             _pooledTransport = new PooledUdpTransport(endpointSource1);
             _pooledTransportSwitched = new PooledUdpTransport(switcher);
-            _unpooledTransport = new UdpTransport(endpointSource1);
         }
 
         [GlobalCleanup]
@@ -64,12 +62,6 @@ namespace Benchmark
         {
             _pooledTransport?.Dispose();
             _pooledTransportSwitched?.Dispose();
-        }
-
-        [Benchmark(Baseline = true)]
-        public void Send()
-        {
-            _unpooledTransport.Send(MetricName);
         }
 
         [Benchmark]

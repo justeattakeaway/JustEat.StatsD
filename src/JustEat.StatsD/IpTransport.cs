@@ -24,7 +24,7 @@ namespace JustEat.StatsD
             var endpoint = _endpointSource.GetEndpoint();
             var bytes = Encoding.UTF8.GetBytes(metric);
 
-            using (var socket = CreateSocket())
+            using (var socket = SocketFactory.ForIp())
             {
                 socket.SendTo(bytes, endpoint);
             }
@@ -38,15 +38,10 @@ namespace JustEat.StatsD
             }
 
             var endpoint = _endpointSource.GetEndpoint();
-            using (var socket = CreateSocket())
+            using (var socket = SocketFactory.ForIp())
             {
                 socket.SendTo(metric.Array, 0, metric.Count, SocketFlags.None, endpoint);
             }
-        }
-
-        private static Socket CreateSocket()
-        {
-            return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
         }
     }
 }
