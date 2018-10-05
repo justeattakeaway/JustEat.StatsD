@@ -12,16 +12,15 @@ namespace JustEat.StatsD
     public static class WhenRegisteringStatsD
     {
         [Fact]
-        public static void CanRegisterServicesWithNoConfiguratonIfConfigurationAlreadRegistered()
+        public static void CanRegisterServicesWithNoConfigurationIfConfigurationAlreadyRegistered()
         {
             // Arrange
-            var config = new StatsDConfiguration()
+            var config = new StatsDConfiguration
             {
                 Host = "localhost"
             };
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     services.AddSingleton(config);
 
@@ -62,8 +61,7 @@ namespace JustEat.StatsD
             // Arrange
             string host = "localhost";
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     // Act
                     services.AddStatsD(host);
@@ -104,8 +102,7 @@ namespace JustEat.StatsD
             string host = "localhost";
             string prefix = "myprefix";
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     // Act
                     services.AddStatsD(host, prefix);
@@ -143,23 +140,21 @@ namespace JustEat.StatsD
         public static void CanRegisterServicesWithFactoryMethod()
         {
             // Arrange
-            var options = new MyOptions()
+            var options = new MyOptions
             {
                 StatsDHost = "localhost"
             };
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     services.AddSingleton(options);
 
                     // Act
-                    services.AddStatsD(
-                        (serviceProvider) =>
+                    services.AddStatsD(serviceProvider =>
                         {
                             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
 
-                            return new StatsDConfiguration()
+                            return new StatsDConfiguration
                             {
                                 Host = myOptions.StatsDHost
                             };
@@ -203,8 +198,7 @@ namespace JustEat.StatsD
             var existingTransport = Mock.Of<IStatsDTransport>();
             var existingPublisher = Mock.Of<IStatsDPublisher>();
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     services.AddSingleton(existingConfig);
                     services.AddSingleton(existingSource);
@@ -233,7 +227,7 @@ namespace JustEat.StatsD
         public static void CanRegisterServicesWithoutFirstConfiguringTheHost()
         {
             // Act and Assert
-            Should.NotThrow(() => Configure((services) => services.AddStatsD()));
+            Should.NotThrow(() => Configure(services => services.AddStatsD()));
         }
 
         [Fact]
@@ -262,8 +256,7 @@ namespace JustEat.StatsD
             // Arrange
             string host = "localhost";
 
-            var provider = Configure(
-                (services) =>
+            var provider = Configure(services =>
                 {
                     services.AddSingleton<IStatsDTransport, MyTransport>();
 
@@ -295,11 +288,11 @@ namespace JustEat.StatsD
             // Arrange
             string host = "127.0.0.1";
 
-            var provider = Configure(
-                services =>
+            var provider = Configure(services =>
                 {
                     // Act
-                    services.AddSingleton<IStatsDTransport, SocketTransport>();
+                    services.AddSingleton<IStatsDTransport>(
+                        ctx => new SocketTransport(ctx.GetRequiredService<IPEndPointSource>(), SocketProtocol.Ip));
                     services.AddStatsD(host);
                 });
 
