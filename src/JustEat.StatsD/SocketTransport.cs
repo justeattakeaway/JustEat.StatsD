@@ -29,6 +29,11 @@ namespace JustEat.StatsD
         public SocketTransport(IPEndPointSource endPointSource, SocketProtocol socketProtocol)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
+
+            if (socketProtocol != SocketProtocol.IP && socketProtocol != SocketProtocol.Udp)
+            {
+                throw new ArgumentOutOfRangeException(nameof(socketProtocol));
+            }
             _socketProtocol = socketProtocol;
         }
 
