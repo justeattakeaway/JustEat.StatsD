@@ -9,7 +9,8 @@ namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IStatsDTransport"/>
-    /// that uses sockets and pools sockets. This class cannot be inherited.
+    /// that uses UDP or IP sockets and pools them.
+    /// This class cannot be inherited.
     /// </summary>
     public sealed class SocketTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
     {

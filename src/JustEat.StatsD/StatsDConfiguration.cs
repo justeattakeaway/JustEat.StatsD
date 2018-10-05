@@ -43,14 +43,14 @@ namespace JustEat.StatsD
 
         /// <summary>
         /// If true will prefer to use <see cref="IStatsDBufferedTransport"/> interface implementation
-        /// if socketProtocol implementation provides both 
+        /// if transport  implementation provides both 
         /// <see cref="IStatsDBufferedTransport"/> and <see cref="IStatsDTransport"/> interfaces.
         /// Default is true.
         /// </summary>
         public bool PreferBufferedTransport { get; set; } = true;
 
         /// <summary>
-        /// Configure to use either UDP or IP sockets to transport stats
+        /// Configure to use either UDP or IP sockets to transport stats. Defaults to UDP
         /// </summary>
         public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
     }
