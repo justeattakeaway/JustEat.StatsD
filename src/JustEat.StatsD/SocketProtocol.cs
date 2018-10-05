@@ -8,12 +8,12 @@ namespace JustEat.StatsD
     public enum SocketProtocol
     {
         /// <summary>
-        /// transport stats over UDP sockets
+        /// Transport stats over UDP sockets.
         /// </summary>
         Udp,
 
         /// <summary>
-        /// transport stats over IP sockets
+        /// Transport stats over IP sockets.
         /// </summary>
         IP
     }
