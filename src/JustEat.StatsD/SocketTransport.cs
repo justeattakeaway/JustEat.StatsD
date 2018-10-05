@@ -30,9 +30,9 @@ namespace JustEat.StatsD
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
 
-            if (socketProtocol != SocketProtocol.IP && socketProtocol != SocketProtocol.Udp)
+            if (!Enum.IsDefined(typeof(SocketProtocol), socketProtocol))
             {
-                throw new ArgumentOutOfRangeException(nameof(socketProtocol));
+                throw new ArgumentOutOfRangeException(nameof(socketProtocol), socketProtocol, "Invalid value");
             }
             _socketProtocol = socketProtocol;
         }
