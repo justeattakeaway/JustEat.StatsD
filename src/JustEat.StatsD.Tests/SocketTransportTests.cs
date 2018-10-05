@@ -11,22 +11,25 @@ namespace JustEat.StatsD
         [Fact]
         public static void ValidSocketTransportCanBeConstructed()
         {
-            var ipEndpoint = new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
+            var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Udp);
 
-            var instance = new SocketTransport(ipEndpoint, SocketProtocol.Udp);
-
-            instance.ShouldNotBeNull();
+            transport.ShouldNotBeNull();
         }
 
         [Fact]
-        public static void ValidSocketTransportCanSendWithoutError()
+        public static void SocketTransportCanSendOverUdpWithoutError()
         {
-            var ipEndpoint = new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
+            var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Udp);
 
-            var instance = new SocketTransport(ipEndpoint, SocketProtocol.Udp);
+            transport.Send("testStat");
+        }
 
-            instance.ShouldNotBeNull();
-            instance.Send("testStat");
+        [Fact]
+        public static void SocketTransportCanSendOverIPWithoutError()
+        {
+            var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.IP);
+
+            transport.Send("testStat");
         }
 
         [Fact]
@@ -40,10 +43,13 @@ namespace JustEat.StatsD
         [Fact]
         public static void InvalidSocketProtocolThrowsInConstructor()
         {
-            var ipEndpoint = new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, 123));
-
             Should.Throw<ArgumentOutOfRangeException>(
-                () => new SocketTransport(ipEndpoint, (SocketProtocol)42));
+                () => new SocketTransport(LocalStatsEndpoint(), (SocketProtocol)42));
+        }
+
+        private static IPEndPointSource LocalStatsEndpoint()
+        {
+            return new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
         }
     }
 }
