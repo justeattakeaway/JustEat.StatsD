@@ -28,7 +28,7 @@ namespace Benchmark
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var ipTransport = new SocketTransport(endpointSource, SocketProtocol.Ip);
+            var ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
             _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
             _ipSender.Increment("startup.ip");
 

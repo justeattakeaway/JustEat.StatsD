@@ -10,7 +10,7 @@ namespace JustEat.StatsD
         {
             switch (socketProtocol)
             {
-                case SocketProtocol.Ip:
+                case SocketProtocol.IP:
                     return ForIp();
 
                 case SocketProtocol.Udp:

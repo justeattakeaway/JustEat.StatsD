@@ -292,7 +292,7 @@ namespace JustEat.StatsD
                 {
                     // Act
                     services.AddSingleton<IStatsDTransport>(
-                        ctx => new SocketTransport(ctx.GetRequiredService<IPEndPointSource>(), SocketProtocol.Ip));
+                        ctx => new SocketTransport(ctx.GetRequiredService<IPEndPointSource>(), SocketProtocol.IP));
                     services.AddStatsD(host);
                 });
 
