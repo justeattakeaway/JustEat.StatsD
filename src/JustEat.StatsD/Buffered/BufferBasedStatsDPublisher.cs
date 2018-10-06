@@ -16,10 +16,10 @@ namespace JustEat.StatsD.Buffered
         private static Random Random => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;
-        private readonly IStatsDBufferedTransport _transport;
+        private readonly IStatsDTransport _transport;
         private readonly Func<Exception, bool> _onError;
 
-        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDBufferedTransport transport)
+        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
             _onError = configuration.OnError;
             _transport = transport;

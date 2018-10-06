@@ -15,9 +15,9 @@ namespace JustEat.StatsD
     {
         private readonly IStatsDPublisher _inner;
         private readonly IStatsDTransport _transport;
+        private readonly bool _disposeTransport;
 
         private bool _disposed;
-        private bool _disposeTransport;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDPublisher"/> class for the specified transport.
@@ -42,15 +42,7 @@ namespace JustEat.StatsD
                 throw new ArgumentNullException(nameof(transport));
             }
 
-            switch (transport)
-            {
-                case IStatsDBufferedTransport bufferedTransport:
-                    _inner = new BufferBasedStatsDPublisher(configuration, bufferedTransport);
-                    break;
-                default:
-                    _inner = new StringBasedStatsDPublisher(configuration, transport);
-                    break;
-            }
+            _inner = new BufferBasedStatsDPublisher(configuration, transport);
 
             _transport = transport;
             _disposeTransport = false;
@@ -71,6 +63,11 @@ namespace JustEat.StatsD
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
+            }
+
+            if (string.IsNullOrWhiteSpace(configuration.Host))
+            {
+                throw new ArgumentException("No hostname is set.", nameof(configuration));
             }
 
             var endpointSource = EndpointParser.MakeEndPointSource(

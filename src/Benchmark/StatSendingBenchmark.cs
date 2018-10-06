@@ -10,7 +10,7 @@ namespace Benchmark
     public class StatSendingBenchmark
     {
         private BufferBasedStatsDPublisher _udpSender;
-        private StringBasedStatsDPublisher _ipSender;
+        private BufferBasedStatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -29,40 +29,47 @@ namespace Benchmark
                 config.Host, config.Port, config.DnsLookupInterval);
 
             var ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
-            _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
-            _ipSender.Increment("startup.ip");
+            _ipSender = new BufferBasedStatsDPublisher(config, ipTransport);
+            _ipSender.Increment("startup.i");
 
             var udpTransport = new SocketTransport(endpointSource, SocketProtocol.Udp);
             _udpSender = new BufferBasedStatsDPublisher(config, udpTransport);
-            _udpSender.Increment("startup.v2");
+            _udpSender.Increment("startup.u");
         }
 
 
         [Benchmark]
         public void RunIp()
         {
-            _ipSender.MarkEvent("hello.ip");
-            _ipSender.Increment(20, "increment.ip");
-            _ipSender.Timing(Timed, "timer.ip");
-            _ipSender.Gauge(354654, "gauge.ip");
-            _ipSender.Gauge(25.1, "free-space.ip");
+            _ipSender.MarkEvent("hello.i");
+            _ipSender.Increment(20, "increment.i");
+            _ipSender.Timing(Timed, "timer.i");
+            _ipSender.Gauge(354654, "gauge.i");
+            _ipSender.Gauge(25.1, "free-space.i");
         }
 
         [Benchmark]
-        public void RunBuffered()
+        public void RunIPWithSampling()
         {
-            _udpSender.MarkEvent("hello.v2");
-            _udpSender.Increment(20, "increment.v2");
-            _udpSender.Timing(Timed, "timer.v2");
-            _udpSender.Gauge(354654, "gauge.v2");
-            _udpSender.Gauge(25.1, "free-space.v2");
+            _ipSender.Increment(2, 0.2, "increment.i");
+            _ipSender.Timing(2, 0.2, "increment.i");
         }
 
         [Benchmark]
-        public void RunBufferedWithSampling()
+        public void RunUdp()
         {
-            _udpSender.Increment(2, 0.2, "increment.v2");
-            _udpSender.Timing(2, 0.2, "increment.v2");
+            _udpSender.MarkEvent("hello.u");
+            _udpSender.Increment(20, "increment.u");
+            _udpSender.Timing(Timed, "timer.u");
+            _udpSender.Gauge(354654, "gauge.u");
+            _udpSender.Gauge(25.1, "free-space.u");
+        }
+
+        [Benchmark]
+        public void RunUdpWithSampling()
+        {
+            _udpSender.Increment(2, 0.2, "increment.u");
+            _udpSender.Timing(2, 0.2, "increment.u");
         }
     }
 }

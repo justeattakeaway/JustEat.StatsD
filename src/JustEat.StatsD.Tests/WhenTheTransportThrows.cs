@@ -8,13 +8,8 @@ using Xunit;
 
 namespace JustEat.StatsD
 {
-    public class ThrowingTransport : IStatsDTransport, IStatsDBufferedTransport
+    public class ThrowingTransport : IStatsDTransport
     {
-        public void Send(string metric)
-        {
-            throw new SocketException(42);
-        }
-
         public void Send(in ArraySegment<byte> metric)
         {
             throw new SocketException(42);
@@ -148,11 +143,7 @@ namespace JustEat.StatsD
                 config => new BufferBasedStatsDPublisher(config, new ThrowingTransport())
             },
             {
-                "StringBasedStatsDPublisher",
-                config => new StringBasedStatsDPublisher(config, new ThrowingTransport())
-            },
-            {
-                "StatsDPublisherBuffered",
+                "StatsDPublisher",
                 config =>
                 {
                     return new StatsDPublisher(config, new ThrowingTransport());
