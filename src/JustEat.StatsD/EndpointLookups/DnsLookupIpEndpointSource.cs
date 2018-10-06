@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 
 namespace JustEat.StatsD.EndpointLookups
 {
@@ -31,7 +33,20 @@ namespace JustEat.StatsD.EndpointLookups
             {
                 throw new Exception($"DNS did not find any addresses for statsd host '${hostName}'");
             }
-            return endpoints[0];
+
+            IPAddress result = null;
+
+            if (endpoints.Length > 1)
+            {
+                result = endpoints.FirstOrDefault(p => p.AddressFamily == AddressFamily.InterNetwork);
+            }
+
+            if (result == null)
+            {
+                result = endpoints[0];
+            }
+
+            return result;
         }
     }
 }
