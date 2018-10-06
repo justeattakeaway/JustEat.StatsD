@@ -1,10 +1,12 @@
 os: Visual Studio 2017
-version: 3.2.1.{build}
+version: 3.2.2.{build}
 configuration: Release
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_XMLDOC_MODE: skip
 install:
+  - git clone https://github.com/etsy/statsd.git ..\statsd
+  - ps: Start-Process "node" -ArgumentList "..\statsd\stats.js .\src\JustEat.StatsD.Tests\statsdconfig.js" -WindowStyle Hidden
   - ps: .\SetAppVeyorBuildVersion.ps1
 build_script:
   - ps: .\Build.ps1
