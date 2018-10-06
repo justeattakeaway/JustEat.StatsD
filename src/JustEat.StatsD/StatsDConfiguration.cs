@@ -27,6 +27,12 @@ namespace JustEat.StatsD
         public TimeSpan? DnsLookupInterval { get; set; } = DefaultDnsLookupInterval;
 
         /// <summary>
+        /// Configure to use either UDP or IP sockets to transport stats.
+        /// Default is UDP.
+        /// </summary>
+        public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
+
+        /// <summary>
         /// Prepend a prefix to all stats.
         /// Default is empty.
         /// </summary>
@@ -40,19 +46,5 @@ namespace JustEat.StatsD
         /// The default behaviour is to ignore the error
         /// </summary>
         public Func<Exception, bool> OnError { get; set; }
-
-        /// <summary>
-        /// If true will prefer to use <see cref="IStatsDBufferedTransport"/> interface implementation
-        /// if transport implementation provides both 
-        /// <see cref="IStatsDBufferedTransport"/> and <see cref="IStatsDTransport"/> interfaces.
-        /// Default is true.
-        /// </summary>
-        public bool PreferBufferedTransport { get; set; } = true;
-
-        /// <summary>
-        /// Configure to use either UDP or IP sockets to transport stats.
-        /// Default is Udp.
-        /// </summary>
-        public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
     }
 }

@@ -102,18 +102,9 @@ namespace JustEat.StatsD
                 config => new StringBasedStatsDPublisher(config, new ThrowingTransport())
             },
             {
-                "StatsDPublisher",
-                config =>
-                {
-                    config.PreferBufferedTransport = false;
-                    return new StatsDPublisher(config, new ThrowingTransport());
-                }
-            },
-            {
                 "StatsDPublisherBuffered",
                 config =>
                 {
-                    config.PreferBufferedTransport = true;
                     return new StatsDPublisher(config, new ThrowingTransport());
                 }
             }
