@@ -120,15 +120,15 @@ namespace JustEat.StatsD
         private static IStatsDPublisher ResolveStatsDPublisher(IServiceProvider provider)
         {
             var config = provider.GetRequiredService<StatsDConfiguration>();
-            var transport = provider.GetRequiredService<IStatsDTransport>();
+            var socketProtocol = provider.GetRequiredService<IStatsDTransport>();
 
-            return new StatsDPublisher(config, transport);
+            return new StatsDPublisher(config, socketProtocol);
         }
 
         private static IStatsDTransport ResolveStatsDTransport(IServiceProvider provider)
         {
             var endpointSource = provider.GetRequiredService<IPEndPointSource>();
-            return new UdpTransport(endpointSource);
+            return new SocketTransport(endpointSource, SocketProtocol.Udp);
         }
     }
 }

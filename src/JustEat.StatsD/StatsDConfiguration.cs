@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 
 namespace JustEat.StatsD
 {
@@ -49,5 +48,11 @@ namespace JustEat.StatsD
         /// Default is true.
         /// </summary>
         public bool PreferBufferedTransport { get; set; } = true;
+
+        /// <summary>
+        /// Configure to use either UDP or IP sockets to transport stats.
+        /// Default is Udp.
+        /// </summary>
+        public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
     }
 }

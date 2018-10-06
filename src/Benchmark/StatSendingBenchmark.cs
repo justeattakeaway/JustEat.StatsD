@@ -28,11 +28,11 @@ namespace Benchmark
             var endpointSource = EndpointParser.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var ipTransport = new IpTransport(endpointSource);
+            var ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
             _ipSender = new StringBasedStatsDPublisher(config, ipTransport);
             _ipSender.Increment("startup.ip");
 
-            var udpTransport = new UdpTransport(endpointSource);
+            var udpTransport = new SocketTransport(endpointSource, SocketProtocol.Udp);
             _udpSender = new BufferBasedStatsDPublisher(config, udpTransport);
             _udpSender.Increment("startup.v2");
         }
