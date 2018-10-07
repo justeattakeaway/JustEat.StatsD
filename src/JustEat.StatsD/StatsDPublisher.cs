@@ -44,7 +44,7 @@ namespace JustEat.StatsD
 
             switch (transport)
             {
-                case IStatsDBufferedTransport bufferedTransport when configuration.PreferBufferedTransport:
+                case IStatsDBufferedTransport bufferedTransport:
                     _inner = new BufferBasedStatsDPublisher(configuration, bufferedTransport);
                     break;
                 default:
@@ -77,18 +77,11 @@ namespace JustEat.StatsD
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
             var transport = new SocketTransport(endpointSource, configuration.SocketProtocol);
-
+            
             _transport = transport;
             _disposeTransport = true;
 
-            if (configuration.PreferBufferedTransport)
-            {
-                _inner = new BufferBasedStatsDPublisher(configuration, transport);
-            }
-            else
-            {
-                _inner = new StringBasedStatsDPublisher(configuration, transport);
-            }
+            _inner = new BufferBasedStatsDPublisher(configuration, transport);
         }
 
         /// <inheritdoc />

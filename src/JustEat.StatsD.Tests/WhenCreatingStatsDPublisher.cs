@@ -78,8 +78,7 @@ namespace JustEat.StatsD
             var config = new StatsDConfiguration
             {
                 Prefix = "test",
-                Host = "127.0.0.1",
-                PreferBufferedTransport = true
+                Host = "127.0.0.1"
             };
 
             var transport = new BothVersionsTransportMock();
@@ -99,8 +98,7 @@ namespace JustEat.StatsD
             var config = new StatsDConfiguration
             {
                 Prefix = "test",
-                Host = "127.0.0.1",
-                PreferBufferedTransport = true
+                Host = "127.0.0.1"
             };
 
             var transport = new BothVersionsTransportMock();
@@ -120,8 +118,7 @@ namespace JustEat.StatsD
             var config = new StatsDConfiguration
             {
                 Prefix = "test",
-                Host = "127.0.0.1",
-                PreferBufferedTransport = false
+                Host = "127.0.0.1"
             };
 
             var transport = new Mock<IStatsDTransport>(MockBehavior.Loose);
