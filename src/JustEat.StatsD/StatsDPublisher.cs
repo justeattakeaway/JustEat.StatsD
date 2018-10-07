@@ -4,14 +4,16 @@ using JustEat.StatsD.EndpointLookups;
 
 namespace JustEat.StatsD
 {
-    // ReSharper disable IntroduceOptionalParameters.Global to preserve binary compatibility
-
     /// <summary>
     ///     Will synchronously publish stats at statsd as you make calls; will not batch sends.
     /// </summary>
-    public class StatsDPublisher : IStatsDPublisher
+    public sealed class StatsDPublisher : IStatsDPublisher, IDisposable
     {
         private readonly IStatsDPublisher _inner;
+        private readonly IStatsDTransport _transport;
+
+        private bool _disposed;
+        private bool _disposeTransport;
 
         public StatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
@@ -34,6 +36,9 @@ namespace JustEat.StatsD
                     _inner = new StringBasedStatsDPublisher(configuration, transport);
                     break;
             }
+
+            _transport = transport;
+            _disposeTransport = false;
         }
 
         public StatsDPublisher(StatsDConfiguration configuration)
@@ -47,6 +52,9 @@ namespace JustEat.StatsD
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
             var transport = new SocketTransport(endpointSource, configuration.SocketProtocol);
+
+            _transport = transport;
+            _disposeTransport = true;
 
             if (configuration.PreferBufferedTransport)
             {
@@ -131,6 +139,19 @@ namespace JustEat.StatsD
         public void Timing(long duration, double sampleRate, string bucket)
         {
             _inner.Timing(duration, sampleRate, bucket);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                if (_disposeTransport && _transport is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
+                _disposed = true;
+            }
         }
     }
 }
