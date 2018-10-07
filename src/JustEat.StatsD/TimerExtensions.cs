@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 
 namespace JustEat.StatsD
@@ -40,7 +40,7 @@ namespace JustEat.StatsD
         {
             using (var timer = StartTimer(publisher, bucket))
             {
-                await action(timer);
+                await action(timer).ConfigureAwait(false);
             }
         }
 
@@ -69,7 +69,7 @@ namespace JustEat.StatsD
         {
             using (var timer = StartTimer(publisher, bucket))
             {
-                return await func(timer);
+                return await func(timer).ConfigureAwait(false);
             }
         }
     }
