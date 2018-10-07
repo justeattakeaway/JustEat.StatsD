@@ -59,7 +59,18 @@ namespace JustEat.StatsD
 
         public void Increment(long value, double sampleRate, params string[] buckets)
         {
-            Send(_formatter.Increment(value, sampleRate, buckets));
+            if (buckets == null || buckets.Length == 0)
+            {
+                return;
+            }
+
+            foreach (string bucket in buckets)
+            {
+                if (!string.IsNullOrEmpty(bucket))
+                {
+                    Send(_formatter.Increment(value, sampleRate, bucket));
+                }
+            }
         }
 
         public void Decrement(string bucket)
@@ -79,7 +90,18 @@ namespace JustEat.StatsD
 
         public void Decrement(long value, double sampleRate, params string[] buckets)
         {
-            Send(_formatter.Decrement(value, sampleRate, buckets));
+            if (buckets == null || buckets.Length == 0)
+            {
+                return;
+            }
+
+            foreach (string bucket in buckets)
+            {
+                if (!string.IsNullOrEmpty(bucket))
+                {
+                    Send(_formatter.Decrement(value, sampleRate, bucket));
+                }
+            }
         }
 
         public void Gauge(double  value, string bucket)
@@ -129,6 +151,11 @@ namespace JustEat.StatsD
 
         private void Send(string metric)
         {
+            if (metric.Length == 0)
+            {
+                return;
+            }
+
             try
             {
                 _transport.Send(metric);
