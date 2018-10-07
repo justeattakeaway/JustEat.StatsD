@@ -57,6 +57,9 @@ namespace JustEat.StatsD
             publisher.Decrement(1, 0, "red", "green"); // 7
             publisher.Decrement(4, 1, "red", "green"); // 3
 
+            // Allow enough time for metrics to be registered
+            await Task.Delay(TimeSpan.FromSeconds(0.5));
+
             // Assert
             var result = await SendCommandAsync("counters");
             result.Value<int>(config.Prefix + ".apple").ShouldBe(1);
