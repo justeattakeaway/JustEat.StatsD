@@ -1,5 +1,6 @@
 {
   graphiteHost: "",
   port: 8125,
-  backends: []
+  backends: [],
+  flushInterval: 120000
 }
