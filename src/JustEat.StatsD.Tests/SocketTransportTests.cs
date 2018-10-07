@@ -6,7 +6,7 @@ using Xunit;
 
 namespace JustEat.StatsD
 {
-    public class SocketTransportTests
+    public static class SocketTransportTests
     {
         [Fact]
         public static void ValidSocketTransportCanBeConstructed()
@@ -35,16 +35,21 @@ namespace JustEat.StatsD
         [Fact]
         public static void NullEndpointSourceThrowsInConstructor()
         {
-            Should.Throw<ArgumentNullException>(
+            Assert.Throws<ArgumentNullException>(
+                "endPointSource",
                 () => new SocketTransport(null, SocketProtocol.IP));
-
         }
 
         [Fact]
         public static void InvalidSocketProtocolThrowsInConstructor()
         {
-            Should.Throw<ArgumentOutOfRangeException>(
-                () => new SocketTransport(LocalStatsEndpoint(), (SocketProtocol)42));
+            SocketProtocol socketProtocol = (SocketProtocol)42;
+
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(
+                "socketProtocol",
+                () => new SocketTransport(LocalStatsEndpoint(), socketProtocol));
+
+            exception.ActualValue.ShouldBe(socketProtocol);
         }
 
         private static IPEndPointSource LocalStatsEndpoint()

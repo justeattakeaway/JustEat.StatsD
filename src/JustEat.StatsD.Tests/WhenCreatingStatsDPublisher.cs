@@ -1,5 +1,4 @@
 using System;
-using JustEat.StatsD.Buffered;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -37,22 +36,24 @@ namespace JustEat.StatsD
         [Fact]
         public void ConfigurationIsNull()
         {
-            StatsDConfiguration noConfig = null;
+            StatsDConfiguration configuration = null;
 
-            Should.Throw<ArgumentNullException>(
-             () => new StringBasedStatsDPublisher(noConfig));
+            Assert.Throws<ArgumentNullException>(
+                "configuration",
+                () => new StringBasedStatsDPublisher(configuration));
         }
 
         [Fact]
         public void ConfigurationHasNoHost()
         {
-            var badConfig = new StatsDConfiguration
+            var configuration = new StatsDConfiguration
             {
                 Host = null
             };
 
-            Should.Throw<ArgumentNullException>(
-             () => new StringBasedStatsDPublisher(badConfig));
+            Assert.Throws<ArgumentException>(
+                "configuration",
+                () => new StringBasedStatsDPublisher(configuration));
         }
 
         private class BothVersionsTransportMock : IStatsDTransport, IStatsDBufferedTransport
