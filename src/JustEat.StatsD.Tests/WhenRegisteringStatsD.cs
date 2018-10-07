@@ -1,6 +1,5 @@
 #if !NET451
 using System;
-using System.Collections.Generic;
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -328,20 +327,21 @@ namespace JustEat.StatsD
             public string StatsDHost { get; set; }
         }
 
+#pragma warning disable CA1812 // Instantiated via DI
         private sealed class MyTransport : IStatsDTransport
         {
+
+#pragma warning disable CA1801 // Used to validate that IPEndPointSource is in DI
             public MyTransport(IPEndPointSource endpointSource)
             {
             }
+#pragma warning restore CA1801
 
             public void Send(string metric)
             {
             }
-
-            public void Send(IEnumerable<string> metrics)
-            {
-            }
         }
+#pragma warning restore CA1812
     }
 }
 #endif

@@ -31,7 +31,7 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment("anyStat");
+            publisher.Increment(name);
         }
 
         [Theory]
@@ -43,7 +43,7 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment("anyStat");
+            publisher.Increment(name);
         }
 
         [Theory]
@@ -55,7 +55,7 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment("anyStat");
+            publisher.Increment(name);
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace JustEat.StatsD
             var publisher = factory(validConfig);
 
             Should.Throw<SocketException>(() =>
-                publisher.Increment("anyStat"));
+                publisher.Increment(name));
         }
 
         [Theory]
@@ -86,7 +86,7 @@ namespace JustEat.StatsD
             var publisher = factory(validConfig);
 
             capturedEx.ShouldBeNull();
-            publisher.Increment("anyStat");
+            publisher.Increment(name);
             capturedEx.ShouldNotBeNull();
         }
 
