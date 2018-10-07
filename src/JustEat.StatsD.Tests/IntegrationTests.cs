@@ -10,71 +10,89 @@ namespace JustEat.StatsD
 {
     public static class IntegrationTests
     {
-        [SkippableFact]
-        public static async Task Can_Send_Metrics_To_StatsD()
+        [SkippableTheory]
+        [InlineData("localhost", SocketProtocol.IP, false)]
+        [InlineData("localhost", SocketProtocol.Udp, false)]
+        [InlineData("127.0.0.1", SocketProtocol.IP, false)]
+        [InlineData("127.0.0.1", SocketProtocol.Udp, false)]
+        [InlineData("localhost", SocketProtocol.IP, true)]
+        [InlineData("localhost", SocketProtocol.Udp, true)]
+        [InlineData("127.0.0.1", SocketProtocol.IP, true)]
+        [InlineData("127.0.0.1", SocketProtocol.Udp, true)]
+        public static async Task Can_Send_Metrics_To_StatsD_Using_Udp(
+            string host,
+            SocketProtocol socketProtocol,
+            bool preferBufferedTransport)
         {
             Skip.If(Environment.GetEnvironmentVariable("CI") == null, "By default, this test is only run during continuous integration.");
 
             // Arrange
             var config = new StatsDConfiguration
             {
-                Host = "localhost",
-                Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty, StringComparison.Ordinal)
+                Host = host,
+                Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty, StringComparison.Ordinal),
+                SocketProtocol = socketProtocol,
+                PreferBufferedTransport = preferBufferedTransport,
             };
 
-            using (var publisher = new StatsDPublisher(config))
-            {
-                // Act - Create a counter
-                publisher.Increment("apple");
+            var publisher = new StatsDPublisher(config);
 
-                // Act - Create and change a counter
-                publisher.Increment("bear");        // 1
-                publisher.Increment(10, "bear");    // 11
-                publisher.Increment(10, 0, "bear"); // 11
-                publisher.Decrement("bear");        // 10
-                publisher.Decrement(5, "bear");     // 5
-                publisher.Decrement(5, 0, "bear");  // 5
+            // Act and Assert
+            await AssertMetrics(config, publisher);
+        }
 
-                // Act - Mark an event (which is a counter)
-                publisher.MarkEvent("fish");
+        private static async Task AssertMetrics(StatsDConfiguration config, IStatsDPublisher publisher)
+        {
+            // Act - Create a counter
+            publisher.Increment("apple");
 
-                // Act - Create a gauge
-                publisher.Gauge(3.141, "circle");
+            // Act - Create and change a counter
+            publisher.Increment("bear");        // 1
+            publisher.Increment(10, "bear");    // 11
+            publisher.Increment(10, 0, "bear"); // 11
+            publisher.Decrement("bear");        // 10
+            publisher.Decrement(5, "bear");     // 5
+            publisher.Decrement(5, 0, "bear");  // 5
 
-                // Act - Create and change a gauge
-                publisher.Gauge(10, "dog");
-                publisher.Gauge(42, "dog");
+            // Act - Mark an event (which is a counter)
+            publisher.MarkEvent("fish");
 
-                // Act - Create a timer
-                publisher.Timing(123, "elephant");
-                publisher.Timing(TimeSpan.FromSeconds(2), "fox");
-                publisher.Timing(456, 1, "goose");
-                publisher.Timing(TimeSpan.FromSeconds(3.5), 1, "hen");
+            // Act - Create a gauge
+            publisher.Gauge(3.141, "circle");
 
-                // Act - Increment multiple counters
-                publisher.Increment(7, 1, "green", "red"); // 7
-                publisher.Increment(2, 0, "green", "red"); // 7
-                publisher.Decrement(1, 0, "red", "green"); // 7
-                publisher.Decrement(4, 1, "red", "green"); // 3
+            // Act - Create and change a gauge
+            publisher.Gauge(10, "dog");
+            publisher.Gauge(42, "dog");
 
-                // Assert
-                var result = await SendCommandAsync("counters");
-                result.Value<int>(config.Prefix + ".apple").ShouldBe(1);
-                result.Value<int>(config.Prefix + ".bear").ShouldBe(5);
-                result.Value<int>(config.Prefix + ".fish").ShouldBe(1);
-                result.Value<int>(config.Prefix + ".green").ShouldBe(3);
-                result.Value<int>(config.Prefix + ".red").ShouldBe(3);
+            // Act - Create a timer
+            publisher.Timing(123, "elephant");
+            publisher.Timing(TimeSpan.FromSeconds(2), "fox");
+            publisher.Timing(456, 1, "goose");
+            publisher.Timing(TimeSpan.FromSeconds(3.5), 1, "hen");
 
-                result = await SendCommandAsync("gauges");
-                result.Value<double>(config.Prefix + ".circle").ShouldBe(3.141);
-                result.Value<int>(config.Prefix + ".dog").ShouldBe(42);
+            // Act - Increment multiple counters
+            publisher.Increment(7, 1, "green", "red"); // 7
+            publisher.Increment(2, 0, "green", "red"); // 7
+            publisher.Decrement(1, 0, "red", "green"); // 7
+            publisher.Decrement(4, 1, "red", "green"); // 3
 
-                result = await SendCommandAsync("timers");
-                result[config.Prefix + ".elephant"].Values<int>().ShouldBe(new[] { 123 });
-                result[config.Prefix + ".fox"].Values<int>().ShouldBe(new[] { 2000 });
-                result[config.Prefix + ".goose"].Values<int>().ShouldBe(new[] { 456 });
-                result[config.Prefix + ".hen"].Values<int>().ShouldBe(new[] { 3500 });
-            }
+            // Assert
+            var result = await SendCommandAsync("counters");
+            result.Value<int>(config.Prefix + ".apple").ShouldBe(1, result.ToString());
+            result.Value<int>(config.Prefix + ".bear").ShouldBe(5, result.ToString());
+            result.Value<int>(config.Prefix + ".fish").ShouldBe(1, result.ToString());
+            result.Value<int>(config.Prefix + ".green").ShouldBe(3, result.ToString());
+            result.Value<int>(config.Prefix + ".red").ShouldBe(3, result.ToString());
+
+            result = await SendCommandAsync("gauges");
+            result.Value<double>(config.Prefix + ".circle").ShouldBe(3.141, result.ToString());
+            result.Value<int>(config.Prefix + ".dog").ShouldBe(42, result.ToString());
+
+            result = await SendCommandAsync("timers");
+            result[config.Prefix + ".elephant"].Values<int>().ShouldBe(new[] { 123 }, result.ToString());
+            result[config.Prefix + ".fox"].Values<int>().ShouldBe(new[] { 2000 }, result.ToString());
+            result[config.Prefix + ".goose"].Values<int>().ShouldBe(new[] { 456 }, result.ToString());
+            result[config.Prefix + ".hen"].Values<int>().ShouldBe(new[] { 3500 }, result.ToString());
         }
 
         private static async Task<JObject> SendCommandAsync(string command)
