@@ -13,6 +13,7 @@ env:
 branches:
   only:
     - master
+    - release/3xx
 
 addons:
   apt:
@@ -22,6 +23,10 @@ addons:
     - libicu-dev
     - libssl-dev
     - libunwind8
+
+install:
+  - git clone https://github.com/etsy/statsd.git
+  - node ./statsd/stats.js ./src/JustEat.StatsD.Tests/statsdconfig.js &
 
 script:
   - ./build.sh

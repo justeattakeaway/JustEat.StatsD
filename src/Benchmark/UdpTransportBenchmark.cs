@@ -9,7 +9,7 @@ namespace Benchmark
     [MemoryDiagnoser]
     public class UdpTransportBenchmark
     {
-        private const string MetricName = "this.is.a.metric";
+        private const string MetricName = "this.is.a.metric:1|c";
 
         private PooledUdpTransport _pooledTransport;
         private PooledUdpTransport _pooledTransportSwitched;
