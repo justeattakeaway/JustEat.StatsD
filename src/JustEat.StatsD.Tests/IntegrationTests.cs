@@ -109,11 +109,10 @@ namespace JustEat.StatsD
 
                 int bytesRead;
 
-                using (var stream = client.GetStream())
-                {
-                    await stream.WriteAsync(input);
-                    bytesRead = await stream.ReadAsync(output);
-                }
+                var stream = client.GetStream();
+
+                await stream.WriteAsync(input);
+                bytesRead = await stream.ReadAsync(output);
 
                 output = output.AsSpan(0, bytesRead).ToArray();
 
