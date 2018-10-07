@@ -14,7 +14,7 @@ namespace Benchmark
         private SocketTransport _transport;
         private StringBasedStatsDPublisher _udpSender;
         private BufferBasedStatsDPublisher _bufferBasedStatsDPublisher;
-        private IStatsDPublisher _adaptedStatsDPublisher;
+        private StatsDPublisher _adaptedStatsDPublisher;
 
         [GlobalSetup]
         public void Setup()
@@ -47,7 +47,8 @@ namespace Benchmark
         [GlobalCleanup]
         public void Cleanup()
         {
-            _transport.Dispose();
+            _transport?.Dispose();
+            _adaptedStatsDPublisher?.Dispose();
         }
 
         [Benchmark]

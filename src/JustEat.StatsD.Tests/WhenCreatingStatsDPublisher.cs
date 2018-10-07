@@ -1,5 +1,4 @@
 using System;
-using JustEat.StatsD.Buffered;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -83,9 +82,10 @@ namespace JustEat.StatsD
 
             var transport = new BothVersionsTransportMock();
 
-            var publisher = new StatsDPublisher(config, transport);
-
-            publisher.MarkEvent("test");
+            using (var publisher = new StatsDPublisher(config, transport))
+            {
+                publisher.MarkEvent("test");
+            }
 
             transport.BufferedCalls.ShouldBe(1);
             transport.StringCalls.ShouldBe(0);
@@ -103,9 +103,10 @@ namespace JustEat.StatsD
 
             var transport = new BothVersionsTransportMock();
 
-            var publisher = new StatsDPublisher(config, transport);
-
-            publisher.MarkEvent("test");
+            using (var publisher = new StatsDPublisher(config, transport))
+            {
+                publisher.MarkEvent("test");
+            }
 
             transport.BufferedCalls.ShouldBe(1);
             transport.StringCalls.ShouldBe(0);
@@ -123,9 +124,10 @@ namespace JustEat.StatsD
 
             var transport = new Mock<IStatsDTransport>(MockBehavior.Loose);
 
-            var publisher = new StatsDPublisher(config, transport.Object);
-
-            publisher.MarkEvent("test");
+            using (var publisher = new StatsDPublisher(config, transport.Object))
+            {
+                publisher.MarkEvent("test");
+            }
 
             transport.Verify(x => x.Send(It.IsAny<string>()), Times.Once);
         }
