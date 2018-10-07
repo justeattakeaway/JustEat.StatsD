@@ -31,7 +31,17 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment(name);
+            try
+            {
+                publisher.Increment(name);
+            }
+            finally
+            {
+                if (publisher is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Theory]
@@ -43,7 +53,17 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment(name);
+            try
+            {
+                publisher.Increment(name);
+            }
+            finally
+            {
+                if (publisher is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Theory]
@@ -55,7 +75,17 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            publisher.Increment(name);
+            try
+            {
+                publisher.Increment(name);
+            }
+            finally
+            {
+                if (publisher is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Theory]
@@ -67,8 +97,18 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            Should.Throw<SocketException>(() =>
-                publisher.Increment(name));
+            try
+            {
+                Should.Throw<SocketException>(() =>
+                    publisher.Increment(name));
+            }
+            finally
+            {
+                if (publisher is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         [Theory]
@@ -85,9 +125,19 @@ namespace JustEat.StatsD
 
             var publisher = factory(validConfig);
 
-            capturedEx.ShouldBeNull();
-            publisher.Increment(name);
-            capturedEx.ShouldNotBeNull();
+            try
+            {
+                capturedEx.ShouldBeNull();
+                publisher.Increment(name);
+                capturedEx.ShouldNotBeNull();
+            }
+            finally
+            {
+                if (publisher is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
 
         public static TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>> Publishers =>
