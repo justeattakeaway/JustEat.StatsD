@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace JustEat.StatsD
 {
-    internal class DisposableTimer : IDisposableTimer
+    internal sealed class DisposableTimer : IDisposableTimer
     {
         private bool _disposed;
 
