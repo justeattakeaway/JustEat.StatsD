@@ -35,10 +35,11 @@ namespace JustEat.StatsD
                 PreferBufferedTransport = preferBufferedTransport,
             };
 
-            var publisher = new StatsDPublisher(config);
-
-            // Act and Assert
-            await AssertMetrics(config, publisher);
+            using (var publisher = new StatsDPublisher(config))
+            {
+                // Act and Assert
+                await AssertMetrics(config, publisher);
+            }
         }
 
         private static async Task AssertMetrics(StatsDConfiguration config, IStatsDPublisher publisher)
