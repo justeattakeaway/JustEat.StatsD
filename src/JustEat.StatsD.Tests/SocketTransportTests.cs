@@ -43,7 +43,7 @@ namespace JustEat.StatsD
         [Fact]
         public static void InvalidSocketProtocolThrowsInConstructor()
         {
-            SocketProtocol socketProtocol = (SocketProtocol)42;
+            var socketProtocol = (SocketProtocol)42;
 
             var exception = Assert.Throws<ArgumentOutOfRangeException>(
                 "socketProtocol",
