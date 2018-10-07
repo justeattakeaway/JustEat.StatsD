@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using Shouldly;
 using Xunit;
 
 namespace JustEat.StatsD.Extensions
 {
-    public class SimpleTimerStatNameTests
+    public static class SimpleTimerStatNameTests
     {
         [Fact]
         public static void DefaultIsToKeepStatName()

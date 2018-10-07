@@ -10,7 +10,13 @@ namespace JustEat.StatsD.Buffered
 
         public StatsDUtf8Formatter(string prefix)
         {
-            _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ? new byte[0] : Encoding.UTF8.GetBytes(prefix + ".");
+            _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ?
+#if NET451
+                new byte[0] :
+#else
+                Array.Empty<byte>() :
+#endif
+                Encoding.UTF8.GetBytes(prefix + ".");
         }
 
         public int GetMaxBufferSize(in StatsDMessage msg)

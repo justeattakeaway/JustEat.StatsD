@@ -88,19 +88,9 @@ namespace JustEat.StatsD.Buffered
             SendMessage(DefaultSampleRate, StatsDMessage.Gauge(value, bucket));
         }
 
-        public void Gauge(double value, string bucket, DateTime timestamp)
-        {
-            Gauge(value, bucket);
-        }
-
         public void Gauge(long value, string bucket)
         {
             Gauge((double) value, bucket);
-        }
-
-        public void Gauge(long value, string bucket, DateTime timestamp)
-        {
-            Gauge(value, bucket);
         }
 
         public void Timing(TimeSpan duration, string bucket)

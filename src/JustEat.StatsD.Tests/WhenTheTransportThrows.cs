@@ -33,7 +33,7 @@ namespace JustEat.StatsD
 
             try
             {
-                publisher.Increment("anyStat");
+                publisher.Increment(name);
             }
             finally
             {
@@ -55,7 +55,7 @@ namespace JustEat.StatsD
 
             try
             {
-                publisher.Increment("anyStat");
+                publisher.Increment(name);
             }
             finally
             {
@@ -77,7 +77,7 @@ namespace JustEat.StatsD
 
             try
             {
-                publisher.Increment("anyStat");
+                publisher.Increment(name);
             }
             finally
             {
@@ -100,7 +100,7 @@ namespace JustEat.StatsD
             try
             {
                 Should.Throw<SocketException>(() =>
-                    publisher.Increment("anyStat"));
+                    publisher.Increment(name));
             }
             finally
             {
@@ -128,7 +128,7 @@ namespace JustEat.StatsD
             try
             {
                 capturedEx.ShouldBeNull();
-                publisher.Increment("anyStat");
+                publisher.Increment(name);
                 capturedEx.ShouldNotBeNull();
             }
             finally

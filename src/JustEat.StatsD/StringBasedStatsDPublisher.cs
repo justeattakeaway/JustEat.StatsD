@@ -25,7 +25,7 @@ namespace JustEat.StatsD
 
             if (string.IsNullOrWhiteSpace(configuration.Host))
             {
-                throw new ArgumentNullException(nameof(configuration.Host));
+                throw new ArgumentException("No hostname is set.", nameof(configuration));
             }
 
             _formatter = new StatsDMessageFormatter(configuration.Prefix);

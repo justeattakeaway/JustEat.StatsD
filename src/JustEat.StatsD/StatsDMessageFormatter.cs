@@ -124,7 +124,7 @@ namespace JustEat.StatsD
             return Increment(name);
         }
 
-        private string Format(double sampleRate, string stat)
+        private static string Format(double sampleRate, string stat)
         {
             if (sampleRate >= DefaultSampleRate)
             {
@@ -139,7 +139,7 @@ namespace JustEat.StatsD
             return string.Empty;
         }
 
-        private string Format(double sampleRate, params string[] stats)
+        private static string Format(double sampleRate, params string[] stats)
         {
             var formatted = new StringBuilder();
             if (sampleRate < DefaultSampleRate)

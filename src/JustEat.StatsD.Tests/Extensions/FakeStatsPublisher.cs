@@ -75,19 +75,7 @@ namespace JustEat.StatsD.Extensions
             BucketNames.Add(bucket);
         }
 
-        public void Gauge(double value, string bucket, DateTime timestamp)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
         public void Gauge(long value, string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Gauge(long value, string bucket, DateTime timestamp)
         {
             CallCount++;
             BucketNames.Add(bucket);
