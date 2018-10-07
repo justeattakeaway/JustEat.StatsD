@@ -11,18 +11,13 @@ namespace JustEat.StatsD
     public static class IntegrationTests
     {
         [SkippableTheory]
-        [InlineData("localhost", SocketProtocol.IP, false)]
-        [InlineData("localhost", SocketProtocol.Udp, false)]
-        [InlineData("127.0.0.1", SocketProtocol.IP, false)]
-        [InlineData("127.0.0.1", SocketProtocol.Udp, false)]
-        [InlineData("localhost", SocketProtocol.IP, true)]
-        [InlineData("localhost", SocketProtocol.Udp, true)]
-        [InlineData("127.0.0.1", SocketProtocol.IP, true)]
-        [InlineData("127.0.0.1", SocketProtocol.Udp, true)]
+        [InlineData("localhost", SocketProtocol.IP)]
+        [InlineData("localhost", SocketProtocol.Udp)]
+        [InlineData("127.0.0.1", SocketProtocol.IP)]
+        [InlineData("127.0.0.1", SocketProtocol.Udp)]
         public static async Task Can_Send_Metrics_To_StatsD_Using_Udp(
             string host,
-            SocketProtocol socketProtocol,
-            bool preferBufferedTransport)
+            SocketProtocol socketProtocol)
         {
             Skip.If(Environment.GetEnvironmentVariable("CI") == null, "By default, this test is only run during continuous integration.");
 
@@ -32,7 +27,6 @@ namespace JustEat.StatsD
                 Host = host,
                 Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty, StringComparison.Ordinal),
                 SocketProtocol = socketProtocol,
-                PreferBufferedTransport = preferBufferedTransport,
             };
 
             using (var publisher = new StatsDPublisher(config))
