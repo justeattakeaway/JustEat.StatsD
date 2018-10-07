@@ -16,15 +16,17 @@ namespace JustEat.StatsD
         private readonly string _prefix;
 
         public StatsDMessageFormatter()
-            : this(string.Empty) {}
+            : this(string.Empty)
+        {
+        }
 
-            public StatsDMessageFormatter(string prefix)
+        public StatsDMessageFormatter(string prefix)
         {
             _prefix = prefix;
 
             if (!string.IsNullOrWhiteSpace(_prefix))
             {
-                _prefix = _prefix + "."; // if we have something, then append a . to it to make concatenations easy.
+                _prefix = _prefix + "."; // If we have something, then append a '.' to it to make concatenations easy.
             }
         }
 
@@ -50,7 +52,6 @@ namespace JustEat.StatsD
         {
             return Decrement(magnitude, DefaultSampleRate, statBucket);
         }
-
 
         public string Decrement(long magnitude, double sampleRate, string statBucket)
         {
