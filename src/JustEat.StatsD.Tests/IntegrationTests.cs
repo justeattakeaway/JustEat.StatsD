@@ -19,7 +19,7 @@ namespace JustEat.StatsD
             var config = new StatsDConfiguration
             {
                 Host = "localhost",
-                Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty)
+                Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty, StringComparison.Ordinal)
             };
 
             var publisher = new StatsDPublisher(config);
@@ -97,7 +97,7 @@ namespace JustEat.StatsD
 
                 output = output.AsSpan(0, bytesRead).ToArray();
 
-                json = Encoding.UTF8.GetString(output).Replace("END", string.Empty);
+                json = Encoding.UTF8.GetString(output).Replace("END", string.Empty, StringComparison.Ordinal);
             }
 
             return JObject.Parse(json);
