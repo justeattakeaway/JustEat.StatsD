@@ -21,11 +21,6 @@ namespace JustEat.StatsD.Buffered
 
         public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDBufferedTransport transport)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
             _onError = configuration.OnError;
             _transport = transport;
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);
