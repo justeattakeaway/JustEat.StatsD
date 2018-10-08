@@ -67,7 +67,7 @@ namespace JustEat.StatsD
 
             if (string.IsNullOrWhiteSpace(configuration.Host))
             {
-                throw new ArgumentException("No hostname is set.", nameof(configuration));
+                throw new ArgumentException("No hostname or IP address is set.", nameof(configuration));
             }
 
             var endpointSource = EndpointParser.MakeEndPointSource(
