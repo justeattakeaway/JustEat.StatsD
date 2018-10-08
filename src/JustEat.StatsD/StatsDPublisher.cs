@@ -17,7 +17,7 @@ namespace JustEat.StatsD
         private readonly IStatsDTransport _transport;
 
         private bool _disposed;
-        private bool _disposeTransport;
+        private readonly bool _disposeTransport;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDPublisher"/> class for the specified transport.
