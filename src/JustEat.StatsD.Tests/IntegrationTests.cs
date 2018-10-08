@@ -57,6 +57,9 @@ namespace JustEat.StatsD
             publisher.Decrement(1, 0, "red", "green"); // 7
             publisher.Decrement(4, 1, "red", "green"); // 3
 
+            // Allow enough time for metrics to be registered
+            await Task.Delay(TimeSpan.FromSeconds(1.0));
+
             // Assert
             var result = await SendCommandAsync("counters");
             result.Value<int>(config.Prefix + ".apple").ShouldBe(1);
@@ -89,11 +92,10 @@ namespace JustEat.StatsD
 
                 int bytesRead;
 
-                using (var stream = client.GetStream())
-                {
-                    await stream.WriteAsync(input);
-                    bytesRead = await stream.ReadAsync(output);
-                }
+                var stream = client.GetStream();
+
+                await stream.WriteAsync(input);
+                bytesRead = await stream.ReadAsync(output);
 
                 output = output.AsSpan(0, bytesRead).ToArray();
 
