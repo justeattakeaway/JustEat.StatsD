@@ -337,7 +337,7 @@ namespace JustEat.StatsD
             }
 #pragma warning restore CA1801
 
-            public void Send(string metric)
+            public void Send(in ArraySegment<byte> metrics)
             {
             }
         }

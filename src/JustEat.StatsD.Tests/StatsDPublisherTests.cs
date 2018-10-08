@@ -4,7 +4,7 @@ using Xunit;
 
 namespace JustEat.StatsD
 {
-    public static class StringBasedStatsDPublisherTests
+    public static class StatsDPublisherTests
     {
         [Fact]
         public static void Decrement_Sends_Multiple_Metrics()
@@ -17,14 +17,13 @@ namespace JustEat.StatsD
                 Prefix = "red",
             };
 
-            var publisher = new StringBasedStatsDPublisher(config, mock.Object);
+            var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
             publisher.Decrement(10, 1, "white", "blue");
 
             // Assert
-            mock.Verify((p) => p.Send("red.white:-10|c"), Times.Once());
-            mock.Verify((p) => p.Send("red.blue:-10|c"), Times.Once());
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(2));
         }
 
         [Fact]
@@ -38,14 +37,13 @@ namespace JustEat.StatsD
                 Prefix = "red",
             };
 
-            var publisher = new StringBasedStatsDPublisher(config, mock.Object);
+            var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
             publisher.Increment(10, 1, "white", "blue");
 
             // Assert
-            mock.Verify((p) => p.Send("red.white:10|c"), Times.Once());
-            mock.Verify((p) => p.Send("red.blue:10|c"), Times.Once());
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(2));
         }
 
         [Fact]
@@ -55,7 +53,7 @@ namespace JustEat.StatsD
             var mock = new Mock<IStatsDTransport>();
             var config = new StatsDConfiguration();
 
-            var publisher = new StringBasedStatsDPublisher(config, mock.Object);
+            var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
             publisher.Decrement(1, 1, null as string[]);
@@ -66,7 +64,7 @@ namespace JustEat.StatsD
             publisher.Increment(1, 1, new[] { string.Empty });
 
             // Assert
-            mock.Verify((p) => p.Send(It.IsAny<string>()), Times.Never());
+            mock.Verify((p) => p.Send(It.IsAny<ArraySegment<byte>>()), Times.Never());
         }
 
         [Fact]
@@ -76,14 +74,14 @@ namespace JustEat.StatsD
             var mock = new Mock<IStatsDTransport>();
             var config = new StatsDConfiguration();
 
-            var publisher = new StringBasedStatsDPublisher(config, mock.Object);
+            var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
             publisher.Decrement(1, 0, new[] { "foo" });
             publisher.Increment(1, 0, new[] { "bar" });
 
             // Assert
-            mock.Verify((p) => p.Send(It.IsAny<string>()), Times.Never());
+            mock.Verify((p) => p.Send(It.IsAny<ArraySegment<byte>>()), Times.Never());
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using JustEat.StatsD.EndpointLookups;
 
@@ -12,7 +11,7 @@ namespace JustEat.StatsD
     /// that uses UDP or IP sockets and pools them.
     /// This class cannot be inherited.
     /// </summary>
-    public sealed class SocketTransport : IStatsDTransport, IStatsDBufferedTransport, IDisposable
+    public sealed class SocketTransport : IStatsDTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
         private readonly IPEndPointSource _endpointSource;
@@ -38,30 +37,6 @@ namespace JustEat.StatsD
         }
 
         /// <inheritdoc />
-        public void Send(string metric)
-        {
-            if (string.IsNullOrWhiteSpace(metric))
-            {
-                return;
-            }
-
-            var bytes = Encoding.UTF8.GetBytes(metric);
-            var pool = GetPool(_endpointSource.GetEndpoint());
-            var socket = pool.PopOrCreate();
-
-            try
-            {
-                socket.Send(bytes);
-            }
-            catch (Exception)
-            {
-                socket.Dispose();
-                throw;
-            }
-
-            pool.Push(socket);
-        }
-
         public void Send(in ArraySegment<byte> metric)
         {
             if (metric.Array == null || metric.Count == 0)

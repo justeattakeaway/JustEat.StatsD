@@ -52,7 +52,7 @@ namespace JustEat.StatsD
             _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
         }
 
-        private class FakeTransport : IStatsDBufferedTransport
+        private class FakeTransport : IStatsDTransport
         {
             public List<string> Messages { get; } = new List<string>();
 

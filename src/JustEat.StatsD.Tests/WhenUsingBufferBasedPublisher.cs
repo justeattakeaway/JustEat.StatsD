@@ -33,7 +33,7 @@ namespace JustEat.StatsD
             fakeTransport.TimesCalled.ShouldBe(1);
         }
 
-        private class FakeTransport : IStatsDBufferedTransport
+        private class FakeTransport : IStatsDTransport
         {
             public int TimesCalled { get; private set; }
 
