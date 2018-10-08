@@ -64,6 +64,7 @@ namespace JustEat.StatsD
         public void Dispose()
         {
             _pool?.Dispose();
+            _pool = null;
         }
 
         private ConnectedSocketPool GetPool(IPEndPoint endPoint)
