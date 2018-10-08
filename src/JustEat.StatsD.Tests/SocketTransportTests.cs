@@ -21,7 +21,7 @@ namespace JustEat.StatsD
         {
             var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Udp);
 
-            transport.Send("testStat");
+            transport.Send("teststat:1|c");
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace JustEat.StatsD
         {
             var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.IP);
 
-            transport.Send("testStat");
+            transport.Send("teststat:1|c");
         }
 
         [Fact]

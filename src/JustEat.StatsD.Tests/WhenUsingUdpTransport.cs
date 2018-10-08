@@ -44,7 +44,7 @@ namespace JustEat.StatsD
                 for (int i = 0; i < 10_000; i++)
                 {
                     // Act and Assert
-                    target.Send("mycustommetric");
+                    target.Send("mycustommetric:1|c");
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace JustEat.StatsD
                 Parallel.For(0, 10_000, _ =>
                 {
                     // Act and Assert
-                    target.Send("mycustommetric");
+                    target.Send("mycustommetric:1|c");
                 });
             }
         }
@@ -84,7 +84,7 @@ namespace JustEat.StatsD
                 for (int i = 0; i < 10_000; i++)
                 {
                     // Act and Assert
-                    target.Send("mycustommetric");
+                    target.Send("mycustommetric:1|c");
                 }
             }
         }
