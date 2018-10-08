@@ -72,7 +72,7 @@ namespace JustEat.StatsD
             publisher.Decrement(4, 1, "red", "green"); // 3
 
             // Allow enough time for metrics to be registered
-            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            await Task.Delay(TimeSpan.FromSeconds(1.0));
 
             // Assert
             var result = await SendCommandAsync("counters");
