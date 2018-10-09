@@ -26,8 +26,7 @@ namespace JustEat.StatsD.EndpointLookups
 
         private static IPAddress GetIpAddressOfHost(string hostName)
         {
-            var endpoints = Dns.GetHostAddressesAsync(hostName)
-                .GetAwaiter().GetResult();
+            var endpoints = Dns.GetHostAddresses(hostName);
 
             if (endpoints == null || endpoints.Length == 0)
             {
