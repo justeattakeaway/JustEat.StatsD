@@ -50,7 +50,7 @@ namespace JustEat.StatsD
             publisher.Decrement(5, 0, "bear");  // 5
 
             // Act - Mark an event (which is a counter)
-            publisher.MarkEvent("fish");
+            publisher.Increment("fish");
 
             // Act - Create a gauge
             publisher.Gauge(3.141, "circle");
