@@ -107,7 +107,7 @@ namespace JustEat.StatsD
             return services;
         }
 
-        private static IPEndPointSource ResolveEndPointSource(IServiceProvider provider)
+        private static IEndPointSource ResolveEndPointSource(IServiceProvider provider)
         {
             var config = provider.GetRequiredService<StatsDConfiguration>();
 
@@ -127,7 +127,7 @@ namespace JustEat.StatsD
 
         private static IStatsDTransport ResolveStatsDTransport(IServiceProvider provider)
         {
-            var endpointSource = provider.GetRequiredService<IPEndPointSource>();
+            var endpointSource = provider.GetRequiredService<IEndPointSource>();
             return new SocketTransport(endpointSource, SocketProtocol.Udp);
         }
     }

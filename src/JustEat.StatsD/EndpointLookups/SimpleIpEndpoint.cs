@@ -5,7 +5,7 @@ namespace JustEat.StatsD.EndpointLookups
     /// <summary>
     /// Simple adapter
     /// </summary>
-    public class SimpleIpEndpoint : IPEndPointSource
+    public class SimpleIpEndpoint : IEndPointSource
     {
         private readonly EndPoint _value;
 

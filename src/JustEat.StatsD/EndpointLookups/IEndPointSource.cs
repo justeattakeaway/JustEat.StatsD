@@ -2,7 +2,7 @@ using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
 {
-    public interface IPEndPointSource
+    public interface IEndPointSource
     {
         EndPoint GetEndpoint();
     }

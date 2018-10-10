@@ -52,7 +52,7 @@ namespace JustEat.StatsD
             exception.ActualValue.ShouldBe(socketProtocol);
         }
 
-        private static IPEndPointSource LocalStatsEndpoint()
+        private static IEndPointSource LocalStatsEndpoint()
         {
             return new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
         }

@@ -8,7 +8,7 @@ namespace JustEat.StatsD.EndpointLookups
     /// <summary>
     /// lookup IPAddress using DNS to find the host's IP
     /// </summary>
-    public class DnsLookupIpEndpointSource : IPEndPointSource
+    public class DnsLookupIpEndpointSource : IEndPointSource
     {
         private readonly string _hostName;
         private readonly int _port;

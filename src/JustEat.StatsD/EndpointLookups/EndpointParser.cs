@@ -5,14 +5,14 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public static class EndpointParser
     {
-        public static IPEndPointSource MakeEndPointSource(IPEndPoint endpoint, TimeSpan? endpointCacheDuration)
+        public static IEndPointSource MakeEndPointSource(IPEndPoint endpoint, TimeSpan? endpointCacheDuration)
         {
             if (endpoint == null)
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            IPEndPointSource source = new SimpleIpEndpoint(endpoint);
+            IEndPointSource source = new SimpleIpEndpoint(endpoint);
 
             if (!endpointCacheDuration.HasValue)
             {
@@ -22,7 +22,7 @@ namespace JustEat.StatsD.EndpointLookups
             return new CachedIpEndpointSource(source, endpointCacheDuration.Value);
         }
 
-        public static IPEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
+        public static IEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
         {
             if (string.IsNullOrWhiteSpace(host))
             {

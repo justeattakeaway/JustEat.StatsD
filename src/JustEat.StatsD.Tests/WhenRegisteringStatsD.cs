@@ -34,7 +34,7 @@ namespace JustEat.StatsD
                 configuration.ShouldNotBeNull();
                 configuration.ShouldBe(config);
 
-                var source = provider.GetRequiredService<IPEndPointSource>();
+                var source = provider.GetRequiredService<IEndPointSource>();
                 source.ShouldNotBeNull();
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -74,7 +74,7 @@ namespace JustEat.StatsD
                 configuration.Host.ShouldBe(host);
                 configuration.Prefix.ShouldBeEmpty();
 
-                var source = provider.GetRequiredService<IPEndPointSource>();
+                var source = provider.GetRequiredService<IEndPointSource>();
                 source.ShouldNotBeNull();
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -115,7 +115,7 @@ namespace JustEat.StatsD
                 configuration.Host.ShouldBe(host);
                 configuration.Prefix.ShouldBe(prefix);
 
-                var source = provider.GetRequiredService<IPEndPointSource>();
+                var source = provider.GetRequiredService<IEndPointSource>();
                 source.ShouldNotBeNull();
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -168,7 +168,7 @@ namespace JustEat.StatsD
                 configuration.Host.ShouldBe(options.StatsDHost);
                 configuration.Prefix.ShouldBeEmpty();
 
-                var source = provider.GetRequiredService<IPEndPointSource>();
+                var source = provider.GetRequiredService<IEndPointSource>();
                 source.ShouldNotBeNull();
 
                 var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -193,7 +193,7 @@ namespace JustEat.StatsD
         {
             // Arrange
             var existingConfig = new StatsDConfiguration();
-            var existingSource = Mock.Of<IPEndPointSource>();
+            var existingSource = Mock.Of<IEndPointSource>();
             var existingTransport = Mock.Of<IStatsDTransport>();
             var existingPublisher = Mock.Of<IStatsDPublisher>();
 
@@ -212,7 +212,7 @@ namespace JustEat.StatsD
             var configuration = provider.GetRequiredService<StatsDConfiguration>();
             configuration.ShouldBe(existingConfig);
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
+            var source = provider.GetRequiredService<IEndPointSource>();
             source.ShouldBe(existingSource);
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -269,7 +269,7 @@ namespace JustEat.StatsD
             configuration.Host.ShouldBe(host);
             configuration.Prefix.ShouldBeEmpty();
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
+            var source = provider.GetRequiredService<IEndPointSource>();
             source.ShouldNotBeNull();
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -291,7 +291,7 @@ namespace JustEat.StatsD
                 {
                     // Act
                     services.AddSingleton<IStatsDTransport>(
-                        ctx => new SocketTransport(ctx.GetRequiredService<IPEndPointSource>(), SocketProtocol.IP));
+                        ctx => new SocketTransport(ctx.GetRequiredService<IEndPointSource>(), SocketProtocol.IP));
                     services.AddStatsD(host);
                 });
 
@@ -301,7 +301,7 @@ namespace JustEat.StatsD
             configuration.Host.ShouldBe(host);
             configuration.Prefix.ShouldBeEmpty();
 
-            var source = provider.GetRequiredService<IPEndPointSource>();
+            var source = provider.GetRequiredService<IEndPointSource>();
             source.ShouldNotBeNull();
 
             var transport = provider.GetRequiredService<IStatsDTransport>();
@@ -331,8 +331,8 @@ namespace JustEat.StatsD
         private sealed class MyTransport : IStatsDTransport
         {
 
-#pragma warning disable CA1801 // Used to validate that IPEndPointSource is in DI
-            public MyTransport(IPEndPointSource endpointSource)
+#pragma warning disable CA1801 // Used to validate that IEndPointSource is in DI
+            public MyTransport(IEndPointSource endpointSource)
             {
             }
 #pragma warning restore CA1801

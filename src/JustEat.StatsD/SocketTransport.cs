@@ -14,18 +14,18 @@ namespace JustEat.StatsD
     public sealed class SocketTransport : IStatsDTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
-        private readonly IPEndPointSource _endpointSource;
+        private readonly IEndPointSource _endpointSource;
         private readonly SocketProtocol _socketProtocol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketTransport"/> class.
         /// </summary>
-        /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
+        /// <param name="endPointSource">The <see cref="IEndPointSource"/> to use.</param>
         /// <param name="socketProtocol">Udp or Ip sockets</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endPointSource"/> is <see langword="null"/>.
         /// </exception>
-        public SocketTransport(IPEndPointSource endPointSource, SocketProtocol socketProtocol)
+        public SocketTransport(IEndPointSource endPointSource, SocketProtocol socketProtocol)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
 

@@ -12,7 +12,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CachedValueIsReturnedFromInner()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
@@ -27,7 +27,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CachedValueIsReturnedOnce()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
@@ -46,7 +46,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static async Task CachedValueIsReturnedAgainAfterExpiry()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
             var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromSeconds(1));
