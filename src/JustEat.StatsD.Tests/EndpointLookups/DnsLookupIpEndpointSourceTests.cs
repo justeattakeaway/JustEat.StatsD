@@ -14,13 +14,17 @@ namespace JustEat.StatsD.EndpointLookups
             var target = new DnsLookupIpEndpointSource("localhost", 8125);
 
             // Act
-            IPEndPoint actual = target.GetEndpoint();
+            EndPoint actual = target.GetEndpoint();
 
             // Assert
             actual.ShouldNotBeNull();
             actual.AddressFamily.ShouldBe(AddressFamily.InterNetwork);
-            actual.Address.ShouldBe(IPAddress.Parse("127.0.0.1"));
-            actual.Port.ShouldBe(8125);
+
+            var ipActual = actual as IPEndPoint;
+
+            ipActual.ShouldNotBeNull();
+            ipActual.Address.ShouldBe(IPAddress.Parse("127.0.0.1"));
+            ipActual.Port.ShouldBe(8125);
         }
     }
 }

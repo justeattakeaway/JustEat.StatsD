@@ -67,7 +67,7 @@ namespace JustEat.StatsD
             _pool = null;
         }
 
-        private ConnectedSocketPool GetPool(IPEndPoint endPoint)
+        private ConnectedSocketPool GetPool(EndPoint endPoint)
         {
             var oldPool = _pool;
 

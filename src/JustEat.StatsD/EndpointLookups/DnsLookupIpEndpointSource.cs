@@ -19,7 +19,7 @@ namespace JustEat.StatsD.EndpointLookups
             _port = port;
         }
 
-        public IPEndPoint GetEndpoint()
+        public EndPoint GetEndpoint()
         {
             return new IPEndPoint(GetIpAddressOfHost(_hostName), _port);
         }

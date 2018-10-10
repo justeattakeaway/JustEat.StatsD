@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
 {
@@ -7,13 +7,13 @@ namespace JustEat.StatsD.EndpointLookups
     /// </summary>
     public class SimpleIpEndpoint : IPEndPointSource
     {
-        private readonly IPEndPoint _value;
+        private readonly EndPoint _value;
 
-        public SimpleIpEndpoint(IPEndPoint value)
+        public SimpleIpEndpoint(EndPoint value)
         {
             _value = value;
         }
 
-        public IPEndPoint GetEndpoint() => _value;
+        public EndPoint GetEndpoint() => _value;
     }
 }

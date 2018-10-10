@@ -25,7 +25,7 @@ namespace Benchmark
                 _endpointSource2 = endpointSource2;
             }
 
-            public IPEndPoint GetEndpoint()
+            public EndPoint GetEndpoint()
             {
                 return DateTime.Now.Millisecond % 2 == 0 ?
                     _endpointSource1.GetEndpoint() :

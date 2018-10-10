@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
@@ -8,7 +8,7 @@ namespace JustEat.StatsD.EndpointLookups
     /// </summary>
     public class CachedIpEndpointSource : IPEndPointSource
     {
-        private IPEndPoint _cachedValue;
+        private EndPoint _cachedValue;
         private DateTime _expiry;
         private readonly TimeSpan _cacheDuration;
 
@@ -21,7 +21,7 @@ namespace JustEat.StatsD.EndpointLookups
             _cacheDuration = cacheDuration;
         }
 
-        public IPEndPoint GetEndpoint()
+        public EndPoint GetEndpoint()
         {
             if (NeedsRead())
             {
