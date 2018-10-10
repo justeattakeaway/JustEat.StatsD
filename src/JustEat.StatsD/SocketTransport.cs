@@ -71,25 +71,23 @@ namespace JustEat.StatsD
         {
             var oldPool = _pool;
 
-            if (oldPool != null && (ReferenceEquals(oldPool.IpEndPoint, endPoint) || oldPool.IpEndPoint.Equals(endPoint)))
+            if (oldPool != null && (ReferenceEquals(oldPool.EndPoint, endPoint) || oldPool.EndPoint.Equals(endPoint)))
             {
                 return oldPool;
             }
+
+            var newPool = new ConnectedSocketPool(
+                endPoint, _socketProtocol, Environment.ProcessorCount);
+
+            if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
+            {
+                oldPool?.Dispose();
+                return newPool;
+            }
             else
             {
-                var newPool = new ConnectedSocketPool(
-                    endPoint, _socketProtocol, Environment.ProcessorCount);
-
-                if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
-                {
-                    oldPool?.Dispose();
-                    return newPool;
-                }
-                else
-                {
-                    newPool.Dispose();
-                    return _pool;
-                }
+                newPool.Dispose();
+                return _pool;
             }
         }
     }
