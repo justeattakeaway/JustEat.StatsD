@@ -14,12 +14,12 @@ namespace Benchmark
         private SocketTransport _transport;
         private SocketTransport _transportSwitched;
 
-        private class MilisecondSwitcher : IEndPointSource
+        private class MillisecondSwitcher : IEndPointSource
         {
             private readonly IEndPointSource _endpointSource1;
             private readonly IEndPointSource _endpointSource2;
 
-            public MilisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
+            public MillisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
             {
                 _endpointSource1 = endpointSource1;
                 _endpointSource2 = endpointSource2;
@@ -51,7 +51,7 @@ namespace Benchmark
                 config.Port + 1,
                 config.DnsLookupInterval);
 
-            var switcher = new MilisecondSwitcher(endpointSource1, endpointSource2);
+            var switcher = new MillisecondSwitcher(endpointSource1, endpointSource2);
 
             _transport = new SocketTransport(endpointSource1, SocketProtocol.Udp);
             _transportSwitched = new SocketTransport(switcher, SocketProtocol.Udp);

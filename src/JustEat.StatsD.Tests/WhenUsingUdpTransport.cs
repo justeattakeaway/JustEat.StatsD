@@ -79,7 +79,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointB,
                 null);
             
-            using (var target = new SocketTransport(new MilisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
+            using (var target = new SocketTransport(new MillisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
             {
                 for (int i = 0; i < 10_000; i++)
                 {
@@ -101,7 +101,7 @@ namespace JustEat.StatsD
                 UdpListeners.EndpointB,
                 null);
             
-            using (var target = new SocketTransport(new MilisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
+            using (var target = new SocketTransport(new MillisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
             {
                 Parallel.For(0, 10_000, _ =>
                 {
@@ -111,12 +111,12 @@ namespace JustEat.StatsD
             }
         }
 
-        private class MilisecondSwitcher : IEndPointSource
+        private class MillisecondSwitcher : IEndPointSource
         {
             private readonly IEndPointSource _endpointSource1;
             private readonly IEndPointSource _endpointSource2;
 
-            public MilisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
+            public MillisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
             {
                 _endpointSource1 = endpointSource1;
                 _endpointSource2 = endpointSource2;
