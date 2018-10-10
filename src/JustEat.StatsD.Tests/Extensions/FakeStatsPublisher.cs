@@ -5,32 +5,22 @@ namespace JustEat.StatsD.Extensions
 {
     public class FakeStatsPublisher : IStatsDPublisher
     {
-        public int CallCount { get; set; }
-        public int DisposeCount { get; set; }
-        public TimeSpan LastDuration { get; set; }
-
-        public List<string> BucketNames { get; private set; }
-
         public FakeStatsPublisher()
         {
             BucketNames = new List<string>();
         }
 
+        public int CallCount { get; set; }
+
+        public int DisposeCount { get; set; }
+
+        public TimeSpan LastDuration { get; set; }
+
+        public List<string> BucketNames { get; private set; }
+
         public void Dispose()
         {
             DisposeCount++;
-        }
-
-        public void Increment(string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Increment(long value, string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
         }
 
         public void Increment(long value, double sampleRate, string bucket)
@@ -39,66 +29,9 @@ namespace JustEat.StatsD.Extensions
             BucketNames.Add(bucket);
         }
 
-        public void Increment(long value, double sampleRate, params string[] buckets)
-        {
-            CallCount++;
-            BucketNames.AddRange(buckets);
-        }
-
-        public void Decrement(string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Decrement(long value, string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Decrement(long value, double sampleRate, string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Decrement(long value, double sampleRate, params string[] buckets)
-        {
-            CallCount++;
-            BucketNames.AddRange(buckets);
-        }
-
         public void Gauge(double value, string bucket)
         {
             CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Gauge(long value, string bucket)
-        {
-            CallCount++;
-            BucketNames.Add(bucket);
-        }
-
-        public void Timing(TimeSpan duration, string bucket)
-        {
-            CallCount++;
-            LastDuration = duration;
-            BucketNames.Add(bucket);
-        }
-
-        public void Timing(TimeSpan duration, double sampleRate, string bucket)
-        {
-            CallCount++;
-            LastDuration = duration;
-            BucketNames.Add(bucket);
-        }
-
-        public void Timing(long duration, string bucket)
-        {
-            CallCount++;
-            LastDuration = TimeSpan.FromMilliseconds(duration);
             BucketNames.Add(bucket);
         }
 
@@ -107,12 +40,6 @@ namespace JustEat.StatsD.Extensions
             CallCount++;
             LastDuration = TimeSpan.FromMilliseconds(duration);
             BucketNames.Add(bucket);
-        }
-
-        public void MarkEvent(string name)
-        {
-            CallCount++;
-            BucketNames.Add(name);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace JustEat.StatsD
 
             var fakeTransport = new FakeTransport();
             var publisher = new BufferBasedStatsDPublisher(config, fakeTransport);
-            publisher.MarkEvent(new string(ch, count));
+            publisher.Increment(new string(ch, count));
             fakeTransport.TimesCalled.ShouldBe(1);
         }
 

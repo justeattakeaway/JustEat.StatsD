@@ -82,87 +82,15 @@ namespace JustEat.StatsD
         }
 
         /// <inheritdoc />
-        public void MarkEvent(string name)
-        {
-            _inner.MarkEvent(name);
-        }
-
-        /// <inheritdoc />
-        public void Increment(string bucket)
-        {
-            _inner.Increment(bucket);
-        }
-
-        /// <inheritdoc />
-        public void Increment(long value, string bucket)
-        {
-            _inner.Increment(value, bucket);
-        }
-
-        /// <inheritdoc />
         public void Increment(long value, double sampleRate, string bucket)
         {
             _inner.Increment(value, sampleRate, bucket);
         }
 
         /// <inheritdoc />
-        public void Increment(long value, double sampleRate, params string[] buckets)
-        {
-            _inner.Increment(value, sampleRate, buckets);
-        }
-
-        /// <inheritdoc />
-        public void Decrement(string bucket)
-        {
-            _inner.Decrement(bucket);
-        }
-
-        /// <inheritdoc />
-        public void Decrement(long value, string bucket)
-        {
-            _inner.Decrement(value, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Decrement(long value, double sampleRate, string bucket)
-        {
-            _inner.Decrement(value, sampleRate, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Decrement(long value, double sampleRate, params string[] buckets)
-        {
-            _inner.Decrement(value, sampleRate, buckets);
-        }
-
-        /// <inheritdoc />
         public void Gauge(double value, string bucket)
         {
             _inner.Gauge(value, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Gauge(long value, string bucket)
-        {
-            _inner.Gauge(value, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Timing(TimeSpan duration, string bucket)
-        {
-            _inner.Timing(duration, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Timing(TimeSpan duration, double sampleRate, string bucket)
-        {
-            _inner.Timing(duration, sampleRate, bucket);
-        }
-
-        /// <inheritdoc />
-        public void Timing(long duration, string bucket)
-        {
-            _inner.Timing(duration, bucket);
         }
 
         /// <inheritdoc />

@@ -41,7 +41,7 @@ namespace Benchmark
         [Benchmark]
         public void RunIp()
         {
-            _ipSender.MarkEvent("hello.i");
+            _ipSender.Increment("hello.i");
             _ipSender.Increment(20, "increment.i");
             _ipSender.Timing(Timed, "timer.i");
             _ipSender.Gauge(354654, "gauge.i");
@@ -58,7 +58,7 @@ namespace Benchmark
         [Benchmark]
         public void RunUdp()
         {
-            _udpSender.MarkEvent("hello.u");
+            _udpSender.Increment("hello.u");
             _udpSender.Increment(20, "increment.u");
             _udpSender.Timing(Timed, "timer.u");
             _udpSender.Gauge(354654, "gauge.u");

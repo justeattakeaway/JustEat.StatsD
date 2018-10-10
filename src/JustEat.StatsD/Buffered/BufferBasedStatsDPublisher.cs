@@ -26,61 +26,9 @@ namespace JustEat.StatsD.Buffered
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);
         }
 
-        public void Increment(string bucket)
-        {
-            Increment(1, bucket);
-        }
-
-        public void Increment(long value, string bucket)
-        {
-            Increment(value, DefaultSampleRate, bucket);
-        }
-
         public void Increment(long value, double sampleRate, string bucket)
         {
-            var msg = StatsDMessage.Counter(value, bucket);
-            SendMessage(sampleRate, msg);
-        }
-
-        public void Increment(long value, double sampleRate, params string[] buckets)
-        {
-            if (buckets == null || buckets.Length == 0)
-            {
-                return;
-            }
-
-            foreach (var bucket in buckets)
-            {
-                Increment(value, sampleRate, bucket);
-            }
-        }
-
-        public void Decrement(string bucket)
-        {
-            Increment(-1, DefaultSampleRate, bucket);
-        }
-
-        public void Decrement(long value, string bucket)
-        {
-            Increment(value > 0 ? -value : value, DefaultSampleRate, bucket);
-        }
-
-        public void Decrement(long value, double sampleRate, string bucket)
-        {
-            Increment(value > 0 ? -value : value, sampleRate, bucket);
-        }
-
-        public void Decrement(long value, double sampleRate, params string[] buckets)
-        {
-            if (buckets == null || buckets.Length == 0)
-            {
-                return;
-            }
-
-            foreach (var bucket in buckets)
-            {
-                Increment(value > 0 ? -value : value, sampleRate, bucket);
-            }
+            SendMessage(sampleRate, StatsDMessage.Counter(value, bucket));
         }
 
         public void Gauge(double value, string bucket)
@@ -88,35 +36,9 @@ namespace JustEat.StatsD.Buffered
             SendMessage(DefaultSampleRate, StatsDMessage.Gauge(value, bucket));
         }
 
-        public void Gauge(long value, string bucket)
-        {
-            Gauge((double) value, bucket);
-        }
-
-        public void Timing(TimeSpan duration, string bucket)
-        {
-            Timing((long)duration.TotalMilliseconds, bucket);
-        }
-
-        public void Timing(TimeSpan duration, double sampleRate, string bucket)
-        {
-            Timing((long)duration.TotalMilliseconds, sampleRate, bucket);
-        }
-
-        public void Timing(long duration, string bucket)
-        {
-            Timing(duration, DefaultSampleRate, bucket);
-        }
-
         public void Timing(long duration, double sampleRate, string bucket)
         {
-            var msg = StatsDMessage.Timing(duration, bucket);
-            SendMessage(sampleRate, msg);
-        }
-
-        public void MarkEvent(string name)
-        {
-            Increment(name);
+            SendMessage(sampleRate, StatsDMessage.Timing(duration, bucket));
         }
 
         private void SendMessage(double sampleRate, in StatsDMessage msg)
