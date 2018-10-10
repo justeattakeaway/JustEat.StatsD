@@ -11,11 +11,11 @@ namespace JustEat.StatsD
         private readonly ConcurrentBag<Socket> _pool = new ConcurrentBag<Socket>();
         private readonly SocketProtocol _socketProtocol;
 
-        public IPEndPoint IpEndPoint { get; }
+        public EndPoint EndPoint { get; }
 
-        public ConnectedSocketPool(IPEndPoint ipEndPoint, SocketProtocol socketProtocol, int initialSize)
+        public ConnectedSocketPool(EndPoint endPoint, SocketProtocol socketProtocol, int initialSize)
         {
-            IpEndPoint = ipEndPoint;
+            EndPoint = endPoint;
             _socketProtocol = socketProtocol;
             PrePopulateSocketPool(initialSize);
         }
@@ -33,7 +33,7 @@ namespace JustEat.StatsD
             var socket = SocketFactory.For(_socketProtocol);
             try
             {
-                socket.Connect(IpEndPoint);
+                socket.Connect(EndPoint);
                 return socket;
             }
             catch
