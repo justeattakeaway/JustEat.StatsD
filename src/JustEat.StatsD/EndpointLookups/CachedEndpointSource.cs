@@ -6,7 +6,7 @@ namespace JustEat.StatsD.EndpointLookups
     /// <summary>
     /// cache the IPEndPoint and only go to the source when it expires
     /// </summary>
-    public class CachedIpEndpointSource : IEndPointSource
+    public class CachedEndpointSource : IEndPointSource
     {
         private EndPoint _cachedValue;
         private DateTime _expiry;
@@ -14,7 +14,7 @@ namespace JustEat.StatsD.EndpointLookups
 
         private readonly IEndPointSource _inner;
 
-        public CachedIpEndpointSource(IEndPointSource inner, TimeSpan cacheDuration)
+        public CachedEndpointSource(IEndPointSource inner, TimeSpan cacheDuration)
         {
             _inner = inner;
             _cachedValue = null;

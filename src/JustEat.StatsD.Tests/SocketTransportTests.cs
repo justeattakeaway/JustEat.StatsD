@@ -54,7 +54,7 @@ namespace JustEat.StatsD
 
         private static IEndPointSource LocalStatsEndpoint()
         {
-            return new SimpleIpEndpoint(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
+            return new SimpleEndpointSource(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
         }
     }
 }
