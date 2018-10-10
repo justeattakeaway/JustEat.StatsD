@@ -17,7 +17,6 @@ namespace JustEat.StatsD
         /// Publishes a gauge for the specified bucket and value.
         /// </summary>
         /// <param name="value">The value to publish for the gauge.</param>
-        /// <param name="sampleRate">The sample rate for the gauge.</param>
         /// <param name="bucket">The bucket to publish the gauge for.</param>
         void Gauge(double value, string bucket);
 

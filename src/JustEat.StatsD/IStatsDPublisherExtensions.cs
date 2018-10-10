@@ -15,7 +15,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a counter for the specified bucket with a value of one (1).
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to increment the counter for.</param>
         public static void Increment(this IStatsDPublisher publisher, string bucket)
         {
@@ -25,7 +25,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a counter for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to increment the counter by.</param>
         /// <param name="bucket">The bucket to increment the counter for.</param>
         public static void Increment(this IStatsDPublisher publisher, long value, string bucket)
@@ -36,10 +36,10 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes counter(s) for the specified bucket(s) and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to increment the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
-        /// <param name="bucket">The bucket(s) to increment the counter(s) for.</param>
+        /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
         public static void Increment(this IStatsDPublisher publisher, long value, double sampleRate, IEnumerable<string> buckets)
         {
             if (buckets == null)
@@ -56,10 +56,10 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes counter(s) for the specified bucket(s) and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to increment the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
-        /// <param name="bucket">The bucket(s) to increment the counter(s) for.</param>
+        /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
         public static void Increment(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
@@ -76,7 +76,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a counter for the specified bucket with a value of minus one (-1).
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to decrement the counter for.</param>
         public static void Decrement(this IStatsDPublisher publisher, string bucket)
         {
@@ -86,7 +86,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a counter decrement for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to decrement the counter by.</param>
         /// <param name="bucket">The bucket to decrement the counter for.</param>
         public static void Decrement(this IStatsDPublisher publisher, long value, string bucket)
@@ -97,7 +97,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a counter decrement for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to decrement the counter by.</param>
         /// <param name="sampleRate">The sample rate for the counter.</param>
         /// <param name="bucket">The bucket to decrement the counter for.</param>
@@ -109,10 +109,10 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes counter decrement(s) for the specified bucket(s) and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to decrement the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
-        /// <param name="bucket">The bucket(s) to decrement the counter(s) for.</param>
+        /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
         public static void Decrement(this IStatsDPublisher publisher, long value, double sampleRate, IEnumerable<string> buckets)
         {
             if (buckets == null)
@@ -131,10 +131,10 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes counter decrement(s) for the specified bucket(s) and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to decrement the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
-        /// <param name="bucket">The bucket(s) to decrement the counter(s) for.</param>
+        /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
         public static void Decrement(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
@@ -153,9 +153,8 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a timer for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
-        /// <param name="sampleRate">The sample rate for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         public static void Timing(this IStatsDPublisher publisher, TimeSpan duration, string bucket)
         {
@@ -165,7 +164,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a timer for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="sampleRate">The sample rate for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
@@ -177,7 +176,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Publishes a timer for the specified bucket and value.
         /// </summary>
-        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publisher with.</param>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         public static void Timing(this IStatsDPublisher publisher, long duration, string bucket)

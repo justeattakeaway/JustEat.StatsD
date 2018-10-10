@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using Shouldly;
 using Xunit;
@@ -131,7 +131,7 @@ namespace JustEat.StatsD.Extensions
         public static void CanRecordStatInFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = publisher.Time("statOverFunc", t => DelayedAnswer());
+            var answer = publisher.Time("statOverFunc", () => DelayedAnswer());
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverFunc");
@@ -142,7 +142,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CanRecordStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("statOverAsyncAction", async t => await DelayAsync());
+            await publisher.Time("statOverAsyncAction", async () => await DelayAsync());
 
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncAction");
         }
@@ -151,7 +151,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CorrectDurationForStatInAsyncAction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("stat", async t => await DelayAsync());
+            await publisher.Time("stat", async () => await DelayAsync());
 
             PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
@@ -160,7 +160,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CanRecordStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
-            var answer = await publisher.Time("statOverAsyncFunc", async t => await DelayedAnswerAsync());
+            var answer = await publisher.Time("statOverAsyncFunc", async () => await DelayedAnswerAsync());
 
             answer.ShouldBe(42);
             PublisherAssertions.SingleStatNameIs(publisher, "statOverAsyncFunc");
@@ -170,7 +170,7 @@ namespace JustEat.StatsD.Extensions
         public static async Task CorrectDurationForStatInAsyncFunction()
         {
             var publisher = new FakeStatsPublisher();
-            await publisher.Time("stat", async t => await DelayedAnswerAsync());
+            await publisher.Time("stat", async () => await DelayedAnswerAsync());
 
             PublisherAssertions.LastDurationIs(publisher, TimingConstants.DelayMilliseconds);
         }
