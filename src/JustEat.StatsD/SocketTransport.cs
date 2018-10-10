@@ -14,18 +14,18 @@ namespace JustEat.StatsD
     public sealed class SocketTransport : IStatsDTransport, IDisposable
     {
         private ConnectedSocketPool _pool;
-        private readonly IPEndPointSource _endpointSource;
+        private readonly IEndPointSource _endpointSource;
         private readonly SocketProtocol _socketProtocol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketTransport"/> class.
         /// </summary>
-        /// <param name="endPointSource">The <see cref="IPEndPointSource"/> to use.</param>
+        /// <param name="endPointSource">The <see cref="IEndPointSource"/> to use.</param>
         /// <param name="socketProtocol">Udp or Ip sockets</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="endPointSource"/> is <see langword="null"/>.
         /// </exception>
-        public SocketTransport(IPEndPointSource endPointSource, SocketProtocol socketProtocol)
+        public SocketTransport(IEndPointSource endPointSource, SocketProtocol socketProtocol)
         {
             _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
 
@@ -67,29 +67,27 @@ namespace JustEat.StatsD
             _pool = null;
         }
 
-        private ConnectedSocketPool GetPool(IPEndPoint endPoint)
+        private ConnectedSocketPool GetPool(EndPoint endPoint)
         {
             var oldPool = _pool;
 
-            if (oldPool != null && (ReferenceEquals(oldPool.IpEndPoint, endPoint) || oldPool.IpEndPoint.Equals(endPoint)))
+            if (oldPool != null && (ReferenceEquals(oldPool.EndPoint, endPoint) || oldPool.EndPoint.Equals(endPoint)))
             {
                 return oldPool;
             }
+
+            var newPool = new ConnectedSocketPool(
+                endPoint, _socketProtocol, Environment.ProcessorCount);
+
+            if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
+            {
+                oldPool?.Dispose();
+                return newPool;
+            }
             else
             {
-                var newPool = new ConnectedSocketPool(
-                    endPoint, _socketProtocol, Environment.ProcessorCount);
-
-                if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
-                {
-                    oldPool?.Dispose();
-                    return newPool;
-                }
-                else
-                {
-                    newPool.Dispose();
-                    return _pool;
-                }
+                newPool.Dispose();
+                return _pool;
             }
         }
     }

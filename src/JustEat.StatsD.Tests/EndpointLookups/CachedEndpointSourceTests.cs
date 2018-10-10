@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Moq;
@@ -7,15 +7,15 @@ using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {
-    public static class CachedIpEndpointSourceTests
+    public static class CachedEndpointSourceTests
     {
         [Fact]
         public static void CachedValueIsReturnedFromInner()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
-            var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
+            var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
 
             var value = cachedEndpoint.GetEndpoint();
             value.ShouldNotBeNull();
@@ -27,10 +27,10 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CachedValueIsReturnedOnce()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
-            var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
+            var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
 
             var value1 = cachedEndpoint.GetEndpoint();
             var value2 = cachedEndpoint.GetEndpoint();
@@ -46,10 +46,10 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static async Task CachedValueIsReturnedAgainAfterExpiry()
         {
-            var mockInner = new Mock<IPEndPointSource>();
+            var mockInner = new Mock<IEndPointSource>();
             mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
 
-            var cachedEndpoint = new CachedIpEndpointSource(mockInner.Object, TimeSpan.FromSeconds(1));
+            var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromSeconds(1));
 
             var value1 = cachedEndpoint.GetEndpoint();
             var value2 = cachedEndpoint.GetEndpoint();

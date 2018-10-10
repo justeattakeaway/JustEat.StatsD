@@ -5,24 +5,24 @@ namespace JustEat.StatsD.EndpointLookups
 {
     public static class EndpointParser
     {
-        public static IPEndPointSource MakeEndPointSource(IPEndPoint endpoint, TimeSpan? endpointCacheDuration)
+        public static IEndPointSource MakeEndPointSource(EndPoint endpoint, TimeSpan? endpointCacheDuration)
         {
             if (endpoint == null)
             {
                 throw new ArgumentNullException(nameof(endpoint));
             }
 
-            IPEndPointSource source = new SimpleIpEndpoint(endpoint);
+            IEndPointSource source = new SimpleEndpointSource(endpoint);
 
             if (!endpointCacheDuration.HasValue)
             {
                 return source;
             }
 
-            return new CachedIpEndpointSource(source, endpointCacheDuration.Value);
+            return new CachedEndpointSource(source, endpointCacheDuration.Value);
         }
 
-        public static IPEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
+        public static IEndPointSource MakeEndPointSource(string host, int port, TimeSpan? endpointCacheDuration)
         {
             if (string.IsNullOrWhiteSpace(host))
             {
@@ -34,7 +34,7 @@ namespace JustEat.StatsD.EndpointLookups
                 // If we were given an IP instead of a hostname, 
                 // we can happily keep it the life of this class
                 var endpoint = new IPEndPoint(address, port);
-                return new SimpleIpEndpoint(endpoint);
+                return new SimpleEndpointSource(endpoint);
             }
 
             // We have a host name, so we use DNS lookup
@@ -45,7 +45,7 @@ namespace JustEat.StatsD.EndpointLookups
                 return uncachedLookup;
             }
 
-            return new CachedIpEndpointSource(uncachedLookup, endpointCacheDuration.Value);
+            return new CachedEndpointSource(uncachedLookup, endpointCacheDuration.Value);
         }
     }
 }

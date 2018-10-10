@@ -14,18 +14,18 @@ namespace Benchmark
         private SocketTransport _transport;
         private SocketTransport _transportSwitched;
 
-        private class MilisecondSwitcher : IPEndPointSource
+        private class MilisecondSwitcher : IEndPointSource
         {
-            private readonly IPEndPointSource _endpointSource1;
-            private readonly IPEndPointSource _endpointSource2;
+            private readonly IEndPointSource _endpointSource1;
+            private readonly IEndPointSource _endpointSource2;
 
-            public MilisecondSwitcher(IPEndPointSource endpointSource1, IPEndPointSource endpointSource2)
+            public MilisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
             {
                 _endpointSource1 = endpointSource1;
                 _endpointSource2 = endpointSource2;
             }
 
-            public IPEndPoint GetEndpoint()
+            public EndPoint GetEndpoint()
             {
                 return DateTime.Now.Millisecond % 2 == 0 ?
                     _endpointSource1.GetEndpoint() :

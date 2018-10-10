@@ -1,15 +1,15 @@
-﻿using System.Net;
+using System.Net;
 using Shouldly;
 using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {
-    public static class SimpleIpEndpointTests
+    public static class SimpleEndpointTests
     {
         [Fact]
         public static void CanHoldValue()
         {
-            var wrapped = new SimpleIpEndpoint(MakeTestIpEndPoint());
+            var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
 
             var expected = MakeTestIpEndPoint();
             wrapped.GetEndpoint().ShouldBe(expected);
@@ -18,7 +18,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void ValueIsConsistent()
         {
-            var wrapped = new SimpleIpEndpoint(MakeTestIpEndPoint());
+            var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
 
             wrapped.GetEndpoint().ShouldBe(wrapped.GetEndpoint());
         }
