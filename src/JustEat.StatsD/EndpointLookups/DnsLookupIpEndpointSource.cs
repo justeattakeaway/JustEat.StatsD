@@ -6,22 +6,33 @@ using System.Net.Sockets;
 namespace JustEat.StatsD.EndpointLookups
 {
     /// <summary>
-    /// lookup IPAddress using DNS to find the host's IP
+    /// A class representing an implementation of <see cref="IEndPointSource"/> that looks up
+    /// the <see cref="EndPoint"/> for DNS hostname to resolve its IP address.
     /// </summary>
     public class DnsLookupIpEndpointSource : IEndPointSource
     {
         private readonly string _hostName;
         private readonly int _port;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DnsLookupIpEndpointSource"/> class.
+        /// </summary>
+        /// <param name="hostName">The host name to look up the IP address for.</param>
+        /// <param name="port">The port number to use for the end point.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="hostName"/> is <see langword="null"/>.
+        /// </exception>
         public DnsLookupIpEndpointSource(string hostName, int port)
         {
-            _hostName = hostName;
+            _hostName = hostName ?? throw new ArgumentNullException(nameof(hostName));
             _port = port;
         }
 
+        /// <inheritdoc />
         public EndPoint GetEndpoint()
         {
-            return new IPEndPoint(GetIpAddressOfHost(_hostName), _port);
+            var address = GetIpAddressOfHost(_hostName);
+            return new IPEndPoint(address, _port);
         }
 
         private static IPAddress GetIpAddressOfHost(string hostName)
@@ -30,7 +41,7 @@ namespace JustEat.StatsD.EndpointLookups
 
             if (endpoints == null || endpoints.Length == 0)
             {
-                throw new Exception($"DNS did not find any addresses for statsd host '${hostName}'");
+                throw new Exception($"Failed to resolve any IP addresses for statsd host '${hostName}' using DNS.");
             }
 
             IPAddress result = null;

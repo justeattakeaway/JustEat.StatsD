@@ -2,49 +2,66 @@ using System;
 
 namespace JustEat.StatsD
 {
+    /// <summary>
+    /// A class representing the configuration options for statsD usage.
+    /// </summary>
     public class StatsDConfiguration
     {
+        /// <summary>
+        /// The default statsD port, 8125.
+        /// </summary>
         public const int DefaultPort = 8125;
-        public static readonly TimeSpan DefaultDnsLookupInterval = TimeSpan.FromMinutes(5);
 
         /// <summary>
-        /// The host name or IP address of the statsD server. 
-        /// This field must be set. 
+        /// Gets the default DNS lookup interval, which is 5 minutes.
         /// </summary>
+        public static TimeSpan DefaultDnsLookupInterval => TimeSpan.FromMinutes(5);
+
+        /// <summary>
+        /// Gets or sets the host name or IP address of the statsD server. 
+        /// </summary>
+        /// <remarks>
+        /// A value must be provided for this property.
+        /// </remarks>
         public string Host { get; set; }
 
         /// <summary>
-        /// The port on the statsD server to use.
-        /// Default is the standard port (8125).
+        /// Gets or sets the port on the statsD server to use.
         /// </summary>
         public int Port { get; set; } = DefaultPort;
 
         /// <summary>
-        /// Length of time to cache the host name to IP address lookup.
-        /// Only used when "Host" contains a host name.
-        /// Default is 5 minutes.
+        /// Gets or sets the length of time to cache the hostname for IP address lookup using DNS.
         /// </summary>
+        /// <remarks>
+        /// This value is only used when <see cref="Host"/> is a hostname, rather than an IP address.
+        /// <para />
+        /// The default value of this property is the value of <see cref="DefaultDnsLookupInterval"/>.
+        /// </remarks>
         public TimeSpan? DnsLookupInterval { get; set; } = DefaultDnsLookupInterval;
 
         /// <summary>
-        /// Configure to use either UDP or IP sockets to transport stats.
-        /// Default is UDP.
+        /// Gets or sets the socket protocol to use, such as using either UDP or IP
+        /// sockets to transport stats. The default value is <see cref="SocketProtocol.Udp"/>.
         /// </summary>
         public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
 
         /// <summary>
-        /// Prepend a prefix to all stats.
-        /// Default is empty.
+        /// Gets or sets an optional prefix to use for all stats.
         /// </summary>
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
-        /// Function to receive notification of any exceptions
-        /// This function should return:
-        /// True if the exception was handled and no further action is needed
-        /// False if the exception should be thrown
-        /// The default behaviour is to ignore the error
+        /// Gets or sets an optional delegate to invoke when an error occurs
+        /// when sending a metric to the statsD server.
         /// </summary>
+        /// <remarks>
+        /// This delegate should return <see langword="true"/> if the exception
+        /// was handled and no further action is needed, otherwise <see langword="false"/>
+        /// if the exception should be thrown.
+        /// <para/>
+        /// The default behaviour is to ignore the exception.
+        /// </remarks>
         public Func<Exception, bool> OnError { get; set; }
     }
 }

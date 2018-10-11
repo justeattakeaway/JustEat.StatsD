@@ -5,7 +5,7 @@ using System.Text;
 
 namespace JustEat.StatsD
 {
-    public class StatsDMessageFormatter
+    internal sealed class StatsDMessageFormatter
     {
         private const double DefaultSampleRate = 1.0;
 
