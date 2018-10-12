@@ -11,18 +11,18 @@
 
 ### TL;DR
 
-We use this within our components to publish [statsd](http://github.com/etsy/statsd) metrics from .NET code. We've been using this in most of our things, since around 2013.
+We use this within our components to publish [StatsD](http://github.com/etsy/statsd) metrics from .NET code. We've been using this in most of our things, since around 2013.
 
 ### Features
 
-* statsd metrics formatter
+* StatsD metrics formatter
 * UDP client handling
 
 #### Publishing statistics
 
 `IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the statsd server host name or IP address. Optionally, you can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
 ## Setting up StatsD
 

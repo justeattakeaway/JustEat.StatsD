@@ -7,14 +7,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// A class containing extension methods for registering statsD services with <see cref="IServiceCollection"/>. This class cannot be inherited.
+    /// A class containing extension methods for registering StatsD services with <see cref="IServiceCollection"/>. This class cannot be inherited.
     /// </summary>
     public static class StatsDServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds statsD services to the specified <see cref="IServiceCollection"/>.
+        /// Adds StatsD services to the specified <see cref="IServiceCollection"/>.
         /// </summary>
-        /// <param name="services">The service collection to register statsD with.</param>
+        /// <param name="services">The service collection to register StatsD with.</param>
         /// <returns>
         /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
         /// </returns>
@@ -35,10 +35,10 @@ namespace JustEat.StatsD
         }
 
         /// <summary>
-        /// Adds statsD services to the specified <see cref="IServiceCollection"/> for the specified host and optional prefix.
+        /// Adds StatsD services to the specified <see cref="IServiceCollection"/> for the specified host and optional prefix.
         /// </summary>
-        /// <param name="services">The service collection to register statsD with.</param>
-        /// <param name="host">The host name or IP address of the statsD server.</param>
+        /// <param name="services">The service collection to register StatsD with.</param>
+        /// <param name="host">The host name or IP address of the StatsD server.</param>
         /// <param name="prefix">An optional prefix to prepend to all stats.</param>
         /// <returns>
         /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
@@ -70,10 +70,10 @@ namespace JustEat.StatsD
         }
 
         /// <summary>
-        /// Adds statsD services to the specified <see cref="IServiceCollection"/> using the specified delegate to create the configuration.
+        /// Adds StatsD services to the specified <see cref="IServiceCollection"/> using the specified delegate to create the configuration.
         /// </summary>
-        /// <param name="services">The service collection to register statsD with.</param>
-        /// <param name="configurationFactory">A delegate to a method to use to create the statsD configuration.</param>
+        /// <param name="services">The service collection to register StatsD with.</param>
+        /// <param name="configurationFactory">A delegate to a method to use to create the StatsD configuration.</param>
         /// <returns>
         /// The <see cref="IServiceCollection"/> specified by <paramref name="services"/>.
         /// </returns>

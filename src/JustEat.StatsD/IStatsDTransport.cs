@@ -3,7 +3,7 @@ using System;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// Defines a transport for sending metrics to a statsd server.
+    /// Defines a transport for sending metrics to a StatsD server.
     /// </summary>
     public interface IStatsDTransport
     {

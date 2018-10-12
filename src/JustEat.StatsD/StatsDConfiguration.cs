@@ -3,12 +3,12 @@ using System;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// A class representing the configuration options for statsD usage.
+    /// A class representing the configuration options for StatsD usage.
     /// </summary>
     public class StatsDConfiguration
     {
         /// <summary>
-        /// The default statsD port, 8125.
+        /// The default StatsD port, 8125.
         /// </summary>
         public const int DefaultPort = 8125;
 
@@ -18,7 +18,7 @@ namespace JustEat.StatsD
         public static TimeSpan DefaultDnsLookupInterval => TimeSpan.FromMinutes(5);
 
         /// <summary>
-        /// Gets or sets the host name or IP address of the statsD server. 
+        /// Gets or sets the host name or IP address of the StatsD server.
         /// </summary>
         /// <remarks>
         /// A value must be provided for this property.
@@ -26,7 +26,7 @@ namespace JustEat.StatsD
         public string Host { get; set; }
 
         /// <summary>
-        /// Gets or sets the port on the statsD server to use.
+        /// Gets or sets the port on the StatsD server to use.
         /// </summary>
         public int Port { get; set; } = DefaultPort;
 
@@ -53,7 +53,7 @@ namespace JustEat.StatsD
 
         /// <summary>
         /// Gets or sets an optional delegate to invoke when an error occurs
-        /// when sending a metric to the statsD server.
+        /// when sending a metric to the StatsD server.
         /// </summary>
         /// <remarks>
         /// This delegate should return <see langword="true"/> if the exception

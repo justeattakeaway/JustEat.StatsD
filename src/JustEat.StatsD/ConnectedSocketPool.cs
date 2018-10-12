@@ -71,7 +71,7 @@ namespace JustEat.StatsD
         {
             if (item == null)
             {
-                throw new ArgumentNullException(nameof(item), "Items added to a ConnectedSocketPool cannot be null");
+                throw new ArgumentNullException(nameof(item), $"An item added to a {nameof(ConnectedSocketPool)} cannot be null.");
             }
 
             _pool.Add(item);

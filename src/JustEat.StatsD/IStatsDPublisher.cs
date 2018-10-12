@@ -1,7 +1,7 @@
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// Defines an interface for publishing counters, gauges and timers to statsD.
+    /// Defines an interface for publishing counters, gauges and timers to StatsD.
     /// </summary>
     public interface IStatsDPublisher
     {

@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>A .NET library for publishing metrics to statsd.</Description>
+    <Description>A .NET library for publishing metrics to StatsD.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.StatsD</PackageId>
     <RootNamespace>JustEat.StatsD</RootNamespace>
-    <Summary>A .NET library for publishing metrics to statsd.</Summary>
+    <Summary>A .NET library for publishing metrics to StatsD.</Summary>
     <TargetFrameworks>net451;netstandard2.0;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
