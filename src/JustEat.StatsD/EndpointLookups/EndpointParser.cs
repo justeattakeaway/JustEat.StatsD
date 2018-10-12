@@ -41,7 +41,7 @@ namespace JustEat.StatsD.EndpointLookups
         /// <summary>
         /// Creates an <see cref="IEndPointSource"/> from the specified host IP address or name and port.
         /// </summary>
-        /// <param name="host">The host name of IP address of the statsd server.</param>
+        /// <param name="host">The host name of IP address of the StatsD server.</param>
         /// <param name="port">The port number to use for the end point.</param>
         /// <param name="endpointCacheDuration">The optional period of time to cache the end point value for.</param>
         /// <returns>
@@ -54,14 +54,14 @@ namespace JustEat.StatsD.EndpointLookups
         {
             if (string.IsNullOrWhiteSpace(host))
             {
-                throw new ArgumentException("The statsd host IP address or name is null or empty.", nameof(host));
+                throw new ArgumentException("The StatsD host IP address or name is null or empty.", nameof(host));
             }
 
             IEndPointSource source;
 
             if (IPAddress.TryParse(host, out IPAddress address))
             {
-                // If we were given an IP instead of a hostname, 
+                // If we were given an IP instead of a hostname,
                 // we can happily keep it the life of this class
                 var value = new IPEndPoint(address, port);
                 source = new SimpleEndpointSource(value);

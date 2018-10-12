@@ -12,7 +12,7 @@ namespace JustEat.StatsD
     public static class IStatsDTransportExtensions
     {
         /// <summary>
-        /// Sends the specified metrics to the statsD server.
+        /// Sends the specified metrics to the StatsD server.
         /// </summary>
         /// <param name="transport">The <see cref="IStatsDTransport"/> to use.</param>
         /// <param name="metrics">The metric(s) to send.</param>
@@ -38,7 +38,7 @@ namespace JustEat.StatsD
         }
 
         /// <summary>
-        /// Sends the specified metric to the statsD server.
+        /// Sends the specified metric to the StatsD server.
         /// </summary>
         /// <param name="transport">The <see cref="IStatsDTransport"/> to use.</param>
         /// <param name="metric">The metric to send.</param>

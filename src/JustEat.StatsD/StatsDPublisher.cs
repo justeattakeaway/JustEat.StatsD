@@ -6,7 +6,7 @@ namespace JustEat.StatsD
 {
     /// <summary>
     /// A class representing the default implementation of <see cref="IStatsDPublisher"/> that
-    /// publishes counters, gauges and timers to statsD. This class cannot be inherited.
+    /// publishes counters, gauges and timers to StatsD. This class cannot be inherited.
     /// </summary>
     /// <remarks>
     /// Metrics are published synchronously immediately and are not batched.
@@ -22,7 +22,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDPublisher"/> class for the specified transport.
         /// </summary>
-        /// <param name="configuration">The statsD configuration to use.</param>
+        /// <param name="configuration">The StatsD configuration to use.</param>
         /// <param name="transport">The transport implementation to use.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configuration"/> or <paramref name="transport"/> is <see langword="null"/>.
@@ -51,7 +51,7 @@ namespace JustEat.StatsD
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDPublisher"/> class using the default transport.
         /// </summary>
-        /// <param name="configuration">The statsD configuration to use.</param>
+        /// <param name="configuration">The StatsD configuration to use.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="configuration"/> is <see langword="null"/>.
         /// </exception>
@@ -74,7 +74,7 @@ namespace JustEat.StatsD
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
             var transport = new SocketTransport(endpointSource, configuration.SocketProtocol);
-            
+
             _transport = transport;
             _disposeTransport = true;
 
