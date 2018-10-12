@@ -4,6 +4,6 @@ namespace JustEat.StatsD.Buffered
     {
         Counter,
         Timing,
-        Gauge,
+        Gauge
     }
 }
