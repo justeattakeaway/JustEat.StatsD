@@ -17,7 +17,7 @@ namespace JustEat.StatsD
                     return ForUdp();
 
                 default:
-                    throw new InvalidOperationException($"Unknown socketProtocol {socketProtocol}"); 
+                    throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified.");
             }
         }
 

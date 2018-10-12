@@ -61,7 +61,7 @@ namespace JustEat.StatsD.Buffered
                 else
                 {
                     var newSize = _formatter.GetMaxBufferSize(msg);
-                    
+
                     _buffer = new byte[newSize];
 
                     if (_formatter.TryFormat(msg, sampleRate, _buffer, out written))
@@ -70,7 +70,7 @@ namespace JustEat.StatsD.Buffered
                     }
                     else
                     {
-                        throw new Exception("Utf8 Formatting Error");
+                        throw new Exception("Failed to format buffer to UTF-8.");
                     }
                 }
             }

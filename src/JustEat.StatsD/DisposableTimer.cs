@@ -34,7 +34,7 @@ namespace JustEat.StatsD
 
                 if (string.IsNullOrEmpty(StatName))
                 {
-                    throw new InvalidOperationException("StatName must be set");
+                    throw new InvalidOperationException($"The {nameof(StatName)} property must have a value.");
                 }
 
                 _publisher.Timing(_stopwatch.Elapsed, StatName);

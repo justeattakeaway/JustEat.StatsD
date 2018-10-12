@@ -31,7 +31,7 @@ namespace JustEat.StatsD
 
             if (!Enum.IsDefined(typeof(SocketProtocol), socketProtocol))
             {
-                throw new ArgumentOutOfRangeException(nameof(socketProtocol), socketProtocol, "Invalid value");
+                throw new ArgumentOutOfRangeException(nameof(socketProtocol), socketProtocol, $"Invalid {nameof(SocketProtocol)} value specified.");
             }
             _socketProtocol = socketProtocol;
         }
