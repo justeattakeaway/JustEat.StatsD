@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Description>A .NET library for publishing metrics to StatsD.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.StatsD</PackageId>
     <RootNamespace>JustEat.StatsD</RootNamespace>
