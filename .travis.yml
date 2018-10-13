@@ -26,7 +26,7 @@ addons:
 
 install:
   - git clone https://github.com/etsy/statsd.git
-  - node ./statsd/stats.js ./src/JustEat.StatsD.Tests/statsdconfig.js &
+  - node ./statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js &
 
 script:
   - ./build.sh

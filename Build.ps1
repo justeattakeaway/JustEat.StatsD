@@ -79,7 +79,7 @@ $projects = @(
 )
 
 $testProjects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
+    (Join-Path $solutionPath "tests\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
 )
 
 $packageProjects = @(
