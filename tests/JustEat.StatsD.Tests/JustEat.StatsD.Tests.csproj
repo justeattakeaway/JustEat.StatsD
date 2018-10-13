@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <NoWarn>$(NoWarn);CA1707;CA2007</NoWarn>
     <RootNamespace>JustEat.StatsD</RootNamespace>
     <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
+    <ProjectReference Include="..\..\src\JustEat.StatsD\JustEat.StatsD.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />

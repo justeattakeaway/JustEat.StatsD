@@ -10,7 +10,7 @@
       "args": [
         "test"
       ],
-      "cwd": "${workspaceRoot}/src/JustEat.StatsD.Tests",
+      "cwd": "${workspaceRoot}/tests/JustEat.StatsD.Tests",
       "console": "internalConsole",
       "stopAtEntry": false,
       "internalConsoleOptions": "openOnSessionStart"

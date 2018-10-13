@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <NoWarn>$(NoWarn);CA1001;CA1822</NoWarn>
     <OutputType>Exe</OutputType>
@@ -9,6 +9,6 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
+    <ProjectReference Include="..\..\src\JustEat.StatsD\JustEat.StatsD.csproj" />
   </ItemGroup>
 </Project>
