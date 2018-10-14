@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 
 namespace JustEat.StatsD
 {
@@ -65,7 +64,7 @@ namespace JustEat.StatsD
             {
                 try
                 {
-                    while (_pool.Count > 0)
+                    while (_pool?.Count > 0)
                     {
                         var socket = _pool.Pop();
                         socket?.Dispose();
