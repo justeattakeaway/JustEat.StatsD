@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <VersionPrefix>3.2.2</VersionPrefix>
+    <VersionPrefix>3.2.3</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <BuildNumber Condition=" '$(BuildNumber)' == '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
