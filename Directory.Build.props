@@ -9,6 +9,7 @@
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)justeat-oss.snk</AssemblyOriginatorKeyFile>
     <Authors>JUSTEAT_OSS</Authors>
     <Company>Just Eat</Company>
     <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
@@ -24,9 +25,11 @@
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>statsd,graphite,metrics,monitoring</PackageTags>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
+    <SignAssembly>true</SignAssembly>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 </Project>
