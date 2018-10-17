@@ -9,7 +9,7 @@
   </ItemGroup>
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Authors>Just Eat</Authors>
+    <Authors>JUSTEAT_OSS</Authors>
     <Company>Just Eat</Company>
     <Copyright>Copyright (c) Just Eat 2015-$([System.DateTime]::Now.ToString(yyyy))</Copyright>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -18,12 +18,12 @@
     <LangVersion>latest</LangVersion>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=200</PackageIconUrl>
+    <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=64</PackageIconUrl>
     <PackageProjectUrl>https://github.com/justeat/JustEat.StatsD</PackageProjectUrl>
     <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>statsd;graphite;metrics;monitoring</PackageTags>
+    <PackageTags>statsd,graphite,metrics,monitoring</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
