@@ -7,7 +7,7 @@
     <PackageId>JustEat.StatsD</PackageId>
     <RootNamespace>JustEat.StatsD</RootNamespace>
     <Summary>A .NET library for publishing metrics to StatsD.</Summary>
-    <TargetFrameworks>net451;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>net451;netstandard2.0;netcoreapp2.1;netcoreapp2.2</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.0.2" />
@@ -17,7 +17,7 @@
   <ItemGroup Condition=" '$(TargetFramework)' != 'net451' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp2.1' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' or '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Memory" Version="4.5.1" />
   </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ namespace JustEat.StatsD.Buffered
 
         public static bool TryWriteUtf8String(this ref Buffer src, string str)
         {
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP2_2
             int written = 0;
             try
             {
@@ -113,7 +113,7 @@ namespace JustEat.StatsD.Buffered
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteDouble(this ref Buffer src, double val)
         {
-            if (!Utf8Formatter.TryFormat((decimal) val, src.Tail, out var consumed))
+            if (!Utf8Formatter.TryFormat((decimal)val, src.Tail, out var consumed))
             {
                 return false;
             }
