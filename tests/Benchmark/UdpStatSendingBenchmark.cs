@@ -26,7 +26,7 @@ namespace Benchmark
                 Prefix = "testmetric"
             };
 
-            var endpointSource = EndpointParser.MakeEndPointSource(
+            var endpointSource = EndPointFactory.MakeEndPointSource(
                 config.Host,
                 config.Port,
                 config.DnsLookupInterval);

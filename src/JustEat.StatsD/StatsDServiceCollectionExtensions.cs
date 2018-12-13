@@ -111,7 +111,7 @@ namespace JustEat.StatsD
         {
             var config = provider.GetRequiredService<StatsDConfiguration>();
 
-            return EndpointParser.MakeEndPointSource(
+            return EndPointFactory.MakeEndPointSource(
                 config.Host,
                 config.Port,
                 config.DnsLookupInterval);
