@@ -10,18 +10,18 @@ namespace JustEat.StatsD
         private IStatsDPublisher _publisher;
         private Stopwatch _stopwatch;
 
-        public string StatName { get; set; }
+        public string Bucket { get; set; }
 
-        public DisposableTimer(IStatsDPublisher publisher, string statName)
+        public DisposableTimer(IStatsDPublisher publisher, string bucket)
         {
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
-            if (string.IsNullOrEmpty(statName))
+            if (string.IsNullOrEmpty(bucket))
             {
-                throw new ArgumentNullException(nameof(statName));
+                throw new ArgumentNullException(nameof(bucket));
             }
 
-            StatName = statName;
+            Bucket = bucket;
             _stopwatch = Stopwatch.StartNew();
         }
 
@@ -32,12 +32,12 @@ namespace JustEat.StatsD
                 _disposed = true;
                 _stopwatch.Stop();
 
-                if (string.IsNullOrEmpty(StatName))
+                if (string.IsNullOrEmpty(Bucket))
                 {
-                    throw new InvalidOperationException($"The {nameof(StatName)} property must have a value.");
+                    throw new InvalidOperationException($"The {nameof(Bucket)} property must have a value.");
                 }
 
-                _publisher.Timing(_stopwatch.Elapsed, StatName);
+                _publisher.Timing(_stopwatch.Elapsed, Bucket);
 
                 _stopwatch = null;
                 _publisher = null;

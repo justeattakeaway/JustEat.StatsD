@@ -7,7 +7,7 @@ namespace JustEat.StatsD.EndpointLookups
 {
     /// <summary>
     /// A class representing an implementation of <see cref="IEndPointSource"/> that looks up
-    /// the <see cref="EndPoint"/> for DNS hostname to resolve its IP address.
+    /// the <see cref="EndPoint"/> for a DNS hostname to resolve its IP address.
     /// </summary>
     public class DnsLookupIpEndpointSource : IEndPointSource
     {

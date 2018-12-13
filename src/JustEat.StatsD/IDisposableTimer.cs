@@ -8,8 +8,8 @@ namespace JustEat.StatsD
     public interface IDisposableTimer : IDisposable
     {
         /// <summary>
-        /// Gets or sets the name of the StatsD bucket associated with the timer.
+        /// Gets or sets the StatsD bucket associated with the timer.
         /// </summary>
-        string StatName { get; set; }
+        string Bucket { get; set; }
     }
 }

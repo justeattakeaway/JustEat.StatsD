@@ -1,9 +1,11 @@
+using System.Net.Sockets;
+
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// The subset of ProtocolType that are supported by SocketTransport
-    /// UDP or IP.
-    /// UDP is the default, but IP transport is required for AWS Lambdas.
+    /// An enumeration defining the subset of <see cref="ProtocolType"/> values that are supported by <see cref="SocketTransport"/>.
+    /// <para />
+    /// UDP is the default, but IP transport is required for some environments such as AWS Lambda functions.
     /// </summary>
     public enum SocketProtocol
     {

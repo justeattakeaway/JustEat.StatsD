@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JustEat.StatsD.Buffered
 {
-    internal class StatsDUtf8Formatter
+    internal sealed class StatsDUtf8Formatter
     {
         private readonly byte[] _utf8Prefix;
 
