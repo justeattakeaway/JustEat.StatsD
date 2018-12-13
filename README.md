@@ -7,15 +7,18 @@
 | **Build Status** | [![Build status](https://img.shields.io/travis/justeat/JustEat.StatsD/master.svg)](https://travis-ci.org/justeat/JustEat.StatsD) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/justeat-statsd) |
 | **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/JustEat.StatsD?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/JustEat.StatsD) |  [![Build history](https://buildstats.info/appveyor/chart/justeattech/justeat-statsd?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/justeat-statsd) |
 
-## The point
-
-### TL;DR
+## Summary
 
 We use this library within our components to publish [StatsD](http://github.com/etsy/statsd) metrics from .NET code to a server. We've been using this in most of our things, since around 2013.
 
 ### Supported platforms
 
-`JustEat.Statsd` version 4 is built for these target frameworks: `net451` , `netstandard2.0`, `netcoreapp2.1`, `netcoreapp2.2`.
+`JustEat.Statsd` version 4 is built for these target frameworks:
+
+* `net451`
+* `netstandard2.0`
+* `netcoreapp2.1`
+* `netcoreapp2.2`
 
 ### Features
 
