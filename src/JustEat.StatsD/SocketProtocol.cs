@@ -3,7 +3,7 @@ using System.Net.Sockets;
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// An emueration defining the subset of <see cref="ProtocolType"/> values that are supported by <see cref="SocketTransport"/>.
+    /// An enumeration defining the subset of <see cref="ProtocolType"/> values that are supported by <see cref="SocketTransport"/>.
     /// <para />
     /// UDP is the default, but IP transport is required for some environments such as AWS Lambda functions.
     /// </summary>
