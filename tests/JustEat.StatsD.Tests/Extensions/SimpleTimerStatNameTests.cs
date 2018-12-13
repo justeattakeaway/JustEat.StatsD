@@ -28,7 +28,7 @@ namespace JustEat.StatsD.Extensions
             using (var timer = publisher.StartTimer("initialStat"))
             {
                 Delay();
-                timer.StatName = "changedValue";
+                timer.Bucket = "changedValue";
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "changedValue");
@@ -42,7 +42,7 @@ namespace JustEat.StatsD.Extensions
             using (var timer = publisher.StartTimer("Some."))
             {
                 Delay();
-                timer.StatName += "More";
+                timer.Bucket += "More";
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "Some.More");
@@ -69,7 +69,7 @@ namespace JustEat.StatsD.Extensions
                 using (var timer = publisher.StartTimer("valid.Stat"))
                 {
                     Delay();
-                    timer.StatName = null;
+                    timer.Bucket = null;
                 }
             });
 
@@ -88,7 +88,7 @@ namespace JustEat.StatsD.Extensions
                 using (var timer = publisher.StartTimer("initialStat"))
                 {
                     Fail();
-                    timer.StatName = "changedValue";
+                    timer.Bucket = "changedValue";
                 }
             }
             catch (Exception)

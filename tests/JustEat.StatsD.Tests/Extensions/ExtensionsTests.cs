@@ -29,7 +29,7 @@ namespace JustEat.StatsD.Extensions
             using (var timer = publisher.StartTimer("defaultName"))
             {
                 Delay();
-                timer.StatName = "otherStat";
+                timer.Bucket = "otherStat";
             }
 
             PublisherAssertions.SingleStatNameIs(publisher, "otherStat");
@@ -120,7 +120,7 @@ namespace JustEat.StatsD.Extensions
             publisher.Time("defaultName", t =>
                 {
                     Delay();
-                    t.StatName = "otherStat";
+                    t.Bucket = "otherStat";
                 });
 
             PublisherAssertions.SingleStatNameIs(publisher, "otherStat");
@@ -182,7 +182,7 @@ namespace JustEat.StatsD.Extensions
             await publisher.Time("defaultName", async t =>
                 {
                     var result = await DelayedAnswerAsync();
-                    t.StatName = "afterTheAwait";
+                    t.Bucket = "afterTheAwait";
                     return result;
                 });
 
