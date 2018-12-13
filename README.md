@@ -21,7 +21,7 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 * Easy to use
 * Robust and proven
-* Tuned for high performance and low resource usage
+* Tuned for high performance and low resource usage using [BenchmarkDotNet](https://benchmarkdotnet.org/). Typically zero allocation on sending a metric on target frameworks where `Span<T>` is available.
 * Works well with modern .NET apps - .NET Core, .NET Standard 2,0 and `async ... await`
 * Supports standard statsd primitives: `Increment`, `Decrement`, `Timing` and `Gauge`. Supports sample rate.
 * Helpers to make it easy to time a `Func`, `Action` or a code block inside a `using` statement.
