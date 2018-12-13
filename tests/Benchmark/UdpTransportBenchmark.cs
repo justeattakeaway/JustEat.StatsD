@@ -41,12 +41,12 @@ namespace Benchmark
                 Host = "127.0.0.1",
             };
 
-            var endpointSource1 = EndpointParser.MakeEndPointSource(
+            var endpointSource1 = EndPointFactory.MakeEndPointSource(
                 config.Host,
                 config.Port,
                 config.DnsLookupInterval);
 
-            var endpointSource2 = EndpointParser.MakeEndPointSource(
+            var endpointSource2 = EndPointFactory.MakeEndPointSource(
                 config.Host,
                 config.Port + 1,
                 config.DnsLookupInterval);

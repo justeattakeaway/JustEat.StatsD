@@ -20,7 +20,7 @@ namespace JustEat.StatsD
         public void AMetricCanBeSentWithoutAnExceptionBeingThrown()
         {
             // Arrange
-            var endPointSource = EndpointParser.MakeEndPointSource(
+            var endPointSource = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointA,
                 null);
 
@@ -35,7 +35,7 @@ namespace JustEat.StatsD
         public void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrownSerial()
         {
             // Arrange
-            var endPointSource = EndpointParser.MakeEndPointSource(
+            var endPointSource = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointA,
                 null);
 
@@ -53,7 +53,7 @@ namespace JustEat.StatsD
         public void MultipleMetricsCanBeSentWithoutAnExceptionBeingThrownParallel()
         {
             // Arrange
-            var endPointSource = EndpointParser.MakeEndPointSource(
+            var endPointSource = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointA,
                 null);
 
@@ -71,11 +71,11 @@ namespace JustEat.StatsD
         public static void EndpointSwitchShouldNotCauseExceptionsSequential()
         {
             // Arrange
-            var endPointSource1 = EndpointParser.MakeEndPointSource(
+            var endPointSource1 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointA,
                 null);
 
-            var endPointSource2 = EndpointParser.MakeEndPointSource(
+            var endPointSource2 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointB,
                 null);
             
@@ -93,11 +93,11 @@ namespace JustEat.StatsD
         public static void EndpointSwitchShouldNotCauseExceptionsParallel()
         {
             // Arrange
-            var endPointSource1 = EndpointParser.MakeEndPointSource(
+            var endPointSource1 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointA,
                 null);
 
-            var endPointSource2 = EndpointParser.MakeEndPointSource(
+            var endPointSource2 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointB,
                 null);
             

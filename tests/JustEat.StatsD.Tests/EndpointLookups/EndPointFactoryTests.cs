@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Net;
 using Shouldly;
 using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {
-    public static class EndpointParserTests
+    public static class EndPointFactoryTests
     {
         [Fact]
         public static void CanParseIpValue()
         {
-            var parsed = EndpointParser.MakeEndPointSource("11.12.13.14", 8125, null);
+            var parsed = EndPointFactory.MakeEndPointSource("11.12.13.14", 8125, null);
 
             parsed.ShouldNotBeNull();
 
@@ -21,14 +21,14 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanParseHostValue()
         {
-            var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, null);
+            var parsed = EndPointFactory.MakeEndPointSource("somehost.somewhere.com", 8125, null);
             parsed.ShouldNotBeNull();
         }
 
         [Fact]
         public static void CanParseLocalhostValue()
         {
-            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, null);
+            var parsed = EndPointFactory.MakeEndPointSource("localhost", 8125, null);
             parsed.ShouldNotBeNull();
             parsed.GetEndpoint().ShouldNotBeNull();
         }
@@ -36,7 +36,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanParseCachedLocalhostValue()
         {
-            var parsed = EndpointParser.MakeEndPointSource("localhost", 8125, TimeSpan.FromMinutes(5));
+            var parsed = EndPointFactory.MakeEndPointSource("localhost", 8125, TimeSpan.FromMinutes(5));
             parsed.ShouldNotBeNull();
             parsed.GetEndpoint().ShouldNotBeNull();
         }
@@ -44,7 +44,7 @@ namespace JustEat.StatsD.EndpointLookups
         [Fact]
         public static void CanParseHostValueWithCache()
         {
-            var parsed = EndpointParser.MakeEndPointSource("somehost.somewhere.com", 8125, TimeSpan.FromMinutes(5));
+            var parsed = EndPointFactory.MakeEndPointSource("somehost.somewhere.com", 8125, TimeSpan.FromMinutes(5));
             parsed.ShouldNotBeNull();
         }
     }

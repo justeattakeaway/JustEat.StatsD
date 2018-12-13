@@ -3,12 +3,10 @@ using System.Net;
 
 namespace JustEat.StatsD.EndpointLookups
 {
-    //// TODO Is this more of a EndPointFactory?
-
     /// <summary>
-    /// A class containing methods to instances of <see cref="IEndPointSource"/>. This class cannot be inherited.
+    /// A class containing methods to create instances of <see cref="IEndPointSource"/>. This class cannot be inherited.
     /// </summary>
-    public static class EndpointParser
+    public static class EndPointFactory
     {
         /// <summary>
         /// Creates an <see cref="IEndPointSource"/> from the specified <see cref="EndPoint"/>.

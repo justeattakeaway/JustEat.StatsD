@@ -70,7 +70,7 @@ namespace JustEat.StatsD
                 throw new ArgumentException("No hostname or IP address is set.", nameof(configuration));
             }
 
-            var endpointSource = EndpointParser.MakeEndPointSource(
+            var endpointSource = EndPointFactory.MakeEndPointSource(
                 configuration.Host, configuration.Port, configuration.DnsLookupInterval);
 
             var transport = new SocketTransport(endpointSource, configuration.SocketProtocol);
