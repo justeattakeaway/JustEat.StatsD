@@ -18,6 +18,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// An <see cref="IDisposableTimer"/> that publishes the metric when the instance is disposed of.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static IDisposableTimer StartTimer(this IStatsDPublisher publisher, string bucket)
         {
             return new DisposableTimer(publisher, bucket);
@@ -30,6 +33,9 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static void Time(this IStatsDPublisher publisher, string bucket, Action action)
         {
             using (StartTimer(publisher, bucket))
@@ -45,6 +51,9 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static void Time(this IStatsDPublisher publisher, string bucket, Action<IDisposableTimer> action)
         {
             using (var timer = StartTimer(publisher, bucket))
@@ -63,6 +72,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static async Task Time(this IStatsDPublisher publisher, string bucket, Func<Task> action)
         {
             using (StartTimer(publisher, bucket))
@@ -82,6 +94,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static async Task Time(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, Task> action)
         {
             using (var timer = StartTimer(publisher, bucket))
@@ -101,6 +116,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// The value from invoking <paramref name="func"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static T Time<T>(this IStatsDPublisher publisher, string bucket, Func<T> func)
         {
             using (StartTimer(publisher, bucket))
@@ -120,6 +138,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// The value from invoking <paramref name="func"/>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static T Time<T>(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, T> func)
         {
             using (var timer = StartTimer(publisher, bucket))
@@ -139,6 +160,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static async Task<T> Time<T>(this IStatsDPublisher publisher, string bucket, Func<Task<T>> func)
         {
             using (StartTimer(publisher, bucket))
@@ -158,6 +182,9 @@ namespace JustEat.StatsD
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="publisher"/> or <paramref name="bucket"/> is <see langword="null"/>.
+        /// </exception>
         public static async Task<T> Time<T>(this IStatsDPublisher publisher, string bucket, Func<IDisposableTimer, Task<T>> func)
         {
             using (var timer = StartTimer(publisher, bucket))

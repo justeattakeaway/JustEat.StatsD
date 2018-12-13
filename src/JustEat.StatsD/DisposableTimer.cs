@@ -12,16 +12,16 @@ namespace JustEat.StatsD
 
         public string StatName { get; set; }
 
-        public DisposableTimer(IStatsDPublisher publisher, string statName)
+        public DisposableTimer(IStatsDPublisher publisher, string bucket)
         {
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
-            if (string.IsNullOrEmpty(statName))
+            if (string.IsNullOrEmpty(bucket))
             {
-                throw new ArgumentNullException(nameof(statName));
+                throw new ArgumentNullException(nameof(bucket));
             }
 
-            StatName = statName;
+            StatName = bucket;
             _stopwatch = Stopwatch.StartNew();
         }
 
