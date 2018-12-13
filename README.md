@@ -11,18 +11,30 @@
 
 ### TL;DR
 
-We use this within our components to publish [StatsD](http://github.com/etsy/statsd) metrics from .NET code. We've been using this in most of our things, since around 2013.
+We use this library within our components to publish [StatsD](http://github.com/etsy/statsd) metrics from .NET code to a server. We've been using this in most of our things, since around 2013.
+
+### Supported platforms
+
+`JustEat.Statsd` version 4 is built for these target frameworks: `net451` , `netstandard2.0`, `netcoreapp2.1`, `netcoreapp2.2`.
 
 ### Features
 
-* StatsD metrics formatter
-* UDP client handling
+* Easy to use
+* Robust and proven
+* Tuned for high performance and low resource usage
+* Works well with modern .NET apps - .NET Core, .NET Standard 2,0 and `async ... await`
+* Supports standard statsd primitives: `Increment`, `Decrement`, `Timing` and `Gauge`. Supports sample rate.
+* Helpers to make it easy to time a `Func`, `Action` or a code block inside a `using` statement.
+* Send stats over UDP or IP
+* Send stats to a server byt name or IP address
 
 #### Publishing statistics
 
-`IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` or `Decrement` an event, and send values for a `Gauge` or `Timing`.
+`IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` an event, and send values for a `Gauge` or `Timing`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can change the standard port (8125). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can also change the port from the default (`8125`). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+
+It is best practice to create a `StatsDPublisher` at application start and use it for the life of the application, instead of creating a new one for each usage.
 
 ## Setting up StatsD
 
@@ -87,6 +99,7 @@ An example of registering StatsD dependencies using `IServiceCollection` when us
 
 ```csharp
 // Simple
+// todo - use the SocketProtocol enum not the IpTransport class here
 services.AddSingleton<IStatsDTransport, IpTransport>();
 services.AddStatsD(Environment.GetEnvironmentVariable("MY_STATSD_ENDPOINT"));
 
@@ -97,11 +110,12 @@ services.AddStatsD(
     {
         var options = provider.GetRequiredService<MyOptions>().StatsD;
 
-        return new StatsDConfiguration()
+        return new StatsDConfiguration
         {
             Host = options.HostName,
             Port = options.Port,
             Prefix = options.Prefix,
+            SocketProtocol = SocketProtocol.Ip,
             OnError = ex => LogError(ex)
         };
     });
@@ -112,7 +126,6 @@ services.AddStatsD(
 An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
 ```csharp
-
 // read config values from app settings
 string statsdHostName =  ConfigurationManager.AppSettings["statsd.hostname"];
 int statsdPort = int.Parse(ConfigurationManager.AppSettings["statsd.port"]);
@@ -131,7 +144,7 @@ var statsDConfig = new StatsDConfiguration
 
 // register with NInject
 Bind<StatsDConfiguration>().ToConstant(statsDConfig>);
-Bind<IStatsDPublisher>().To<StatsDPublisher>();
+Bind<IStatsDPublisher>().To<StatsDPublisher>().InSingletonScope();
 ```
 
 ## StatsDConfiguration fields
@@ -141,15 +154,16 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>();
 | Host              | `string`                |                                | The host name or IP address of the StatsD server. There is no default, this must be set.                |
 | Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
-| Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
+| Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.
+| SocketProtocol    | `enum`, one of `Udp`, `Ip`    | `Udp`                 | Type of socket to use when sending stats to the server.                                                                          |
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
- *  **True** if the exception was handled and no further action is needed
- *  **False** if the exception should be thrown
+
+* **True** if the exception was handled and no further action is needed
+* **False** if the exception should be thrown
 
 The default behaviour is to ignore the error.
-
 
 #### Example of using the interface
 
