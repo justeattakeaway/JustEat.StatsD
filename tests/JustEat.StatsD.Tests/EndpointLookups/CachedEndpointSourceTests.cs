@@ -62,6 +62,21 @@ namespace JustEat.StatsD.EndpointLookups
             mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(2));
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public static void ConstructorThrowsIfCacheDurationIsInvalid(long ticks)
+        {
+            // Arrange
+            var inner = Mock.Of<IEndPointSource>();
+            var cacheDuration = TimeSpan.FromTicks(ticks);
+
+            // Act and Assert
+            var exception = Assert.Throws<ArgumentOutOfRangeException>("cacheDuration", () => new CachedEndpointSource(inner, cacheDuration));
+
+            exception.ActualValue.ShouldBe(cacheDuration);
+        }
+
         private static IPEndPoint MakeTestIpEndPoint()
         {
             return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);

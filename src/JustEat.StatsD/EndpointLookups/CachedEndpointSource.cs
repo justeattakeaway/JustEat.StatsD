@@ -22,9 +22,18 @@ namespace JustEat.StatsD.EndpointLookups
         /// <exception cref="ArgumentNullException">
         /// <paramref name="inner"/> is <see langword="null"/>.
         /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="cacheDuration"/> is less than or equal to <see cref="TimeSpan.Zero"/>.
+        /// </exception>
         public CachedEndpointSource(IEndPointSource inner, TimeSpan cacheDuration)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+
+            if (cacheDuration <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(cacheDuration), cacheDuration, "The end point cache duration must be a positive TimeSpan value.");
+            }
+
             _cachedValue = null;
             _cacheDuration = cacheDuration;
         }
