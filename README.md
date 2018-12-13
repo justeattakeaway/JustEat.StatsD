@@ -34,9 +34,9 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 #### Publishing statistics
 
-`IStatsDPublisher` is the interface that you will use in most circumstances. With this you can `Increment` an event, and send values for a `Gauge` or `Timing`.
+`IStatsDPublisher` is the interface that you will use to send stats. The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The `StatsDPublisher` constructor takes an instance of `StatsDConfiguration`.
 
-The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can also change the port from the default (`8125`). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
+For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can also change the port from the default (`8125`). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
 It is best practice to create a `StatsDPublisher` at application start and use it for the lifetime of the application, instead of creating a new one for each usage.
 
