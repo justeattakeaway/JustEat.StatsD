@@ -25,11 +25,12 @@ We use this library within our components to publish [StatsD](http://github.com/
 * Easy to use
 * Robust and proven
 * Tuned for high performance and low resource usage using [BenchmarkDotNet](https://benchmarkdotnet.org/). Typically zero allocation on sending a metric on target frameworks where `Span<T>` is available.
-* Works well with modern .NET apps - .NET Core, .NET Standard 2,0 and `async ... await`
-* Supports standard statsd primitives: `Increment`, `Decrement`, `Timing` and `Gauge`. Supports sample rate.
-* Helpers to make it easy to time a `Func`, `Action` or a code block inside a `using` statement.
+* Works well with modern .NET apps - `async ... await`, .NET Core, .NET Standard 2.0.
+* Supports standard StatsD primitives: `Increment`, `Decrement`, `Timing` and `Gauge`.
+* Supports sample rate for cutting down of sends of high-volume metrics.
+* Helpers to make it easy to time a delegate such as a `Func<T>` or `Action<T>`, or a code block inside a `using` statement.
 * Send stats over UDP or IP
-* Send stats to a server byt name or IP address
+* Send stats to a server by name or IP address
 
 #### Publishing statistics
 
@@ -37,7 +38,7 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The constructor takes an instance of `StatsDConfiguration`. For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can also change the port from the default (`8125`). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 
-It is best practice to create a `StatsDPublisher` at application start and use it for the life of the application, instead of creating a new one for each usage.
+It is best practice to create a `StatsDPublisher` at application start and use it for the lifetime of the application, instead of creating a new one for each usage.
 
 ## Setting up StatsD
 
@@ -102,7 +103,6 @@ An example of registering StatsD dependencies using `IServiceCollection` when us
 
 ```csharp
 // Simple
-// todo - use the SocketProtocol enum not the IpTransport class here
 services.AddSingleton<IStatsDTransport, IpTransport>();
 services.AddStatsD(Environment.GetEnvironmentVariable("MY_STATSD_ENDPOINT"));
 
@@ -158,13 +158,13 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>().InSingletonScope();
 | Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
 | Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.
-| SocketProtocol    | `enum`, one of `Udp`, `Ip`    | `Udp`                 | Type of socket to use when sending stats to the server.                                                                          |
+| SocketProtocol    | `SocketProtocol` enum, one of `Udp`, `Ip`| `Udp`                 | Type of socket to use when sending stats to the server.                                                                          |
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
 
-* **True** if the exception was handled and no further action is needed
-* **False** if the exception should be thrown
+* `true` if the exception was handled and no further action is needed
+* `false` if the exception should be thrown
 
 The default behaviour is to ignore the error.
 
