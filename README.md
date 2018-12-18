@@ -99,15 +99,10 @@ services.AddStatsD(
 
 #### .NET Core (AWS Lambda functions)
 
-An example of registering StatsD dependencies using `IServiceCollection` when using an AWS Lambda function:
+An example of registering StatsD dependencies using `IServiceCollection` when using the IP transport, e.g. for an AWS Lambda function:
 
 ```csharp
-// Simple
-services.AddSingleton<IStatsDTransport, IpTransport>();
-services.AddStatsD(Environment.GetEnvironmentVariable("MY_STATSD_ENDPOINT"));
 
-// Advanced
-services.AddSingleton<IStatsDTransport, IpTransport>();
 services.AddStatsD(
     (provider) =>
     {
@@ -208,7 +203,7 @@ The stopwatch is automatically stopped and the metric sent when it falls out of 
 
 Sometimes the decision of which stat to send should not be taken before the operation completes. e.g. When you are timing http operations and want different status codes to be logged under different stats.
 
-The `IDisposableTimer` has a `StatName` property to set or change the name of the stat. To use this you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
+The `IDisposableTimer` has a `Bucket` property to set or change the stat bucket - i.e. the name of the stat. To use this you need a reference to the timer, e.g. `using (var timer = stats.StartTimer("statName"))` instead of `using (stats.StartTimer("statName"))`
 
 The stat name must be set to a non-empty string at the end of the `using` block.
 
@@ -216,7 +211,7 @@ The stat name must be set to a non-empty string at the end of the `using` block.
 using (var timer = stats.StartTimer("SomeHttpOperation."))
 {
     var response = DoSomeHttpOperation();
-    timer.StatName = timer.StatName + (int)response.StatusCode;
+    timer.Bucket = timer.Bucket + (int)response.StatusCode;
     return response;
 }
 ```
