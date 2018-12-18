@@ -31,6 +31,7 @@ If the project maintainers are satisfied that your contribution is appropriate i
   * Check the version number has been updated since the last release - follow [SemVer rules](http://semver.org)
     * Bump the version in `appveyor.yml` and `version.props` if neccessary.
   * Update the CHANGELOG.md
-  * Create a new release in [GitHub](https://github.com/justeat/JustEat.StatsD/releases) with appropriate release notes and tagged version number.
-  * Wait for the tag build to push the package to [NuGet](https://www.nuget.org/packages/JustEat.StatsD) and for the pushed version to be indexed.
+  * Create a new release in [GitHub](https://github.com/justeat/JustEat.StatsD/releases) with appropriate release notes and tagged version number (for example `v1.2.3-beta01`).
+  * Wait for the tag build to complete in AppVeyor and check the metadata/version is as expected.
+  * Push the tag build's package to [NuGet](https://www.nuget.org/packages/JustEat.StatsD) using an AppVeyor deployment and wait for the pushed version to be indexed.
   * Share the news! 🎉
