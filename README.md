@@ -110,11 +110,9 @@ services.AddStatsD(
 
         return new StatsDConfiguration
         {
-            Host = options.HostName,
-            Port = options.Port,
             Prefix = options.Prefix,
-            SocketProtocol = SocketProtocol.IP,
-            OnError = ex => LogError(ex)
+            Host = options.HostName,
+            SocketProtocol = SocketProtocol.IP
         };
     });
 ```
