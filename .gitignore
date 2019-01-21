@@ -478,3 +478,6 @@ ASALocalRun/
 healthchecksdb
 
 # End of https://www.gitignore.io/api/rider,macos,windows,visualstudio,visualstudiocode
+
+# build.sh can install a local dotnet sdk under this directory
+.dotnetcli
