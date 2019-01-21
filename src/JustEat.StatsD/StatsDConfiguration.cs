@@ -42,7 +42,7 @@ namespace JustEat.StatsD
 
         /// <summary>
         /// Gets or sets the socket protocol to use, such as using either UDP or IP
-        /// sockets to transport stats. The default value is <see cref="SocketProtocol.Udp"/>.
+        /// sockets to transport stats. The default value is <see cref="JustEat.StatsD.SocketProtocol.Udp"/>.
         /// </summary>
         public SocketProtocol SocketProtocol { get; set; } = SocketProtocol.Udp;
 
