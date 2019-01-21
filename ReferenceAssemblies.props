@@ -1,4 +1,8 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <RestoreAdditionalProjectSources>
       https://dotnet.myget.org/F/dotnet-core/api/v3/index.json

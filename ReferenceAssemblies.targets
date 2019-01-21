@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+  <!-- Normalize filename casing for System.Xml (older versions of targeting packs have it as System.XML) -->
+  <Target Condition=" '$(TargetFramework)' == 'net451' " Name="FixSystemXmlCasing" BeforeTargets="Build">
+    <Move
+      Condition="Exists('$(FrameworkPathOverride)System.XML.dll') and !Exists('$(FrameworkPathOverride)System.Xml.dll')"
+      SourceFiles="$(FrameworkPathOverride)System.XML.dll"
+      DestinationFiles="$(FrameworkPathOverride)System.Xml.dll"
+    />
+  </Target>
+</Project>
