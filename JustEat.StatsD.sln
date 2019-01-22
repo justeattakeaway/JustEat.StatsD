@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -12,13 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{06BE4D
 		Build.ps1 = Build.ps1
 		build.sh = build.sh
 		CHANGELOG.md = CHANGELOG.md
-		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
 		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
-		release.ps1 = release.ps1
 		version.props = version.props
+		Directory.Build.targets = Directory.Build.targets
+		ReferenceAssemblies.props = ReferenceAssemblies.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JustEat.StatsD", "src\JustEat.StatsD\JustEat.StatsD.csproj", "{6A338D71-E28B-455A-9E9D-3667EE659542}"
