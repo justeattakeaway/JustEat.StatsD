@@ -4,7 +4,7 @@
 
 | | Linux | Windows |
 |:-:|:-:|:-:|
-| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/JustEat.StatsD/master.svg)](https://travis-ci.org/justeat/JustEat.StatsD) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/justeat-statsd) |
+| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/JustEat.StatsD/master.svg)](https://travis-ci.org/justeat/JustEat.StatsD) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/justeat-statsd) [![codecov](https://codecov.io/gh/justeat/JustEat.StatsD/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/JustEat.StatsD) |
 | **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/JustEat.StatsD?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/JustEat.StatsD) |  [![Build history](https://buildstats.info/appveyor/chart/justeattech/justeat-statsd?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/justeat-statsd) |
 
 ## Summary

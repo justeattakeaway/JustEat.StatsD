@@ -1,14 +1,15 @@
 param(
-    [Parameter(Mandatory=$false)][string] $Configuration    = "Release",
-    [Parameter(Mandatory=$false)][string] $OutputPath       = "",
-    [Parameter(Mandatory=$false)][bool]   $RunTests         = $true,
-    [Parameter(Mandatory=$false)][bool]   $CreatePackages   = $true
+    [Parameter(Mandatory = $false)][string] $Configuration = "Release",
+    [Parameter(Mandatory = $false)][string] $OutputPath = "",
+    [Parameter(Mandatory = $false)][bool]   $RunTests = $true,
+    [Parameter(Mandatory = $false)][bool]   $CreatePackages = $true,
+    [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
 )
 
 $ErrorActionPreference = "Stop"
 
-$solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$sdkFile       = Join-Path $solutionPath "global.json"
+$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
+$sdkFile = Join-Path $solutionPath "global.json"
 
 $dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
 
@@ -19,21 +20,21 @@ if ($OutputPath -eq "") {
 $installDotNetSdk = $false;
 
 if (($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue))) {
-  Write-Host "The .NET Core SDK is not installed."
-  $installDotNetSdk = $true
+    Write-Host "The .NET Core SDK is not installed."
+    $installDotNetSdk = $true
 }
 else {
-  Try {
-      $installedDotNetVersion = (dotnet --version 2>&1 | Out-String).Trim()
-  }
-  Catch {
-      $installedDotNetVersion = "?"
-  }
+    Try {
+        $installedDotNetVersion = (dotnet --version 2>&1 | Out-String).Trim()
+    }
+    Catch {
+        $installedDotNetVersion = "?"
+    }
 
-  if ($installedDotNetVersion -ne $dotnetVersion) {
-      Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
-      $installDotNetSdk = $true
-  }
+    if ($installedDotNetVersion -ne $dotnetVersion) {
+        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
+        $installDotNetSdk = $true
+    }
 }
 
 if ($installDotNetSdk -eq $true) {
@@ -48,26 +49,73 @@ if ($installDotNetSdk -eq $true) {
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
-} else {
-    $dotnet   = "dotnet"
+    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet"
+}
+else {
+    $dotnet = "dotnet"
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework)
+function DotNetBuild {
+    param([string]$Project, [string]$Configuration, [string]$Framework)
     & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetTest { param([string]$Project)
-    & $dotnet test $Project
+function DotNetTest {
+    param([string]$Project)
+    if ($DisableCodeCoverage -eq $true) {
+        & $dotnet test $Project --output $OutputPath
+    }
+    else {
+
+        if ($installDotNetSdk -eq $true) {
+            $dotnetPath = $dotnet
+        }
+        else {
+            $dotnetPath = (Get-Command "dotnet.exe").Source
+        }
+
+        $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
+
+        $openCoverVersion = "4.7.922"
+        $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
+
+        $reportGeneratorVersion = "4.0.11"
+        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
+
+        $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
+        $reportOutput = Join-Path $OutputPath "coverage"
+
+        & $openCoverPath `
+            `"-target:$dotnetPath`" `
+            `"-targetargs:test $Project --output $OutputPath`" `
+            -output:$coverageOutput `
+            `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
+            -hideskipped:All `
+            -mergebyhash `
+            -mergeoutput `
+            -oldstyle `
+            -register:user `
+            -skipautoprops `
+            `"-filter:+[JustEat.StatsD]* -[*Test*]*`"
+
+        & $dotnet `
+            $reportGeneratorPath `
+            `"-reports:$coverageOutput`" `
+            `"-targetdir:$reportOutput`" `
+            -reporttypes:HTML`;Cobertura `
+            -verbosity:Warning
+    }
+
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetPack { param([string]$Project, [string]$Configuration)
+function DotNetPack {
+    param([string]$Project, [string]$Configuration)
     & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
