@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using Shouldly;
 using Xunit;
@@ -21,6 +22,16 @@ namespace JustEat.StatsD.EndpointLookups
             var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
 
             wrapped.GetEndpoint().ShouldBe(wrapped.GetEndpoint());
+        }
+
+        [Fact]
+        public static void ConstructorThrowsIfValueIsNull()
+        {
+            // Arrange
+            EndPoint value = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("value", () => new SimpleEndpointSource(value));
         }
 
         private static IPEndPoint MakeTestIpEndPoint()

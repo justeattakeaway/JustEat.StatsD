@@ -83,5 +83,31 @@ namespace JustEat.StatsD
             // Assert
             mock.Verify((p) => p.Send(It.IsAny<ArraySegment<byte>>()), Times.Never());
         }
+
+        [Fact]
+        public static void Constructor_Throws_If_Configuration_Is_Null()
+        {
+            // Arrange
+            StatsDConfiguration configuration = null;
+            var transport = Mock.Of<IStatsDTransport>();
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>(
+                "configuration",
+                () => new StatsDPublisher(configuration, transport));
+        }
+
+        [Fact]
+        public static void Constructor_Throws_If_Transport_Is_Null()
+        {
+            // Arrange
+            var configuration = new StatsDConfiguration();
+            IStatsDTransport transport = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>(
+                "transport",
+                () => new StatsDPublisher(configuration, transport));
+        }
     }
 }

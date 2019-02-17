@@ -77,6 +77,17 @@ namespace JustEat.StatsD.EndpointLookups
             exception.ActualValue.ShouldBe(cacheDuration);
         }
 
+        [Fact]
+        public static void ConstructorThrowsIfInnerIsNull()
+        {
+            // Arrange
+            IEndPointSource inner = null;
+            var cacheDuration = TimeSpan.FromHours(1);
+
+            // Act and Assert
+           Assert.Throws<ArgumentNullException>("inner", () => new CachedEndpointSource(inner, cacheDuration));
+        }
+
         private static IPEndPoint MakeTestIpEndPoint()
         {
             return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);

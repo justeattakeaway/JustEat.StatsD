@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using Shouldly;
@@ -25,6 +26,17 @@ namespace JustEat.StatsD.EndpointLookups
             ipActual.ShouldNotBeNull();
             ipActual.Address.ShouldBe(IPAddress.Parse("127.0.0.1"));
             ipActual.Port.ShouldBe(8125);
+        }
+
+        [Fact]
+        public static void ConstructorThrowsIfHostNameIsNull()
+        {
+            // Arrange
+            string hostName = null;
+            int port = 123;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("hostName", () => new DnsLookupIpEndpointSource(hostName, port));
         }
     }
 }

@@ -313,6 +313,16 @@ namespace JustEat.StatsD
             publisher.ShouldBeOfType<StatsDPublisher>();
         }
 
+        [Fact]
+        public static void AddStatsDThrowsIfServicesIsNull()
+        {
+            // Arrange
+            IServiceCollection services = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("services", () => services.AddStatsD());
+        }
+
         private static IServiceProvider Configure(Action<IServiceCollection> registration)
         {
             var services = new ServiceCollection();
