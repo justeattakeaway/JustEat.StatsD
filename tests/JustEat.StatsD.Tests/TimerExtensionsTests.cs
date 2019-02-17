@@ -133,7 +133,7 @@ namespace JustEat.StatsD
             bool timed = false;
 
             // Act
-            publisher.Object.Time(bucket, () => timed = true);
+            publisher.Object.Time(bucket, () => { timed = true; });
 
             // Assert
             timed.ShouldBeTrue();
@@ -165,6 +165,33 @@ namespace JustEat.StatsD
 
         [Fact]
         public static async Task CanTimeAsyncActionWithTimerOfT()
+        {
+            // Arrange
+            var publisher = new Mock<IStatsDPublisher>();
+            string bucket = "bucket";
+
+            bool timed = false;
+
+            // Act
+            await publisher.Object.Time(
+                bucket,
+                (timer) =>
+                {
+                    timer.ShouldNotBeNull();
+                    timer.Bucket.ShouldBe(bucket);
+
+                    timed = true;
+
+                    return Task.CompletedTask;
+                });
+
+            // Assert
+            timed.ShouldBeTrue();
+            publisher.Verify((p) => p.Timing(It.IsAny<long>(), 1, bucket), Times.Once());
+        }
+
+        [Fact]
+        public static async Task CanTimeAsyncFuncWithTimerOfT()
         {
             // Arrange
             var publisher = new Mock<IStatsDPublisher>();
