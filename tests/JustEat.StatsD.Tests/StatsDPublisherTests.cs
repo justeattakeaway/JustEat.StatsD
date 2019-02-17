@@ -75,6 +75,8 @@ namespace JustEat.StatsD
             publisher.Increment(1, 1, null as string[]);
             publisher.Decrement(1, 1, Array.Empty<string>());
             publisher.Increment(1, 1, Array.Empty<string>());
+            publisher.Decrement(-1, 1, Array.Empty<string>());
+            publisher.Increment(-1, 1, Array.Empty<string>());
             publisher.Decrement(-1, 1, new List<string>());
             publisher.Increment(-1, 1, new List<string>());
             publisher.Decrement(1, 1, null as IEnumerable<string>);
