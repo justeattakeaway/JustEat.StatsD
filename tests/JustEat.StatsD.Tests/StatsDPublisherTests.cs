@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Moq;
 using Xunit;
 
@@ -20,10 +21,11 @@ namespace JustEat.StatsD
             var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
-            publisher.Decrement(10, 1, "white", "blue");
+            publisher.Decrement(10, 1, new[] { "white", "blue" });
+            publisher.Decrement(10, 1, new List<string>() { "green", "red" });
 
             // Assert
-            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(2));
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(4));
         }
 
         [Fact]
@@ -40,10 +42,11 @@ namespace JustEat.StatsD
             var publisher = new StatsDPublisher(config, mock.Object);
 
             // Act
-            publisher.Increment(10, 1, "white", "blue");
+            publisher.Increment(10, 1, new[] { "white", "blue" });
+            publisher.Increment(10, 1, new List<string>() { "green", "red" });
 
             // Assert
-            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(2));
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(4));
         }
 
         [Fact]
