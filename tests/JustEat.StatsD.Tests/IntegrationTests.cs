@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,10 +67,10 @@ namespace JustEat.StatsD
             publisher.Timing(TimeSpan.FromSeconds(3.5), 1, "hen");
 
             // Act - Increment multiple counters
-            publisher.Increment(7, 1, "green", "red"); // 7
-            publisher.Increment(2, 0, "green", "red"); // 7
-            publisher.Decrement(1, 0, "red", "green"); // 7
-            publisher.Decrement(4, 1, "red", "green"); // 3
+            publisher.Increment(7, 1, new string[] { "green", "red" });       // 7
+            publisher.Increment(2, 0, new List<string>() { "green", "red" }); // 7
+            publisher.Decrement(1, 0, new string[] { "red", "green" });       // 7
+            publisher.Decrement(4, 1, new List<string>() { "red", "green" }); // 3
 
             // Allow enough time for metrics to be registered
             await Task.Delay(TimeSpan.FromSeconds(1.0));

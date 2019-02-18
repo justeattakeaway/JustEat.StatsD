@@ -43,7 +43,7 @@ namespace JustEat.StatsD.Buffered
 
         private void SendMessage(double sampleRate, in StatsDMessage msg)
         {
-            bool shouldSendMessage = sampleRate >= DefaultSampleRate || sampleRate > Random.NextDouble();
+            bool shouldSendMessage = (sampleRate >= DefaultSampleRate || sampleRate > Random.NextDouble()) && msg.StatBucket != null;
 
             if (!shouldSendMessage)
             {
