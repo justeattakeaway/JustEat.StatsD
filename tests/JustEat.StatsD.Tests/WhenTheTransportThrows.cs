@@ -15,7 +15,7 @@ namespace JustEat.StatsD
             throw new SocketException(42);
         }
     }
-    
+
     public class WhenTheTransportThrows
     {
         [Theory]
@@ -111,7 +111,7 @@ namespace JustEat.StatsD
         public void ThrownExceptionCanBeCaptured(string name, Func<StatsDConfiguration, IStatsDPublisher> factory)
         {
             var validConfig = MakeValidConfig();
-            Exception capturedEx = null; 
+            Exception capturedEx = null;
             validConfig.OnError = e =>
                 {
                     capturedEx = e;

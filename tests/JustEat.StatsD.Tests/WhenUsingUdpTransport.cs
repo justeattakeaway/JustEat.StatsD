@@ -7,7 +7,7 @@ using Xunit;
 namespace JustEat.StatsD
 {
     [Collection("ActiveUdpListeners")]
-    public class WhenUsingUdpTransport 
+    public class WhenUsingUdpTransport
     {
 
 #pragma warning disable CA1801 // Used to force the creation of the collection
@@ -78,7 +78,7 @@ namespace JustEat.StatsD
             var endPointSource2 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointB,
                 null);
-            
+
             using (var target = new SocketTransport(new MillisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
             {
                 for (int i = 0; i < 10_000; i++)
@@ -100,7 +100,7 @@ namespace JustEat.StatsD
             var endPointSource2 = EndPointFactory.MakeEndPointSource(
                 UdpListeners.EndpointB,
                 null);
-            
+
             using (var target = new SocketTransport(new MillisecondSwitcher(endPointSource2, endPointSource1), SocketProtocol.Udp))
             {
                 Parallel.For(0, 10_000, _ =>

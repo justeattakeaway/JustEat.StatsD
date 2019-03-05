@@ -21,7 +21,7 @@ namespace JustEat.StatsD.EndpointLookups
             value.ShouldNotBeNull();
             value.ShouldBe(MakeTestIpEndPoint());
 
-            mockInner.Verify(x=> x.GetEndpoint(), Times.Exactly(1));
+            mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(1));
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace JustEat.StatsD.EndpointLookups
             var cacheDuration = TimeSpan.FromHours(1);
 
             // Act and Assert
-           Assert.Throws<ArgumentNullException>("inner", () => new CachedEndpointSource(inner, cacheDuration));
+            Assert.Throws<ArgumentNullException>("inner", () => new CachedEndpointSource(inner, cacheDuration));
         }
 
         private static IPEndPoint MakeTestIpEndPoint()
