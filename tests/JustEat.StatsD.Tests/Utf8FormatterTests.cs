@@ -108,7 +108,7 @@ namespace JustEat.StatsD
             actual.ShouldBe(expected);
         }
 
-        private static void Check(StatsDMessage message,  string expected)
+        private static void Check(StatsDMessage message, string expected)
         {
             Check(message, 1, expected);
         }

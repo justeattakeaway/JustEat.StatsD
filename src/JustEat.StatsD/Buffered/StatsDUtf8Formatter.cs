@@ -41,9 +41,9 @@ namespace JustEat.StatsD.Buffered
             var buffer = new Buffer(destination);
 
             bool isFormattingSuccessful =
-                  TryWriteBucketNameWithColon(ref buffer, msg.StatBucket) 
-               && TryWritePayloadWithMessageKindSuffix(ref buffer, msg) 
-               && TryWriteSampleRateIfNeeded(ref buffer, sampleRate); 
+                  TryWriteBucketNameWithColon(ref buffer, msg.StatBucket)
+               && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
+               && TryWriteSampleRateIfNeeded(ref buffer, sampleRate);
 
             written = isFormattingSuccessful ? buffer.Written : 0;
             return isFormattingSuccessful;
@@ -56,7 +56,7 @@ namespace JustEat.StatsD.Buffered
 
             return buffer.TryWriteBytes(_utf8Prefix)
                 && buffer.TryWriteUtf8String(statBucket)
-                && buffer.TryWriteByte((byte) ':');
+                && buffer.TryWriteByte((byte)':');
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64,31 +64,31 @@ namespace JustEat.StatsD.Buffered
         {
             // msg.Value + (<oneOf> "|ms", "|c", "|g")
 
-            var integralMagnitude = (long) msg.Magnitude;
+            var integralMagnitude = (long)msg.Magnitude;
 
             switch (msg.MessageKind)
             {
                 case StatsDMessageKind.Counter:
-                {
-                    return buffer.TryWriteInt64(integralMagnitude)
-                        && buffer.TryWriteBytes((byte) '|', (byte) 'c');
-                }
+                    {
+                        return buffer.TryWriteInt64(integralMagnitude)
+                            && buffer.TryWriteBytes((byte)'|', (byte)'c');
+                    }
                 case StatsDMessageKind.Timing:
-                {
-                    return buffer.TryWriteInt64(integralMagnitude)
-                        && buffer.TryWriteBytes((byte) '|', (byte) 'm', (byte) 's');
-                }
+                    {
+                        return buffer.TryWriteInt64(integralMagnitude)
+                            && buffer.TryWriteBytes((byte)'|', (byte)'m', (byte)'s');
+                    }
                 case StatsDMessageKind.Gauge:
-                {
-                    // check if magnitude is integral, integers are written significantly faster
-                    bool isMagnitudeIntegral = msg.Magnitude == integralMagnitude;
+                    {
+                        // check if magnitude is integral, integers are written significantly faster
+                        bool isMagnitudeIntegral = msg.Magnitude == integralMagnitude;
 
-                    var successSoFar = isMagnitudeIntegral ?
-                        buffer.TryWriteInt64(integralMagnitude) :
-                        buffer.TryWriteDouble(msg.Magnitude);
+                        var successSoFar = isMagnitudeIntegral ?
+                            buffer.TryWriteInt64(integralMagnitude) :
+                            buffer.TryWriteDouble(msg.Magnitude);
 
-                    return successSoFar && buffer.TryWriteBytes((byte) '|', (byte) 'g');
-                }
+                        return successSoFar && buffer.TryWriteBytes((byte)'|', (byte)'g');
+                    }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(msg));
             }
@@ -101,7 +101,7 @@ namespace JustEat.StatsD.Buffered
 
             if (sampleRate < 1.0 && sampleRate > 0.0)
             {
-                return buffer.TryWriteBytes((byte) '|', (byte) '@')
+                return buffer.TryWriteBytes((byte)'|', (byte)'@')
                     && buffer.TryWriteDouble(sampleRate);
             }
 
