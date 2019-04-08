@@ -49,7 +49,7 @@ if ($installDotNetSdk -eq $true) {
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet"
+    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet.exe"
 }
 else {
     $dotnet = "dotnet"
