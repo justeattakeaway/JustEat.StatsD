@@ -91,22 +91,25 @@ function DotNetTest {
         & $openCoverPath `
             `"-target:$dotnetPath`" `
             `"-targetargs:test $Project --output $OutputPath`" `
-            -output:$coverageOutput `
-            `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
-            -hideskipped:All `
+            `"-output:$coverageOutput`" `
+            `"-excludebyattribute:*.ExcludeFromCodeCoverage*`" `
+            `"-hideskipped:All`" `
             -mergebyhash `
             -mergeoutput `
             -oldstyle `
-            -register:user `
+            `"-register:user`" `
+            -returntargetcode `
             -skipautoprops `
             `"-filter:+[JustEat.StatsD]* -[*Test*]*`"
 
-        & $dotnet `
-            $reportGeneratorPath `
-            `"-reports:$coverageOutput`" `
-            `"-targetdir:$reportOutput`" `
-            -reporttypes:HTML`;Cobertura `
-            -verbosity:Warning
+        if ($LASTEXITCODE -eq 0) {
+            & $dotnet `
+                $reportGeneratorPath `
+                `"-reports:$coverageOutput`" `
+                `"-targetdir:$reportOutput`" `
+                -reporttypes:HTML`;Cobertura `
+                -verbosity:Warning
+        }
     }
 
     if ($LASTEXITCODE -ne 0) {
