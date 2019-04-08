@@ -49,7 +49,7 @@ if ($installDotNetSdk -eq $true) {
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet"
+    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet.exe"
 }
 else {
     $dotnet = "dotnet"
@@ -82,7 +82,7 @@ function DotNetTest {
         $openCoverVersion = "4.7.922"
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "4.0.11"
+        $reportGeneratorVersion = "4.1.0"
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
@@ -91,22 +91,25 @@ function DotNetTest {
         & $openCoverPath `
             `"-target:$dotnetPath`" `
             `"-targetargs:test $Project --output $OutputPath`" `
-            -output:$coverageOutput `
-            `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
-            -hideskipped:All `
+            `"-output:$coverageOutput`" `
+            `"-excludebyattribute:*.ExcludeFromCodeCoverage*`" `
+            `"-hideskipped:All`" `
             -mergebyhash `
             -mergeoutput `
             -oldstyle `
-            -register:user `
+            `"-register:user`" `
+            -returntargetcode `
             -skipautoprops `
             `"-filter:+[JustEat.StatsD]* -[*Test*]*`"
 
-        & $dotnet `
-            $reportGeneratorPath `
-            `"-reports:$coverageOutput`" `
-            `"-targetdir:$reportOutput`" `
-            -reporttypes:HTML`;Cobertura `
-            -verbosity:Warning
+        if ($LASTEXITCODE -eq 0) {
+            & $dotnet `
+                $reportGeneratorPath `
+                `"-reports:$coverageOutput`" `
+                `"-targetdir:$reportOutput`" `
+                -reporttypes:HTML`;Cobertura `
+                -verbosity:Warning
+        }
     }
 
     if ($LASTEXITCODE -ne 0) {
