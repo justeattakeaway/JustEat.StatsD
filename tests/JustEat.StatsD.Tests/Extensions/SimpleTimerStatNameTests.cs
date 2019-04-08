@@ -91,7 +91,7 @@ namespace JustEat.StatsD.Extensions
                     timer.Bucket = "changedValue";
                 }
             }
-            catch (Exception)
+            catch (InvalidOperationException)
             {
                 failCount++;
             }
@@ -108,7 +108,7 @@ namespace JustEat.StatsD.Extensions
 
         private static void Fail()
         {
-            throw new Exception("Deliberate fail");
+            throw new InvalidOperationException("Deliberate fail");
         }
     }
 }
