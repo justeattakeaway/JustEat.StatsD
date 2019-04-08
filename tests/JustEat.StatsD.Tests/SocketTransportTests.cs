@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using JustEat.StatsD.EndpointLookups;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -69,6 +70,17 @@ namespace JustEat.StatsD
             using (var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.IP))
             {
                 transport.Send(new ArraySegment<byte>(Array.Empty<byte>()));
+            }
+        }
+
+        [Fact]
+        public static void SocketTransportIsNoopForNullEndpoint()
+        {
+            var endpointSource = Mock.Of<IEndPointSource>();
+
+            using (var transport = new SocketTransport(endpointSource, SocketProtocol.IP))
+            {
+                transport.Send("teststat:1|c");
             }
         }
 

@@ -44,7 +44,13 @@ namespace JustEat.StatsD
                 return;
             }
 
-            var pool = GetPool(_endpointSource.GetEndpoint());
+            var endpoint = _endpointSource.GetEndpoint();
+            if (endpoint == null)
+            {
+                return;
+            }
+
+            var pool = GetPool(endpoint);
             var socket = pool.PopOrCreate();
 
             try
