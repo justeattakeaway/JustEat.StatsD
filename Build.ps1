@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
-    [Parameter(Mandatory = $false)][bool]   $RunTests = $true,
+    [Parameter(Mandatory = $false)][switch] $SkipTests,
     [Parameter(Mandatory = $false)][bool]   $CreatePackages = $true,
     [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
 )
@@ -11,10 +11,10 @@ $ErrorActionPreference = "Stop"
 $solutionPath = Split-Path $MyInvocation.MyCommand.Definition
 $sdkFile = Join-Path $solutionPath "global.json"
 
-$dotnetVersion = (Get-Content $sdkFile | ConvertFrom-Json).sdk.version
+$dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
-    $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
+    $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
 }
 
 $installDotNetSdk = $false;
@@ -38,10 +38,13 @@ else {
 }
 
 if ($installDotNetSdk -eq $true) {
-    $env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
+    $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
+    $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
 
-    if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
-        mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+    if (!(Test-Path $sdkPath)) {
+        if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
+            mkdir $env:DOTNET_INSTALL_DIR | Out-Null
+        }
         $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
         Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
@@ -49,7 +52,7 @@ if ($installDotNetSdk -eq $true) {
     }
 
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = "$env:DOTNET_INSTALL_DIR\dotnet.exe"
+    $dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
 }
 else {
     $dotnet = "dotnet"
@@ -78,11 +81,12 @@ function DotNetTest {
         }
 
         $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
+        $propsFile = Join-Path $solutionPath "Directory.Build.props"
 
-        $openCoverVersion = "4.7.922"
+        $openCoverVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='OpenCover']/@Version").Node.'#text'
         $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-        $reportGeneratorVersion = "4.1.0"
+        $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
         $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
@@ -143,7 +147,7 @@ ForEach ($project in $projects) {
     DotNetBuild $project $Configuration "net451"
 }
 
-if ($RunTests -eq $true) {
+if ($SkipTests -eq $false) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
     ForEach ($project in $testProjects) {
         DotNetTest $project
