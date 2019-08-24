@@ -22,8 +22,10 @@ namespace JustEat.StatsD
         public static void SocketTransportCanSendOverUdpWithoutError()
         {
             // using block not used here so the finalizer gets some code coverage
-            var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Udp);
-            transport.Send("teststat:1|c");
+            using (var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Udp))
+            {
+                transport.Send("teststat:1|c");
+            }
         }
 
         [Fact]

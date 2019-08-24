@@ -50,7 +50,10 @@ namespace JustEat.StatsD
                 return;
             }
 
+#pragma warning disable CA2000
             var pool = GetPool(endpoint);
+#pragma warning restore CA2000
+
             var socket = pool.PopOrCreate();
 
             try
