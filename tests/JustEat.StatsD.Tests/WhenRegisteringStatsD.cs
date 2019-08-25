@@ -1,4 +1,3 @@
-#if !NET451
 using System;
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
@@ -354,4 +353,3 @@ namespace JustEat.StatsD
 #pragma warning restore CA1812
     }
 }
-#endif

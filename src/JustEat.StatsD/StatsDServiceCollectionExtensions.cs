@@ -1,4 +1,3 @@
-#if !NET451
 using System;
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
@@ -132,4 +131,3 @@ namespace JustEat.StatsD
         }
     }
 }
-#endif

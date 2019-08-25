@@ -13,10 +13,11 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 ### Supported platforms
 
-`JustEat.Statsd` version 4 is built for these target frameworks:
+`JustEat.StatsD` version 4.1.0 is built for these target frameworks:
 
-* `net451`
+* `net461`
 * `netstandard2.0`
+* `netstandard2.1`
 * `netcoreapp2.1`
 * `netcoreapp2.2`
 

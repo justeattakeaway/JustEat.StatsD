@@ -1,6 +1,5 @@
 <Project>
   <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <VersionPrefix>4.1.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
