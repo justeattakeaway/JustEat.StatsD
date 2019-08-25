@@ -40,7 +40,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(IsTestProject)' == 'true' ">
+  <PropertyGroup>
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutput Condition=" '$(OutputPath)' != '' ">$(OutputPath)\</CoverletOutput>
     <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
