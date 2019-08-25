@@ -30,11 +30,10 @@ namespace JustEat.StatsD
                 SocketProtocol = socketProtocol,
             };
 
-            using (var publisher = new StatsDPublisher(config))
-            {
-                // Act and Assert
-                await AssertMetrics(config, publisher);
-            }
+            using var publisher = new StatsDPublisher(config);
+
+            // Act and Assert
+            await AssertMetrics(config, publisher);
         }
 
         private static async Task AssertMetrics(StatsDConfiguration config, IStatsDPublisher publisher)

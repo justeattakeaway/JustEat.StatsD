@@ -8,17 +8,14 @@ namespace JustEat.StatsD
     {
         internal static Socket For(SocketProtocol socketProtocol)
         {
-            switch (socketProtocol)
+            return socketProtocol switch
             {
-                case SocketProtocol.IP:
-                    return ForIp();
+                SocketProtocol.IP => ForIp(),
 
-                case SocketProtocol.Udp:
-                    return ForUdp();
+                SocketProtocol.Udp => ForUdp(),
 
-                default:
-                    throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified.");
-            }
+                _ => throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified."),
+            };
         }
 
         internal static Socket ForUdp()

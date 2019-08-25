@@ -66,11 +66,11 @@ namespace JustEat.StatsD.Extensions
 
             Assert.Throws<InvalidOperationException>(() =>
             {
-                using (var timer = publisher.StartTimer("valid.Stat"))
-                {
-                    Delay();
-                    timer.Bucket = null;
-                }
+                using var timer = publisher.StartTimer("valid.Stat");
+
+                Delay();
+
+                timer.Bucket = null;
             });
 
             publisher.CallCount.ShouldBe(0);
@@ -85,13 +85,15 @@ namespace JustEat.StatsD.Extensions
 
             try
             {
-                using (var timer = publisher.StartTimer("initialStat"))
-                {
-                    Fail();
-                    timer.Bucket = "changedValue";
-                }
+                using var timer = publisher.StartTimer("initialStat");
+
+                Fail();
+
+                timer.Bucket = "changedValue";
             }
+#pragma warning disable CA1031
             catch (InvalidOperationException)
+#pragma warning restore CA1031
             {
                 failCount++;
             }

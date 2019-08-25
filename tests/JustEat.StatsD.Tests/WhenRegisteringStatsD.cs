@@ -341,6 +341,7 @@ namespace JustEat.StatsD
         {
 
 #pragma warning disable CA1801 // Used to validate that IEndPointSource is in DI
+#pragma warning disable IDE0060
             public MyTransport(IEndPointSource endpointSource)
             {
             }

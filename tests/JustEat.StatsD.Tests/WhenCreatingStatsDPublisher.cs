@@ -26,9 +26,7 @@ namespace JustEat.StatsD
                 Host = "10.0.1.2"
             };
 
-            using (var stats = new StatsDPublisher(validConfig))
-            {
-            }
+            using var stats = new StatsDPublisher(validConfig);
         }
 
         [Fact]
