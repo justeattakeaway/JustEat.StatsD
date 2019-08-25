@@ -2,6 +2,7 @@
   <Import Project="version.props" />
   <PropertyGroup>
     <AnalyzersVersion>2.9.4</AnalyzersVersion>
+    <MicrosoftNETFrameworkReferenceAssembliesVersion>1.0.0-preview.2</MicrosoftNETFrameworkReferenceAssembliesVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.6.3" PrivateAssets="All" />
