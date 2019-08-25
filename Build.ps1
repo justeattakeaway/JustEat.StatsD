@@ -70,6 +70,7 @@ function DotNetTest {
     param([string]$Project)
     if ($DisableCodeCoverage -eq $true) {
         & $dotnet test $Project --output $OutputPath
+        $dotNetTestExitCode = $LASTEXITCODE
     }
     else {
 
@@ -83,41 +84,28 @@ function DotNetTest {
         $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
         $propsFile = Join-Path $solutionPath "Directory.Build.props"
 
-        $openCoverVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='OpenCover']/@Version").Node.'#text'
-        $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
-
         $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
         $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
-        $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
+        $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
         $reportOutput = Join-Path $OutputPath "coverage"
 
-        & $openCoverPath `
-            `"-target:$dotnetPath`" `
-            `"-targetargs:test $Project --output $OutputPath`" `
-            `"-output:$coverageOutput`" `
-            `"-excludebyattribute:*.ExcludeFromCodeCoverage*`" `
-            `"-hideskipped:All`" `
-            -mergebyhash `
-            -mergeoutput `
-            -oldstyle `
-            `"-register:user`" `
-            -returntargetcode `
-            -skipautoprops `
-            `"-filter:+[JustEat.StatsD]* -[*Test*]*`"
+        & $dotnetPath test $Project --output $OutputPath
 
-        if ($LASTEXITCODE -eq 0) {
+        $dotNetTestExitCode = $LASTEXITCODE
+
+        if ((Test-Path $coverageOutput)) {
             & $dotnet `
                 $reportGeneratorPath `
                 `"-reports:$coverageOutput`" `
                 `"-targetdir:$reportOutput`" `
-                -reporttypes:HTML`;Cobertura `
+                -reporttypes:HTML `
                 -verbosity:Warning
         }
     }
 
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet test failed with exit code $LASTEXITCODE"
+    if ($dotNetTestExitCode -ne 0) {
+        throw "dotnet test failed with exit code $dotNetTestExitCode"
     }
 }
 
@@ -149,6 +137,7 @@ ForEach ($project in $projects) {
 
 if ($SkipTests -eq $false) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
+    Remove-Item -Path (Join-Path $OutputPath "coverage.json") -Force -ErrorAction SilentlyContinue | Out-Null
     ForEach ($project in $testProjects) {
         DotNetTest $project
     }
