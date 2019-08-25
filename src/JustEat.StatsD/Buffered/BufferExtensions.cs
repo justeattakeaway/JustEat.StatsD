@@ -25,13 +25,18 @@ namespace JustEat.StatsD.Buffered
 
         public static bool TryWriteUtf8String(this ref Buffer src, string str)
         {
-#if NETCOREAPP2_1 || NETCOREAPP2_2
+#if NETSTANDARD2_0 || NET461
+            var bucketBytes = Encoding.UTF8.GetBytes(str);
+            return src.TryWriteBytes(bucketBytes);
+#else
             int written = 0;
             try
             {
                 written = Encoding.UTF8.GetBytes(str, src.Tail);
             }
+#pragma warning disable CA1031
             catch (ArgumentException)
+#pragma warning restore CA1031
             {
                 return false;
             }
@@ -39,9 +44,6 @@ namespace JustEat.StatsD.Buffered
             src.Tail = src.Tail.Slice(written);
             src.Written += written;
             return true;
-#else
-            var bucketBytes = Encoding.UTF8.GetBytes(str);
-            return src.TryWriteBytes(bucketBytes);
 #endif
         }
 
