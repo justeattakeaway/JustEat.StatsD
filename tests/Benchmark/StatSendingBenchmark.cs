@@ -7,12 +7,40 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
-    public class StatSendingBenchmark
+    public class StatSendingBenchmark : IDisposable
     {
+        private bool _disposed;
+        private SocketTransport _udpTransport;
         private BufferBasedStatsDPublisher _udpSender;
+        private SocketTransport _ipTransport;
         private BufferBasedStatsDPublisher _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
+
+        ~StatSendingBenchmark()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _udpTransport?.Dispose();
+                    _ipTransport?.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
 
         [GlobalSetup]
         public void Setup()
@@ -28,12 +56,12 @@ namespace Benchmark
             var endpointSource = EndPointFactory.MakeEndPointSource(
                 config.Host, config.Port, config.DnsLookupInterval);
 
-            var ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
-            _ipSender = new BufferBasedStatsDPublisher(config, ipTransport);
+            _ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
+            _ipSender = new BufferBasedStatsDPublisher(config, _ipTransport);
             _ipSender.Increment("startup.i");
 
-            var udpTransport = new SocketTransport(endpointSource, SocketProtocol.Udp);
-            _udpSender = new BufferBasedStatsDPublisher(config, udpTransport);
+            _udpTransport = new SocketTransport(endpointSource, SocketProtocol.Udp);
+            _udpSender = new BufferBasedStatsDPublisher(config, _udpTransport);
             _udpSender.Increment("startup.u");
         }
 
