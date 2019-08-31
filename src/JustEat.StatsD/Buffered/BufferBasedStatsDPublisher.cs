@@ -8,11 +8,11 @@ namespace JustEat.StatsD.Buffered
         private const int SafeUdpPacketSize = 512;
 
         [ThreadStatic]
-        private static byte[] _buffer;
+        private static byte[]? _buffer;
         private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
 
         [ThreadStatic]
-        private static Random _random;
+        private static Random? _random;
         private static Random Random => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;

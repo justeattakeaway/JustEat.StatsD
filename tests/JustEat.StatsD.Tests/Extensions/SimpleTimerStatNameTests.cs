@@ -70,7 +70,7 @@ namespace JustEat.StatsD.Extensions
 
                 Delay();
 
-                timer.Bucket = null;
+                timer.Bucket = null!;
             });
 
             publisher.CallCount.ShouldBe(0);

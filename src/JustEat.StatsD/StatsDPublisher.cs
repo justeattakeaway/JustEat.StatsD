@@ -71,7 +71,7 @@ namespace JustEat.StatsD
             }
 
             var endpointSource = EndPointFactory.MakeEndPointSource(
-                configuration.Host, configuration.Port, configuration.DnsLookupInterval);
+                configuration.Host!, configuration.Port, configuration.DnsLookupInterval);
 
             var transport = new SocketTransport(endpointSource, configuration.SocketProtocol);
 

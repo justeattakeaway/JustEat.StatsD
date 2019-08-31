@@ -10,7 +10,7 @@ namespace JustEat.StatsD
 
         private bool _disposed;
 
-        public string? Bucket { get; set; }
+        public string Bucket { get; set; }
 
         public DisposableTimer(IStatsDPublisher publisher, string bucket)
         {
