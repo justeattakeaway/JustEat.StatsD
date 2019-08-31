@@ -23,7 +23,7 @@ namespace JustEat.StatsD
         /// <remarks>
         /// A value must be provided for this property.
         /// </remarks>
-        public string Host { get; set; }
+        public string? Host { get; set; }
 
         /// <summary>
         /// Gets or sets the port on the StatsD server to use.
@@ -62,6 +62,6 @@ namespace JustEat.StatsD
         /// <para/>
         /// The default behaviour is to ignore the exception.
         /// </remarks>
-        public Func<Exception, bool> OnError { get; set; }
+        public Func<Exception, bool>? OnError { get; set; }
     }
 }

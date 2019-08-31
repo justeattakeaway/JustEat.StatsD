@@ -11,8 +11,8 @@ namespace Benchmark
     {
         private const string MetricName = "this.is.a.metric:1|c";
 
-        private SocketTransport _transport;
-        private SocketTransport _transportSwitched;
+        private SocketTransport? _transport;
+        private SocketTransport? _transportSwitched;
 
         private class MillisecondSwitcher : IEndPointSource
         {
@@ -67,13 +67,13 @@ namespace Benchmark
         [Benchmark]
         public void Send()
         {
-            _transport.Send(MetricName);
+            _transport!.Send(MetricName);
         }
 
         [Benchmark]
         public void SendWithSwitcher()
         {
-            _transportSwitched.Send(MetricName);
+            _transportSwitched!.Send(MetricName);
         }
     }
 }

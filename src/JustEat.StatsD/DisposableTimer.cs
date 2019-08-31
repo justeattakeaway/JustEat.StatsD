@@ -5,12 +5,12 @@ namespace JustEat.StatsD
 {
     internal sealed class DisposableTimer : IDisposableTimer
     {
+        private readonly IStatsDPublisher _publisher;
+        private readonly Stopwatch _stopwatch;
+
         private bool _disposed;
 
-        private IStatsDPublisher _publisher;
-        private Stopwatch _stopwatch;
-
-        public string Bucket { get; set; }
+        public string? Bucket { get; set; }
 
         public DisposableTimer(IStatsDPublisher publisher, string bucket)
         {
@@ -38,9 +38,6 @@ namespace JustEat.StatsD
                 }
 
                 _publisher.Timing(_stopwatch.Elapsed, Bucket);
-
-                _stopwatch = null;
-                _publisher = null;
             }
         }
     }

@@ -24,6 +24,7 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <LangVersion>preview</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <Nullable>enable</Nullable>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/1516790?s=64</PackageIconUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/justeat/JustEat.StatsD</PackageProjectUrl>

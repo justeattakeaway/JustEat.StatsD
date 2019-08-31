@@ -39,7 +39,7 @@ namespace JustEat.StatsD
         {
             Assert.Throws<ArgumentNullException>(
                 "endPointSource",
-                () => new SocketTransport(null, SocketProtocol.IP));
+                () => new SocketTransport(null!, SocketProtocol.IP));
         }
 
         [Fact]

@@ -16,7 +16,7 @@ namespace JustEat.StatsD.Buffered
             var publisher = new BufferBasedStatsDPublisher(configuration, transport.Object);
 
             // Act
-            publisher.Increment(1, 1, null);
+            publisher.Increment(1, 1, null!);
 
             // Assert
             transport.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Never());

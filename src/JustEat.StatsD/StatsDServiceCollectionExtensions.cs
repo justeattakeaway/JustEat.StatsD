@@ -45,7 +45,7 @@ namespace JustEat.StatsD
         /// <exception cref="ArgumentNullException">
         /// <paramref name="services"/> or <paramref name="host"/> is <see langword="null"/>.
         /// </exception>
-        public static IServiceCollection AddStatsD(this IServiceCollection services, string host, string prefix = null)
+        public static IServiceCollection AddStatsD(this IServiceCollection services, string host, string? prefix = null)
         {
             if (services == null)
             {
@@ -111,7 +111,7 @@ namespace JustEat.StatsD
             var config = provider.GetRequiredService<StatsDConfiguration>();
 
             return EndPointFactory.MakeEndPointSource(
-                config.Host,
+                config.Host!,
                 config.Port,
                 config.DnsLookupInterval);
         }

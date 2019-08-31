@@ -232,20 +232,20 @@ namespace JustEat.StatsD
         public static void ParametersAreCheckedForNull()
         {
             // Arrange
-            IServiceCollection services = new ServiceCollection();
-            Func<IServiceProvider, StatsDConfiguration> configurationFactory = null;
-            string host = null;
+            IServiceCollection? services = new ServiceCollection();
+            Func<IServiceProvider, StatsDConfiguration>? configurationFactory = null;
+            string? host = null;
 
             // Act and Assert
-            Should.Throw<ArgumentNullException>(() => services.AddStatsD(configurationFactory)).ParamName.ShouldBe("configurationFactory");
-            Should.Throw<ArgumentNullException>(() => services.AddStatsD(host)).ParamName.ShouldBe("host");
+            Should.Throw<ArgumentNullException>(() => services.AddStatsD(configurationFactory!)).ParamName.ShouldBe("configurationFactory");
+            Should.Throw<ArgumentNullException>(() => services.AddStatsD(host!)).ParamName.ShouldBe("host");
 
             // Arrange
             services = null;
 
             // Act and Assert
-            Should.Throw<ArgumentNullException>(() => services.AddStatsD(configurationFactory)).ParamName.ShouldBe("services");
-            Should.Throw<ArgumentNullException>(() => services.AddStatsD(host)).ParamName.ShouldBe("services");
+            Should.Throw<ArgumentNullException>(() => services!.AddStatsD(configurationFactory!)).ParamName.ShouldBe("services");
+            Should.Throw<ArgumentNullException>(() => services!.AddStatsD(host!)).ParamName.ShouldBe("services");
         }
 
         [Fact]
@@ -316,10 +316,10 @@ namespace JustEat.StatsD
         public static void AddStatsDThrowsIfServicesIsNull()
         {
             // Arrange
-            IServiceCollection services = null;
+            IServiceCollection? services = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("services", () => services.AddStatsD());
+            Assert.Throws<ArgumentNullException>("services", () => services!.AddStatsD());
         }
 
         private static IServiceProvider Configure(Action<IServiceCollection> registration)
@@ -333,7 +333,7 @@ namespace JustEat.StatsD
 
         private sealed class MyOptions
         {
-            public string StatsDHost { get; set; }
+            public string? StatsDHost { get; set; }
         }
 
 #pragma warning disable CA1812 // Instantiated via DI

@@ -10,6 +10,6 @@ namespace JustEat.StatsD
         /// <summary>
         /// Gets or sets the StatsD bucket associated with the timer.
         /// </summary>
-        string Bucket { get; set; }
+        string? Bucket { get; set; }
     }
 }

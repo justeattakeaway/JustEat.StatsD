@@ -27,7 +27,6 @@ namespace JustEat.StatsD
                 publisher.Decrement(-10, 1, "orange");
                 publisher.Decrement(10, 1, new[] { "white", "blue" });
                 publisher.Decrement(10, 1, new List<string>() { "green", "red" });
-                publisher.Decrement(10, 1, null as IEnumerable<string>);
             }
 
             // Assert
@@ -54,7 +53,6 @@ namespace JustEat.StatsD
                 publisher.Increment(-10, 1, "orange");
                 publisher.Increment(10, 1, new[] { "white", "blue" });
                 publisher.Increment(10, 1, new List<string>() { "green", "red" });
-                publisher.Increment(10, 1, null as IEnumerable<string>);
             }
 
             // Assert
@@ -71,6 +69,7 @@ namespace JustEat.StatsD
             using (var publisher = new StatsDPublisher(config, mock.Object))
             {
                 // Act
+#nullable disable
                 publisher.Decrement(-1, 1, null as string[]);
                 publisher.Increment(-1, 1, null as string[]);
                 publisher.Decrement(1, 1, null as string[]);
@@ -85,6 +84,7 @@ namespace JustEat.StatsD
                 publisher.Increment(1, 1, null as IEnumerable<string>);
                 publisher.Decrement(1, 1, new[] { string.Empty });
                 publisher.Increment(1, 1, new[] { string.Empty });
+#nullable enable
             }
 
             // Assert
@@ -113,13 +113,13 @@ namespace JustEat.StatsD
         public static void Constructor_Throws_If_Configuration_Is_Null()
         {
             // Arrange
-            StatsDConfiguration configuration = null;
+            StatsDConfiguration? configuration = null;
             var transport = Mock.Of<IStatsDTransport>();
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>(
                 "configuration",
-                () => new StatsDPublisher(configuration, transport));
+                () => new StatsDPublisher(configuration!, transport));
         }
 
         [Fact]
@@ -127,12 +127,12 @@ namespace JustEat.StatsD
         {
             // Arrange
             var configuration = new StatsDConfiguration();
-            IStatsDTransport transport = null;
+            IStatsDTransport? transport = null;
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>(
                 "transport",
-                () => new StatsDPublisher(configuration, transport));
+                () => new StatsDPublisher(configuration, transport!));
         }
     }
 }

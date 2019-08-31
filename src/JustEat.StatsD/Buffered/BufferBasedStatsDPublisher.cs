@@ -17,10 +17,15 @@ namespace JustEat.StatsD.Buffered
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransport _transport;
-        private readonly Func<Exception, bool> _onError;
+        private readonly Func<Exception, bool>? _onError;
 
-        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
+        internal BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             _onError = configuration.OnError;
             _transport = transport;
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);

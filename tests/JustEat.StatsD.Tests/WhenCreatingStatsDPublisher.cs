@@ -32,11 +32,11 @@ namespace JustEat.StatsD
         [Fact]
         public void ConfigurationIsNull()
         {
-            StatsDConfiguration configuration = null;
+            StatsDConfiguration? configuration = null;
 
             Assert.Throws<ArgumentNullException>(
                 "configuration",
-                () => new StatsDPublisher(configuration));
+                () => new StatsDPublisher(configuration!));
         }
 
         [Fact]

@@ -44,7 +44,7 @@ namespace JustEat.StatsD.EndpointLookups
                 throw new Exception($"Failed to resolve any IP addresses for StatsD host '${hostName}' using DNS.");
             }
 
-            IPAddress result = null;
+            IPAddress? result = null;
 
             if (endpoints.Length > 1)
             {

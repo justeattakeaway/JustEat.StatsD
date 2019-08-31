@@ -12,11 +12,11 @@ namespace JustEat.StatsD
         public static void StartTimerThrowsIfPublisherIsNull()
         {
             // Arrange
-            IStatsDPublisher publisher = null;
+            IStatsDPublisher? publisher = null;
             string bucket = "bucket";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("publisher", () => publisher.StartTimer(bucket));
+            Assert.Throws<ArgumentNullException>("publisher", () => publisher!.StartTimer(bucket));
         }
 
         [Fact]
@@ -26,10 +26,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Action action = null;
+            Action? action = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("action", () => publisher.Time(bucket, action));
+            Assert.Throws<ArgumentNullException>("action", () => publisher.Time(bucket, action!));
         }
 
         [Fact]
@@ -39,10 +39,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Action<IDisposableTimer> action = null;
+            Action<IDisposableTimer>? action = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("action", () => publisher.Time(bucket, action));
+            Assert.Throws<ArgumentNullException>("action", () => publisher.Time(bucket, action!));
         }
 
         [Fact]
@@ -52,10 +52,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<Task> action = null;
+            Func<Task>? action = null;
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("action", () => publisher.Time(bucket, action));
+            await Assert.ThrowsAsync<ArgumentNullException>("action", () => publisher.Time(bucket, action!));
         }
 
         [Fact]
@@ -65,10 +65,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<IDisposableTimer, Task> action = null;
+            Func<IDisposableTimer, Task>? action = null;
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("action", () => publisher.Time(bucket, action));
+            await Assert.ThrowsAsync<ArgumentNullException>("action", () => publisher.Time(bucket, action!));
         }
 
         [Fact]
@@ -78,10 +78,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<int> func = null;
+            Func<int>? func = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("func", () => publisher.Time(bucket, func));
+            Assert.Throws<ArgumentNullException>("func", () => publisher.Time(bucket, func!));
         }
 
         [Fact]
@@ -91,10 +91,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<IDisposableTimer, int> func = null;
+            Func<IDisposableTimer, int>? func = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("func", () => publisher.Time(bucket, func));
+            Assert.Throws<ArgumentNullException>("func", () => publisher.Time(bucket, func!));
         }
 
         [Fact]
@@ -104,10 +104,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<Task<int>> func = null;
+            Func<Task<int>>? func = null;
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("func", () => publisher.Time(bucket, func));
+            await Assert.ThrowsAsync<ArgumentNullException>("func", () => publisher.Time(bucket, func!));
         }
 
         [Fact]
@@ -117,10 +117,10 @@ namespace JustEat.StatsD
             var publisher = Mock.Of<IStatsDPublisher>();
             string bucket = "bucket";
 
-            Func<IDisposableTimer, Task<int>> func = null;
+            Func<IDisposableTimer, Task<int>>? func = null;
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("func", () => publisher.Time(bucket, func));
+            await Assert.ThrowsAsync<ArgumentNullException>("func", () => publisher.Time(bucket, func!));
         }
 
         [Fact]

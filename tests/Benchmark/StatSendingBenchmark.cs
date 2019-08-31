@@ -10,10 +10,10 @@ namespace Benchmark
     public class StatSendingBenchmark : IDisposable
     {
         private bool _disposed;
-        private SocketTransport _udpTransport;
-        private BufferBasedStatsDPublisher _udpSender;
-        private SocketTransport _ipTransport;
-        private BufferBasedStatsDPublisher _ipSender;
+        private SocketTransport? _udpTransport;
+        private BufferBasedStatsDPublisher? _udpSender;
+        private SocketTransport? _ipTransport;
+        private BufferBasedStatsDPublisher? _ipSender;
 
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -69,34 +69,34 @@ namespace Benchmark
         [Benchmark]
         public void RunIp()
         {
-            _ipSender.Increment("hello.i");
-            _ipSender.Increment(20, "increment.i");
-            _ipSender.Timing(Timed, "timer.i");
-            _ipSender.Gauge(354654, "gauge.i");
+            _ipSender!.Increment("hello.i");
+            _ipSender!.Increment(20, "increment.i");
+            _ipSender!.Timing(Timed, "timer.i");
+            _ipSender!.Gauge(354654, "gauge.i");
             _ipSender.Gauge(25.1, "free-space.i");
         }
 
         [Benchmark]
         public void RunIPWithSampling()
         {
-            _ipSender.Increment(2, 0.2, "increment.i");
+            _ipSender!.Increment(2, 0.2, "increment.i");
             _ipSender.Timing(2, 0.2, "increment.i");
         }
 
         [Benchmark]
         public void RunUdp()
         {
-            _udpSender.Increment("hello.u");
-            _udpSender.Increment(20, "increment.u");
-            _udpSender.Timing(Timed, "timer.u");
-            _udpSender.Gauge(354654, "gauge.u");
+            _udpSender!.Increment("hello.u");
+            _udpSender!.Increment(20, "increment.u");
+            _udpSender!.Timing(Timed, "timer.u");
+            _udpSender!.Gauge(354654, "gauge.u");
             _udpSender.Gauge(25.1, "free-space.u");
         }
 
         [Benchmark]
         public void RunUdpWithSampling()
         {
-            _udpSender.Increment(2, 0.2, "increment.u");
+            _udpSender!.Increment(2, 0.2, "increment.u");
             _udpSender.Timing(2, 0.2, "increment.u");
         }
     }

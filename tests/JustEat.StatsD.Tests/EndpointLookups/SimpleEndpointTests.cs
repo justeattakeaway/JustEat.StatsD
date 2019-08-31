@@ -28,10 +28,10 @@ namespace JustEat.StatsD.EndpointLookups
         public static void ConstructorThrowsIfValueIsNull()
         {
             // Arrange
-            EndPoint value = null;
+            EndPoint? value = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("value", () => new SimpleEndpointSource(value));
+            Assert.Throws<ArgumentNullException>("value", () => new SimpleEndpointSource(value!));
         }
 
         private static IPEndPoint MakeTestIpEndPoint()

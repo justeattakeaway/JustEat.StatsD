@@ -58,7 +58,7 @@ namespace JustEat.StatsD
 
             public void Send(in ArraySegment<byte> metric)
             {
-                Messages.Add(Encoding.UTF8.GetString(metric.Array, metric.Offset, metric.Count));
+                Messages.Add(Encoding.UTF8.GetString(metric.Array!, metric.Offset, metric.Count));
             }
         }
     }
