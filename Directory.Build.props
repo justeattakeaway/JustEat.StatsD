@@ -4,7 +4,7 @@
     <AnalyzersVersion>2.9.4</AnalyzersVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.3" PrivateAssets="All" />
+    <PackageReference Include="coverlet.msbuild" Version="2.7.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
