@@ -25,7 +25,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
     <PackageIcon>package-icon.png</PackageIcon>
