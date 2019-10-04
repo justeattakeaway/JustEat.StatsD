@@ -1,7 +1,7 @@
 <Project>
   <Import Project="version.props" />
   <PropertyGroup>
-    <AnalyzersVersion>2.9.4</AnalyzersVersion>
+    <AnalyzersVersion>2.9.6</AnalyzersVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.7.0" PrivateAssets="All" />
