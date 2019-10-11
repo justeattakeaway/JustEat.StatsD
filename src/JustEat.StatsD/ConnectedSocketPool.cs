@@ -46,7 +46,7 @@ namespace JustEat.StatsD
         /// <summary>Retrieves an object from the pool if one is available.
         /// return null if the pool is empty</summary>
         /// <returns>An object from the pool. </returns>
-        private Socket Pop()
+        private Socket? Pop()
         {
             if (_pool.TryTake(out Socket result))
             {

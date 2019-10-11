@@ -81,11 +81,11 @@ namespace JustEat.StatsD.EndpointLookups
         public static void ConstructorThrowsIfInnerIsNull()
         {
             // Arrange
-            IEndPointSource inner = null;
+            IEndPointSource? inner = null;
             var cacheDuration = TimeSpan.FromHours(1);
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("inner", () => new CachedEndpointSource(inner, cacheDuration));
+            Assert.Throws<ArgumentNullException>("inner", () => new CachedEndpointSource(inner!, cacheDuration));
         }
 
         private static IPEndPoint MakeTestIpEndPoint()

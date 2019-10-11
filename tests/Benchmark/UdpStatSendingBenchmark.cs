@@ -11,9 +11,9 @@ namespace Benchmark
     {
         private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
-        private SocketTransport _transport;
-        private BufferBasedStatsDPublisher _udpSender;
-        private StatsDPublisher _adaptedStatsDPublisher;
+        private SocketTransport? _transport;
+        private BufferBasedStatsDPublisher? _udpSender;
+        private StatsDPublisher? _adaptedStatsDPublisher;
 
         [GlobalSetup]
         public void Setup()
@@ -50,15 +50,15 @@ namespace Benchmark
         [Benchmark]
         public void SendStatUdp()
         {
-            _udpSender.Increment("increment.ud");
-            _udpSender.Timing(Timed, "timer.ud");
+            _udpSender!.Increment("increment.ud");
+            _udpSender!.Timing(Timed, "timer.ud");
         }
 
         [Benchmark]
         public void SendStatUdpCoveredByAdapter()
         {
-            _adaptedStatsDPublisher.Increment("increment.ud");
-            _adaptedStatsDPublisher.Timing(Timed, "timer.ud");
+            _adaptedStatsDPublisher!.Increment("increment.ud");
+            _adaptedStatsDPublisher!.Timing(Timed, "timer.ud");
         }
     }
 }

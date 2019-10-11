@@ -11,7 +11,7 @@ namespace JustEat.StatsD.EndpointLookups
     {
         private readonly IEndPointSource _inner;
         private readonly TimeSpan _cacheDuration;
-        private EndPoint _cachedValue;
+        private EndPoint? _cachedValue;
         private DateTime _expiry;
 
         /// <summary>
@@ -46,7 +46,8 @@ namespace JustEat.StatsD.EndpointLookups
                 _cachedValue = _inner.GetEndpoint();
                 _expiry = DateTime.UtcNow.Add(_cacheDuration);
             }
-            return _cachedValue;
+
+            return _cachedValue!;
         }
 
         private bool NeedsRead()

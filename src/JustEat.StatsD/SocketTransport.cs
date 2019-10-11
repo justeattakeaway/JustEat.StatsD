@@ -13,9 +13,9 @@ namespace JustEat.StatsD
     /// </summary>
     public sealed class SocketTransport : IStatsDTransport, IDisposable
     {
-        private ConnectedSocketPool _pool;
         private readonly IEndPointSource _endpointSource;
         private readonly SocketProtocol _socketProtocol;
+        private ConnectedSocketPool? _pool;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SocketTransport"/> class.
@@ -96,7 +96,7 @@ namespace JustEat.StatsD
             else
             {
                 newPool.Dispose();
-                return _pool;
+                return _pool!;
             }
         }
     }

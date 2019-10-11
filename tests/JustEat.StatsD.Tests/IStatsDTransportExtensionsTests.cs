@@ -11,22 +11,22 @@ namespace JustEat.StatsD
         public static void SendThrowsIfTransportIsNullMetric()
         {
             // Arrange
-            IStatsDTransport transport = null;
+            IStatsDTransport? transport = null;
             string metric = "metric";
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("transport", () => transport.Send(metric));
+            Assert.Throws<ArgumentNullException>("transport", () => transport!.Send(metric));
         }
 
         [Fact]
         public static void SendThrowsIfTransportIsNullMetrics()
         {
             // Arrange
-            IStatsDTransport transport = null;
+            IStatsDTransport? transport = null;
             IEnumerable<string> metrics = Array.Empty<string>();
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("transport", () => transport.Send(metrics));
+            Assert.Throws<ArgumentNullException>("transport", () => transport!.Send(metrics));
         }
 
         [Fact]
@@ -34,10 +34,10 @@ namespace JustEat.StatsD
         {
             // Arrange
             var transport = Mock.Of<IStatsDTransport>();
-            string metric = null;
+            string? metric = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("metric", () => transport.Send(metric));
+            Assert.Throws<ArgumentNullException>("metric", () => transport.Send(metric!));
         }
 
         [Fact]
@@ -45,10 +45,10 @@ namespace JustEat.StatsD
         {
             // Arrange
             var transport = Mock.Of<IStatsDTransport>();
-            IEnumerable<string> metrics = null;
+            IEnumerable<string>? metrics = null;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("metrics", () => transport.Send(metrics));
+            Assert.Throws<ArgumentNullException>("metrics", () => transport.Send(metrics!));
         }
 
         [Fact]

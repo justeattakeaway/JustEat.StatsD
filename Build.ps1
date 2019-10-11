@@ -59,8 +59,8 @@ else {
 }
 
 function DotNetBuild {
-    param([string]$Project, [string]$Configuration, [string]$Framework)
-    & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
+    param([string]$Project, [string]$Configuration)
+    & $dotnet build $Project --output $OutputPath --configuration $Configuration
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
     }
@@ -131,8 +131,8 @@ $packageProjects = @(
 
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration "netstandard2.0"
-    DotNetBuild $project $Configuration "net451"
+    DotNetBuild $project $Configuration
+    DotNetBuild $project $Configuration
 }
 
 if ($SkipTests -eq $false) {

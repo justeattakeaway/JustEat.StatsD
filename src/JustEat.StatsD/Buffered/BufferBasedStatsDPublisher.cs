@@ -8,19 +8,24 @@ namespace JustEat.StatsD.Buffered
         private const int SafeUdpPacketSize = 512;
 
         [ThreadStatic]
-        private static byte[] _buffer;
+        private static byte[]? _buffer;
         private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
 
         [ThreadStatic]
-        private static Random _random;
+        private static Random? _random;
         private static Random Random => _random ?? (_random = new Random());
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransport _transport;
-        private readonly Func<Exception, bool> _onError;
+        private readonly Func<Exception, bool>? _onError;
 
-        public BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
+        internal BufferBasedStatsDPublisher(StatsDConfiguration configuration, IStatsDTransport transport)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             _onError = configuration.OnError;
             _transport = transport;
             _formatter = new StatsDUtf8Formatter(configuration.Prefix);

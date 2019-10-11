@@ -8,32 +8,25 @@ namespace JustEat.StatsD
     {
         internal static Socket For(SocketProtocol socketProtocol)
         {
-            switch (socketProtocol)
+            return socketProtocol switch
             {
-                case SocketProtocol.IP:
-                    return ForIp();
+                SocketProtocol.IP => ForIp(),
 
-                case SocketProtocol.Udp:
-                    return ForUdp();
+                SocketProtocol.Udp => ForUdp(),
 
-                default:
-                    throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified.");
-            }
+                _ => throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified."),
+            };
         }
 
         internal static Socket ForUdp()
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-#if !NET451
             // See https://github.com/dotnet/corefx/pull/17853#issuecomment-291371266
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 socket.SendBufferSize = 0;
             }
-#else
-            socket.SendBufferSize = 0;
-#endif
 
             return socket;
         }

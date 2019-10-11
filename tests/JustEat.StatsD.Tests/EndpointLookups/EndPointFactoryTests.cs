@@ -70,23 +70,23 @@ namespace JustEat.StatsD.EndpointLookups
         public static void MakeEndPointSourceThrowsIfEndpointIsNull()
         {
             // Arrange
-            EndPoint endpoint = null;
+            EndPoint? endpoint = null;
             var endpointCacheDuration = TimeSpan.FromHours(1);
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("endpoint", () => EndPointFactory.MakeEndPointSource(endpoint, endpointCacheDuration));
+            Assert.Throws<ArgumentNullException>("endpoint", () => EndPointFactory.MakeEndPointSource(endpoint!, endpointCacheDuration));
         }
 
         [Fact]
         public static void MakeEndPointSourceThrowsIfHostIsNull()
         {
             // Arrange
-            string host = null;
+            string? host = null;
             int port = 8125;
             var endpointCacheDuration = TimeSpan.FromHours(1);
 
             // Act and Assert
-            Assert.Throws<ArgumentException>("host", () => EndPointFactory.MakeEndPointSource(host, port, endpointCacheDuration));
+            Assert.Throws<ArgumentException>("host", () => EndPointFactory.MakeEndPointSource(host!, port, endpointCacheDuration));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace JustEat.StatsD.EndpointLookups
             var ipActual = actual as IPEndPoint;
 
             ipActual.ShouldNotBeNull();
-            ipActual.Address.ShouldBe(IPAddress.Parse("127.0.0.1"));
+            ipActual!.Address.ShouldBe(IPAddress.Parse("127.0.0.1"));
             ipActual.Port.ShouldBe(8125);
         }
 
@@ -32,11 +32,11 @@ namespace JustEat.StatsD.EndpointLookups
         public static void ConstructorThrowsIfHostNameIsNull()
         {
             // Arrange
-            string hostName = null;
+            string? hostName = null;
             int port = 123;
 
             // Act and Assert
-            Assert.Throws<ArgumentNullException>("hostName", () => new DnsLookupIpEndpointSource(hostName, port));
+            Assert.Throws<ArgumentNullException>("hostName", () => new DnsLookupIpEndpointSource(hostName!, port));
         }
     }
 }
