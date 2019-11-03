@@ -15,7 +15,7 @@ after_build:
   - pip install codecov
   - codecov -f "artifacts\coverage.cobertura.xml"
 artifacts:
-- path: '**\$(APPVEYOR_PROJECT_NAME)*.nupkg'
+- path: '**\$(APPVEYOR_PROJECT_NAME)*.*nupkg'
   name: Nuget
 - path: artifacts\coverage*.xml
   name: 'Code Coverage'
