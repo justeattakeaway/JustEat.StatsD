@@ -20,3 +20,6 @@ artifacts:
 - path: artifacts\coverage*.xml
   name: 'Code Coverage'
 test: off
+branches:
+  except:
+    - /dependabot/nuget/*
