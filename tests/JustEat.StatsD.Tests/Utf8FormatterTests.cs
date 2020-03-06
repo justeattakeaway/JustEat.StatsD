@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using Shouldly;
@@ -12,51 +13,77 @@ namespace JustEat.StatsD
         private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix");
 
         [Fact]
+        public static void CounterRegularWithTags()
+        {
+            var tags = new Dictionary<string, string>
+            {
+                ["foo"] = "bar",
+                ["another"] = "tag"
+            };
+            var message = StatsDMessage.Counter(128, "bucket", tags);
+            Check(message, "prefix.bucket,foo=bar,another=tag:128|c");
+        }
+
+        [Fact]
         public static void CounterSampled()
         {
-            var message = StatsDMessage.Counter(128, "bucket");
+            var message = StatsDMessage.Counter(128, "bucket", null);
             Check(message, 0.5, "prefix.bucket:128|c|@0.5");
         }
 
         [Fact]
         public static void CounterRegular()
         {
-            var message = StatsDMessage.Counter(128, "bucket");
+            var message = StatsDMessage.Counter(128, "bucket", null);
             Check(message, "prefix.bucket:128|c");
         }
 
         [Fact]
         public static void CounterNegative()
         {
-            var message = StatsDMessage.Counter(-128, "bucket");
+            var message = StatsDMessage.Counter(-128, "bucket", null);
             Check(message, "prefix.bucket:-128|c");
         }
 
         [Fact]
         public static void Timing()
         {
-            var message = StatsDMessage.Timing(128, "bucket");
+            var message = StatsDMessage.Timing(128, "bucket", null);
             Check(message, "prefix.bucket:128|ms");
         }
 
         [Fact]
         public static void TimingSampled()
         {
-            var message = StatsDMessage.Timing(128, "bucket");
+            var message = StatsDMessage.Timing(128, "bucket", null);
             Check(message, 0.5, "prefix.bucket:128|ms|@0.5");
+        }
+
+        [Fact]
+        public static void GaugeIncrement()
+        {
+            var message = StatsDMessage.Gauge(128, "bucket", null, Operation.Increment);
+            Check(message, "prefix.bucket:+128|g");
+        }
+
+        [Fact]
+        public static void GaugeDecrement()
+        {
+            var message = StatsDMessage.Gauge(128, "bucket", null, Operation.Increment);
+            Check(message, "prefix.bucket:-128|g");
         }
 
         [Fact]
         public static void GaugeIntegral()
         {
-            var message = StatsDMessage.Gauge(128, "bucket");
+            var message = StatsDMessage.Gauge(128, "bucket", null);
             Check(message, "prefix.bucket:128|g");
         }
 
         [Fact]
         public static void GaugeFloat()
         {
-            var message = StatsDMessage.Gauge(128.5, "bucket");
+            var message = StatsDMessage.Gauge(128.5, "bucket", null);
             Check(message, "prefix.bucket:128.5|g");
         }
 
@@ -65,7 +92,7 @@ namespace JustEat.StatsD
         {
             var buffer = new byte[128];
             var hugeBucket = new string('x', 256);
-            var message = StatsDMessage.Gauge(128.5, hugeBucket);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
             Formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(false);
             written.ShouldBe(0);
         }
@@ -98,7 +125,7 @@ namespace JustEat.StatsD
         public static void GetMaxBufferSizeCalculatesValidBufferSizes(int bucketSize, char ch)
         {
             var hugeBucket = new string(ch, bucketSize);
-            var message = StatsDMessage.Gauge(128.5, hugeBucket);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
             var expected = $"prefix.{hugeBucket}:128.5|g";
 
             var buffer = new byte[Formatter.GetMaxBufferSize(message)];

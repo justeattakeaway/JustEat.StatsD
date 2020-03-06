@@ -156,9 +156,10 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        public static void Timing(this IStatsDPublisher publisher, TimeSpan duration, string bucket)
+        /// <param name="tags">The list of tags.</param>
+        public static void Timing(this IStatsDPublisher publisher, TimeSpan duration, string bucket, IDictionary<string, string>? tags = null)
         {
-            publisher.Timing((long)duration.TotalMilliseconds, DefaultSampleRate, bucket);
+            publisher.Timing((long)duration.TotalMilliseconds, DefaultSampleRate, bucket, tags);
         }
 
         /// <summary>
@@ -168,9 +169,10 @@ namespace JustEat.StatsD
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="sampleRate">The sample rate for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        public static void Timing(this IStatsDPublisher publisher, TimeSpan duration, double sampleRate, string bucket)
+        /// <param name="tags">The list of tags.</param>
+        public static void Timing(this IStatsDPublisher publisher, TimeSpan duration, double sampleRate, string bucket, IDictionary<string, string>? tags = null)
         {
-            publisher.Timing((long)duration.TotalMilliseconds, sampleRate, bucket);
+            publisher.Timing((long)duration.TotalMilliseconds, sampleRate, bucket, tags);
         }
 
         /// <summary>
@@ -179,9 +181,10 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        public static void Timing(this IStatsDPublisher publisher, long duration, string bucket)
+        /// <param name="tags">The list of tags.</param>
+        public static void Timing(this IStatsDPublisher publisher, long duration, string bucket, IDictionary<string, string>? tags = null)
         {
-            publisher.Timing(duration, DefaultSampleRate, bucket);
+            publisher.Timing(duration, DefaultSampleRate, bucket, tags);
         }
     }
 }

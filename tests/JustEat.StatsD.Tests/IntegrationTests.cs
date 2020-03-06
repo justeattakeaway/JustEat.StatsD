@@ -53,16 +53,16 @@ namespace JustEat.StatsD
             publisher.Increment("fish");
 
             // Act - Create a gauge
-            publisher.Gauge(3.141, "circle");
+            publisher.Gauge(3.141, "circle", Operation.Set, null);
 
             // Act - Create and change a gauge
-            publisher.Gauge(10, "dog");
-            publisher.Gauge(42, "dog");
+            publisher.Gauge(10, "dog", Operation.Set, null);
+            publisher.Gauge(42, "dog", Operation.Set, null);
 
             // Act - Create a timer
             publisher.Timing(123, "elephant");
             publisher.Timing(TimeSpan.FromSeconds(2), "fox");
-            publisher.Timing(456, 1, "goose");
+            publisher.Timing(456, 1, "goose", null);
             publisher.Timing(TimeSpan.FromSeconds(3.5), 1, "hen");
 
             // Act - Increment multiple counters

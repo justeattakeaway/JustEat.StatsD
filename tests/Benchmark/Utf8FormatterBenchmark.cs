@@ -13,9 +13,9 @@ namespace Benchmark
         [Benchmark]
         public void BufferBased()
         {
-            FormatterBuffer.TryFormat(StatsDMessage.Gauge(255, "some.neat.bucket"), 1, Buffer, out _);
-            FormatterBuffer.TryFormat(StatsDMessage.Timing(255, "some.neat.bucket"), 1, Buffer, out _);
-            FormatterBuffer.TryFormat(StatsDMessage.Counter(255, "some.neat.bucket"), 1, Buffer, out _);
+            FormatterBuffer.TryFormat(StatsDMessage.Gauge(255, "some.neat.bucket", null), 1, Buffer, out _);
+            FormatterBuffer.TryFormat(StatsDMessage.Timing(255, "some.neat.bucket", null), 1, Buffer, out _);
+            FormatterBuffer.TryFormat(StatsDMessage.Counter(255, "some.neat.bucket", null), 1, Buffer, out _);
         }
     }
 }

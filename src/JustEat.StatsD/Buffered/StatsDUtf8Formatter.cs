@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -37,7 +39,7 @@ namespace JustEat.StatsD.Buffered
             var buffer = new Buffer(destination);
 
             bool isFormattingSuccessful =
-                  TryWriteBucketNameWithColon(ref buffer, msg.StatBucket)
+                  TryWriteBucketNameWithColon(ref buffer, msg)
                && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
                && TryWriteSampleRateIfNeeded(ref buffer, sampleRate);
 
@@ -46,13 +48,25 @@ namespace JustEat.StatsD.Buffered
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteBucketNameWithColon(ref Buffer buffer, string statBucket)
+        private bool TryWriteBucketNameWithColon(ref Buffer buffer, StatsDMessage msg)
         {
             // prefix + msg.Bucket + ":"
 
             return buffer.TryWriteBytes(_utf8Prefix)
-                && buffer.TryWriteUtf8String(statBucket)
+                && buffer.TryWriteUtf8String(msg.StatBucket)
+                && TryWriteTags(ref buffer, msg.Tags)
                 && buffer.TryWriteByte((byte)':');
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryWriteTags(ref Buffer buffer, IDictionary<string, string>? tags)
+        {
+            // key=value,key=value
+
+            if (tags == null || !tags.Any())
+                return true;
+
+            return buffer.TryWriteUtf8String("," + string.Join(",", tags.Select(x => $"{x.Key}={x.Value}")));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
