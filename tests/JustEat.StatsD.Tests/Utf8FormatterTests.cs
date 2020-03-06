@@ -69,7 +69,7 @@ namespace JustEat.StatsD
         [Fact]
         public static void GaugeDecrement()
         {
-            var message = StatsDMessage.Gauge(128, "bucket", null, Operation.Increment);
+            var message = StatsDMessage.Gauge(128, "bucket", null, Operation.Decrement);
             Check(message, "prefix.bucket:-128|g");
         }
 

@@ -90,12 +90,15 @@ namespace JustEat.StatsD.Buffered
                     }
                 case StatsDMessageKind.Gauge:
                     {
+                        // check if the operation is decrement
+                        bool isDecrement = msg.Operation == Operation.Decrement;
+                        
                         // check if magnitude is integral, integers are written significantly faster
                         bool isMagnitudeIntegral = msg.Magnitude == integralMagnitude;
 
                         var successSoFar = isMagnitudeIntegral ?
-                            buffer.TryWriteInt64(integralMagnitude) :
-                            buffer.TryWriteDouble(msg.Magnitude);
+                            buffer.TryWriteInt64(isDecrement ? integralMagnitude * -1 : integralMagnitude) :
+                            buffer.TryWriteDouble(isDecrement ? msg.Magnitude * -1 : msg.Magnitude);
 
                         return successSoFar && buffer.TryWriteBytes((byte)'|', (byte)'g');
                     }
