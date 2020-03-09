@@ -82,11 +82,11 @@ namespace JustEat.StatsD
             _inner = new BufferBasedStatsDPublisher(configuration, transport);
         }
 
-        /// <inheritdoc />w
+        /// <inheritdoc />
         public void Increment(long value, double sampleRate, string bucket, IDictionary<string, string>? tags = null)
         {
             _inner.Increment(value, sampleRate, bucket, tags);
-        }        
+        }
 
         /// <inheritdoc />
         public void Gauge(double value, string bucket, Operation operation = Operation.Set, IDictionary<string, string>? tags = null)
