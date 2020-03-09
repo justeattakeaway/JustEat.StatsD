@@ -1,21 +1,23 @@
 namespace JustEat.StatsD
 {
     /// <summary>
-    /// Define the Gauge operation
+    /// Defines the available gauge operations.
     /// </summary>
     public enum Operation
     {
         /// <summary>
-        /// Set the gauge value
+        /// Set the gauge value.
         /// </summary>
         Set,
+
         /// <summary>
-        /// Increment the gauge value
+        /// Increment the gauge value.
         /// </summary>
         Increment,
+
         /// <summary>
-        /// Decrement the gauge value
+        /// Decrement the gauge value.
         /// </summary>
-        Decrement
+        Decrement,
     }
 }
