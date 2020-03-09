@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -63,10 +63,16 @@ namespace JustEat.StatsD.Buffered
         {
             // key=value,key=value
 
-            if (tags == null || !tags.Any())
+            if (tags == null || tags.Count == 0)
                 return true;
 
-            return buffer.TryWriteUtf8String("," + string.Join(",", tags.Select(x => $"{x.Key}={x.Value}")));
+            StringBuilder sb = new StringBuilder();
+            foreach (KeyValuePair<string, string> tag in tags)
+            {
+                sb.AppendFormat(CultureInfo.InvariantCulture, ",{0}={1}", tag.Key, tag.Value);
+            }
+
+            return buffer.TryWriteUtf8String("," + sb);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
