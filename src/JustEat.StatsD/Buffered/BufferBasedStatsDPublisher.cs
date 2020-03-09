@@ -37,7 +37,9 @@ namespace JustEat.StatsD.Buffered
             SendMessage(sampleRate, StatsDMessage.Counter(value, bucket, tags));
         }
 
-        public void Gauge(double value, string bucket,
+        public void Gauge(
+            double value,
+            string bucket,
             Operation operation = Operation.Set,
             IDictionary<string, string>? tags = null)
         {
