@@ -50,7 +50,7 @@ namespace JustEat.StatsD.Buffered
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteBucketNameWithColon(ref Buffer buffer, StatsDMessage msg)
         {
-            // prefix + msg.Bucket + ":"
+            // prefix + msg.Bucket + tags + ":"
 
             return buffer.TryWriteBytes(_utf8Prefix)
                 && buffer.TryWriteUtf8String(msg.StatBucket)
@@ -69,10 +69,10 @@ namespace JustEat.StatsD.Buffered
             StringBuilder sb = new StringBuilder();
             foreach (KeyValuePair<string, string> tag in tags)
             {
-                sb.AppendFormat(CultureInfo.InvariantCulture, ",{0}={1}", tag.Key, tag.Value);
+                sb.AppendFormat(CultureInfo.InvariantCulture, ";{0}={1}", tag.Key, tag.Value);
             }
 
-            return buffer.TryWriteUtf8String("," + sb);
+            return buffer.TryWriteUtf8String(sb.ToString());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

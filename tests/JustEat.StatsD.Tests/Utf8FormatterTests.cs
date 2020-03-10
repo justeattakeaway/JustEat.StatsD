@@ -21,7 +21,7 @@ namespace JustEat.StatsD
                 ["another"] = "tag"
             };
             var message = StatsDMessage.Counter(128, "bucket", tags);
-            Check(message, "prefix.bucket,foo=bar,another=tag:128|c");
+            Check(message, "prefix.bucket;foo=bar;another=tag:128|c");
         }
 
         [Fact]
