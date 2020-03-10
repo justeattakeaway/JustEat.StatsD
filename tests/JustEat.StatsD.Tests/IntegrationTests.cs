@@ -42,12 +42,12 @@ namespace JustEat.StatsD
             publisher.Increment("apple");
 
             // Act - Create and change a counter
-            publisher.Increment("bear");        // 1
-            publisher.Increment(10, "bear");    // 11
-            publisher.Increment(10, 0, "bear"); // 11
-            publisher.Decrement("bear");        // 10
-            publisher.Decrement(5, "bear");     // 5
-            publisher.Decrement(5, 0, "bear");  // 5
+            publisher.Increment("bear");              // 1
+            publisher.Increment(10, "bear");          // 11
+            publisher.Increment(10, 0, "bear", null); // 11
+            publisher.Decrement("bear");              // 10
+            publisher.Decrement(5, "bear");           // 5
+            publisher.Decrement(5, 0, "bear");        // 5
 
             // Act - Mark an event (which is a counter)
             publisher.Increment("fish");
@@ -58,6 +58,20 @@ namespace JustEat.StatsD
             // Act - Create and change a gauge
             publisher.Gauge(10, "dog", Operation.Set, null);
             publisher.Gauge(42, "dog", Operation.Set, null);
+
+            // Act - Create a gauge with tags
+            Dictionary<string, string> tags = new Dictionary<string, string>();
+            tags.Add("key", "value");
+            tags.Add("key2", "value2");
+            publisher.Gauge(5.5, "square", Operation.Set, tags);
+
+            // Act - Create a gauge and decrement it
+            publisher.Gauge(2020, "year", Operation.Set, null);
+            publisher.Gauge(10, "year", Operation.Decrement, null);
+
+            // Act - Create a gauge and increment it
+            publisher.Gauge(15, "score", Operation.Set, null);
+            publisher.Gauge(2, "score", Operation.Increment, null);
 
             // Act - Create a timer
             publisher.Timing(123, "elephant");
@@ -85,6 +99,9 @@ namespace JustEat.StatsD
             result = await SendCommandAsync("gauges");
             result.Value<double>(config.Prefix + ".circle").ShouldBe(3.141, result.ToString());
             result.Value<int>(config.Prefix + ".dog").ShouldBe(42, result.ToString());
+            result.Value<double>(config.Prefix + ".square;key=value;key2=value2").ShouldBe(5.5, result.ToString());
+            result.Value<int>(config.Prefix + ".year").ShouldBe(2010, result.ToString());
+            result.Value<int>(config.Prefix + ".score").ShouldBe(17, result.ToString());
 
             result = await SendCommandAsync("timers");
             result[config.Prefix + ".elephant"].Values<int>().ShouldBe(new[] { 123 }, result.ToString());
