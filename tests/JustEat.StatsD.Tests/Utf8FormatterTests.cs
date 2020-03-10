@@ -13,18 +13,6 @@ namespace JustEat.StatsD
         private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix");
 
         [Fact]
-        public static void CounterRegularWithTags()
-        {
-            var tags = new Dictionary<string, string>
-            {
-                ["foo"] = "bar",
-                ["another"] = "tag"
-            };
-            var message = StatsDMessage.Counter(128, "bucket", tags);
-            Check(message, "prefix.bucket;foo=bar;another=tag:128|c");
-        }
-
-        [Fact]
         public static void CounterSampled()
         {
             var message = StatsDMessage.Counter(128, "bucket", null);
@@ -36,6 +24,18 @@ namespace JustEat.StatsD
         {
             var message = StatsDMessage.Counter(128, "bucket", null);
             Check(message, "prefix.bucket:128|c");
+        }
+
+        [Fact]
+        public static void CounterRegularWithTags()
+        {
+            var tags = new Dictionary<string, string>
+            {
+                ["foo"] = "bar",
+                ["another"] = "tag"
+            };
+            var message = StatsDMessage.Counter(128, "bucket", tags);
+            Check(message, "prefix.bucket;foo=bar;another=tag:128|c");
         }
 
         [Fact]
@@ -53,6 +53,19 @@ namespace JustEat.StatsD
         }
 
         [Fact]
+        public static void TimingWithTags()
+        {
+            var tags = new Dictionary<string, string>
+            {
+                ["foo"] = "bar",
+                ["another"] = "tag"
+            };
+
+            var message = StatsDMessage.Timing(128, "bucket", tags);
+            Check(message, "prefix.bucket;foo=bar;another=tag:128|ms");
+        }
+
+        [Fact]
         public static void TimingSampled()
         {
             var message = StatsDMessage.Timing(128, "bucket", null);
@@ -67,10 +80,36 @@ namespace JustEat.StatsD
         }
 
         [Fact]
+        public static void GaugeIncrementWithTags()
+        {
+            var tags = new Dictionary<string, string>
+            {
+                ["foo"] = "bar",
+                ["another"] = "tag"
+            };
+
+            var message = StatsDMessage.Gauge(128, "bucket", tags, Operation.Increment);
+            Check(message, "prefix.bucket;foo=bar;another=tag:+128|g");
+        }
+
+        [Fact]
         public static void GaugeDecrement()
         {
             var message = StatsDMessage.Gauge(128, "bucket", null, Operation.Decrement);
             Check(message, "prefix.bucket:-128|g");
+        }
+
+        [Fact]
+        public static void GaugeDecrementWithTags()
+        {
+            var tags = new Dictionary<string, string>
+            {
+                ["foo"] = "bar",
+                ["another"] = "tag"
+            };
+
+            var message = StatsDMessage.Gauge(128, "bucket", tags, Operation.Decrement);
+            Check(message, "prefix.bucket;foo=bar;another=tag:-128|g");
         }
 
         [Fact]
