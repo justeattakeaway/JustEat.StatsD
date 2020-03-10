@@ -58,15 +58,15 @@ JustEat.StatsD.TimerExtensions
 const JustEat.StatsD.StatsDConfiguration.DefaultPort = 8125 -> int
 static JustEat.StatsD.EndpointLookups.EndPointFactory.MakeEndPointSource(System.Net.EndPoint endpoint, System.TimeSpan? endpointCacheDuration) -> JustEat.StatsD.EndpointLookups.IEndPointSource
 static JustEat.StatsD.EndpointLookups.EndPointFactory.MakeEndPointSource(string host, int port, System.TimeSpan? endpointCacheDuration) -> JustEat.StatsD.EndpointLookups.IEndPointSource
-static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string> buckets) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, string bucket) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, string bucket) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, string bucket) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string> buckets) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, string bucket) -> void
-static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, string bucket) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string> buckets, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IDictionary<string, string> tags = null, params string[] buckets) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, long value, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher publisher, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string> buckets, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, double sampleRate, System.Collections.Generic.IDictionary<string, string> tags = null, params string[] buckets) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, long value, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
+static JustEat.StatsD.IStatsDPublisherExtensions.Increment(this JustEat.StatsD.IStatsDPublisher publisher, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
 static JustEat.StatsD.IStatsDPublisherExtensions.Timing(this JustEat.StatsD.IStatsDPublisher publisher, System.TimeSpan duration, double sampleRate, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
 static JustEat.StatsD.IStatsDPublisherExtensions.Timing(this JustEat.StatsD.IStatsDPublisher publisher, System.TimeSpan duration, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
 static JustEat.StatsD.IStatsDPublisherExtensions.Timing(this JustEat.StatsD.IStatsDPublisher publisher, long duration, string bucket, System.Collections.Generic.IDictionary<string, string> tags = null) -> void
