@@ -64,10 +64,12 @@ namespace JustEat.StatsD.Buffered
             // key=value,key=value
 
             if (tags == null || tags.Count == 0)
+            {
                 return true;
+            }
 
-            StringBuilder sb = new StringBuilder();
-            foreach (KeyValuePair<string, string> tag in tags)
+            var sb = new StringBuilder();
+            foreach (var tag in tags)
             {
                 sb.AppendFormat(CultureInfo.InvariantCulture, ";{0}={1}", tag.Key, tag.Value);
             }
@@ -99,15 +101,19 @@ namespace JustEat.StatsD.Buffered
                         // check if magnitude is integral, integers are written significantly faster
                         bool isMagnitudeIntegral = msg.Magnitude == integralMagnitude;
 
-                        bool successSoFar;
+                        bool successSoFar = true;
 
                         if (msg.Operation == Operation.Increment)
-                            successSoFar = buffer.TryWriteByte((byte)'+');
+                        {
+                            successSoFar &= buffer.TryWriteByte((byte) '+');
+                        }
 
                         if (msg.Operation == Operation.Decrement)
-                            successSoFar = buffer.TryWriteByte((byte)'-');
+                        {
+                            successSoFar &= buffer.TryWriteByte((byte) '-');
+                        }
 
-                        successSoFar = isMagnitudeIntegral ?
+                        successSoFar &= isMagnitudeIntegral ?
                             buffer.TryWriteInt64(integralMagnitude) :
                             buffer.TryWriteDouble(msg.Magnitude);
 
