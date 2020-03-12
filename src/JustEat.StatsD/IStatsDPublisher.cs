@@ -13,7 +13,7 @@ namespace JustEat.StatsD
         /// <param name="value">The value to increment the counter by.</param>
         /// <param name="sampleRate">The sample rate for the counter.</param>
         /// <param name="bucket">The bucket to increment the counter for.</param>
-        /// <param name="tags">The key value pair collection of tags.</param>
+        /// <param name="tags">An optional dictionary of tags.</param>
         void Increment(long value, double sampleRate, string bucket, IDictionary<string, string>? tags);
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace JustEat.StatsD
         /// <param name="value">The value to publish for the gauge.</param>
         /// <param name="bucket">The bucket to publish the gauge for.</param>
         /// <param name="operation">The gauge operation.</param>
-        /// <param name="tags">The key value pair collection of tags.</param>
+        /// <param name="tags">An optional dictionary of tags.</param>
         void Gauge(double value, string bucket, Operation operation, IDictionary<string, string>? tags);
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace JustEat.StatsD
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="sampleRate">The sample rate for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        /// <param name="tags">The key value pair collection of tags.</param>
+        /// <param name="tags">An optional dictionary of tags.</param>
         void Timing(long duration, double sampleRate, string bucket, IDictionary<string, string>? tags);
     }
 }
