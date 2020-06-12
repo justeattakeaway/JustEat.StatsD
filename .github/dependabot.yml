@@ -4,6 +4,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+    timezone: Europe/London
   reviewers:
     - "justeat/statsd"
   open-pull-requests-limit: 10
