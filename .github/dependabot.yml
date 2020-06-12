@@ -4,6 +4,8 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  reviewers:
+    - "justeat/statsd"
   open-pull-requests-limit: 10
   ignore:
   - dependency-name: Microsoft.Extensions.DependencyInjection.Abstractions
