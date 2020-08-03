@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
     <PackageReference Include="Microsoft.NetCore.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
-    <PackageReference Include="ReportGenerator" Version="4.6.2" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" Version="4.6.4" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)package-icon.png" Pack="True" PackagePath="" />
