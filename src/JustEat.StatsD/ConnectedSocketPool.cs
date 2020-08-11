@@ -98,7 +98,7 @@ namespace JustEat.StatsD
             {
                 try
                 {
-                    while (_pool.Count > 0)
+                    while (!_pool.IsEmpty)
                     {
                         var socket = Pop();
                         socket?.Dispose();
