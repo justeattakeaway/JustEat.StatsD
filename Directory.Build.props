@@ -1,7 +1,7 @@
 <Project>
   <Import Project="version.props" />
   <PropertyGroup>
-    <AnalyzersVersion>3.0.0</AnalyzersVersion>
+    <AnalyzersVersion>3.3.0</AnalyzersVersion>
     <MicrosoftNETFrameworkReferenceAssembliesVersion>1.0.0</MicrosoftNETFrameworkReferenceAssembliesVersion>
   </PropertyGroup>
   <ItemGroup>
