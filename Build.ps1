@@ -33,7 +33,7 @@ else {
 
     if ($installedDotNetVersion -ne $dotnetVersion) {
         Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
-        # $installDotNetSdk = $true
+        $installDotNetSdk = $true
     }
 }
 
