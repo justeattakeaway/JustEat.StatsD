@@ -1,20 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using JustEat.StatsD.Buffered.Tags;
 
 namespace JustEat.StatsD.Buffered
 {
     internal sealed class StatsDUtf8Formatter
     {
         private readonly byte[] _utf8Prefix;
+        private readonly IStatsDTagsFormatter _tagsFormatter;
 
-        public StatsDUtf8Formatter(string prefix)
+        public StatsDUtf8Formatter(string prefix, TagsStyle tagsStyle)
         {
             _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ?
                 Array.Empty<byte>() :
                 Encoding.UTF8.GetBytes(prefix + ".");
+            _tagsFormatter = new StatsDTagsFormatter(tagsStyle);
         }
 
         public int GetMaxBufferSize(in StatsDMessage msg)
@@ -24,17 +25,15 @@ namespace JustEat.StatsD.Buffered
 
             const int MaxMessageKindSuffixSize = 3;
             const int MaxSamplingSuffixSize = 2;
-            const int MaxTaggingSuffixSize = 2;
 
             return _utf8Prefix.Length
-                    + Encoding.UTF8.GetByteCount(msg.StatBucket)
-                    + ColonBytes
-                    + MaxSerializedDoubleSymbols
-                    + MaxMessageKindSuffixSize
-                    + MaxSamplingSuffixSize
-                    + MaxSerializedDoubleSymbols
-                    + MaxTaggingSuffixSize
-                    + Encoding.UTF8.GetByteCount(GetFormattedTags(msg.Tags));
+                   + Encoding.UTF8.GetByteCount(msg.StatBucket)
+                   + ColonBytes
+                   + MaxSerializedDoubleSymbols
+                   + MaxMessageKindSuffixSize
+                   + MaxSamplingSuffixSize
+                   + MaxSerializedDoubleSymbols
+                   + this._tagsFormatter.GetTagsBufferSize(msg.Tags);
         }
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
@@ -42,22 +41,23 @@ namespace JustEat.StatsD.Buffered
             var buffer = new Buffer(destination);
 
             bool isFormattingSuccessful =
-                  TryWriteBucketNameWithColon(ref buffer, msg.StatBucket)
+                  TryWriteBucketNameWithColon(ref buffer, msg)
                && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
                && TryWriteSampleRateIfNeeded(ref buffer, sampleRate)
-               && TryWriteTagsIfNeeded(ref buffer, msg.Tags);
+               && _tagsFormatter.TryWriteSuffixTagsIfNeeded(ref buffer, msg.Tags);
 
             written = isFormattingSuccessful ? buffer.Written : 0;
             return isFormattingSuccessful;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteBucketNameWithColon(ref Buffer buffer, string statBucket)
+        private bool TryWriteBucketNameWithColon(ref Buffer buffer, in StatsDMessage msg)
         {
-            // prefix + msg.Bucket + ":"
+            // prefix + msg.Bucket + {optional msg.Tags} + ":"
 
             return buffer.TryWriteBytes(_utf8Prefix)
-                && buffer.TryWriteUtf8String(statBucket)
+                && buffer.TryWriteUtf8String(msg.StatBucket)
+                && _tagsFormatter.TryWriteBucketNameTagsIfNeeded(ref buffer, msg.Tags)
                 && buffer.TryWriteByte((byte)':');
         }
 
@@ -108,26 +108,6 @@ namespace JustEat.StatsD.Buffered
             }
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryWriteTagsIfNeeded(ref Buffer buffer, IDictionary<string, string?>? tags)
-        {
-            // {<optional> "|#" + tag1:value1,tag2:value2}
-
-            if (tags != null && tags.Any())
-            {
-                return buffer.TryWriteBytes((byte)'|', (byte)'#')
-                       && buffer.TryWriteUtf8String(GetFormattedTags(tags));
-            }
-
-            return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetFormattedTags(IDictionary<string, string?>? tags)
-        {
-            return tags == null ? string.Empty : string.Join(",", tags.Select(tag => $"{tag.Key}:{tag.Value}"));
         }
     }
 }

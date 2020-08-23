@@ -52,6 +52,11 @@ namespace JustEat.StatsD
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the style for tagging. By default Disabled.
+        /// </summary>
+        public TagsStyle TagsStyle { get; set; } = TagsStyle.Disabled;
+
+        /// <summary>
         /// Gets or sets an optional delegate to invoke when an error occurs
         /// when sending a metric to the StatsD server.
         /// </summary>

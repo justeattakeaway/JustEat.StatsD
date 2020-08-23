@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using Shouldly;
@@ -10,12 +9,7 @@ namespace JustEat.StatsD
     public static class Utf8FormatterTests
     {
         private static readonly byte[] Buffer = new byte[512];
-        private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix");
-        private static readonly IDictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
-        {
-            ["foo"] = "bar",
-            ["another"] = "tag",
-        };
+        private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix", TagsStyle.Disabled);
 
         [Fact]
         public static void CounterSampled()
@@ -29,13 +23,6 @@ namespace JustEat.StatsD
         {
             var message = StatsDMessage.Counter(128, "bucket", null);
             Check(message, "prefix.bucket:128|c");
-        }
-
-        [Fact]
-        public static void CounterRegularWithTags()
-        {
-            var message = StatsDMessage.Counter(128, "bucket", AnyValidTags);
-            Check(message, "prefix.bucket:128|c|#foo:bar,another:tag");
         }
 
         [Fact]
@@ -53,13 +40,6 @@ namespace JustEat.StatsD
         }
 
         [Fact]
-        public static void TimingWithTags()
-        {
-            var message = StatsDMessage.Timing(128, "bucket", AnyValidTags);
-            Check(message, "prefix.bucket:128|ms|#foo:bar,another:tag");
-        }
-
-        [Fact]
         public static void TimingSampled()
         {
             var message = StatsDMessage.Timing(128, "bucket", null);
@@ -74,24 +54,10 @@ namespace JustEat.StatsD
         }
 
         [Fact]
-        public static void GaugeIntegralWithTags()
-        {
-            var message = StatsDMessage.Gauge(128, "bucket", AnyValidTags);
-            Check(message, "prefix.bucket:128|g|#foo:bar,another:tag");
-        }
-
-        [Fact]
         public static void GaugeFloat()
         {
             var message = StatsDMessage.Gauge(128.5, "bucket", null);
             Check(message, "prefix.bucket:128.5|g");
-        }
-
-        [Fact]
-        public static void GaugeFloatWithTags()
-        {
-            var message = StatsDMessage.Gauge(128.5, "bucket", AnyValidTags);
-            Check(message, "prefix.bucket:128.5|g|#foo:bar,another:tag");
         }
 
         [Fact]
