@@ -113,6 +113,62 @@ namespace JustEat.StatsD
             Check(message, tagsStyle, expected);
         }
 
+        [Theory]
+        [InlineData(1, 'z')]
+        [InlineData(16, 'z')]
+        [InlineData(256, 'z')]
+        public static void GetMaxBufferSizeCalculatesValidBufferSizesWithTags(int bucketSize, char ch)
+        {
+            var hugeBucket = new string(ch, bucketSize);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
+            var expected = $"prefix.{hugeBucket}:128.5|g|#foo:bar,empty,lorem:ipsum";
+            var anyTagsStyle = TagsStyle.DataDog;
+            var formatter = new StatsDUtf8Formatter("prefix", anyTagsStyle);
+
+            var buffer = new byte[formatter.GetMaxBufferSize(message)];
+
+            formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
+            var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
+            actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(1, 'z')]
+        [InlineData(16, 'z')]
+        [InlineData(256, 'z')]
+        public static void GetMaxBufferSizeCalculatesValidBufferSizesWithoutTags(int bucketSize, char ch)
+        {
+            var hugeBucket = new string(ch, bucketSize);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
+            var expected = $"prefix.{hugeBucket}:128.5|g";
+            var anyTagsStyle = TagsStyle.DataDog;
+            var formatter = new StatsDUtf8Formatter("prefix", anyTagsStyle);
+
+            var buffer = new byte[formatter.GetMaxBufferSize(message)];
+
+            formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
+            var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
+            actual.ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData(1, 'z')]
+        [InlineData(16, 'z')]
+        [InlineData(256, 'z')]
+        public static void GetMaxBufferSizeCalculatesValidBufferSizesIgnoringTags(int bucketSize, char ch)
+        {
+            var hugeBucket = new string(ch, bucketSize);
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
+            var expected = $"prefix.{hugeBucket}:128.5|g";
+            var formatter = new StatsDUtf8Formatter("prefix", TagsStyle.Disabled);
+
+            var buffer = new byte[formatter.GetMaxBufferSize(message)];
+
+            formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
+            var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
+            actual.ShouldBe(expected);
+        }
+
         private static void Check(StatsDMessage message, TagsStyle tagsStyle, string expected)
         {
             Check(message, 1, tagsStyle, expected);
