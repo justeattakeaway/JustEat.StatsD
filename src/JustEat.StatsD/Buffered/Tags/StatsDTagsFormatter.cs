@@ -20,19 +20,13 @@ namespace JustEat.StatsD.Buffered.Tags
             };
         }
 
-        public int GetTagsBufferSize(in IDictionary<string, string?>? tags)
-        {
-            return _inner.GetTagsBufferSize(tags);
-        }
+        public int GetTagsBufferSize(in IDictionary<string, string?>? tags) =>
+            _inner.GetTagsBufferSize(tags);
 
-        public bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags)
-        {
-            return _inner.TryWriteBucketNameTagsIfNeeded(ref buffer, tags);
-        }
+        public bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
+            _inner.TryWriteBucketNameTagsIfNeeded(ref buffer, tags);
 
-        public bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags)
-        {
-            return _inner.TryWriteSuffixTagsIfNeeded(ref buffer, tags);
-        }
+        public bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
+            _inner.TryWriteSuffixTagsIfNeeded(ref buffer, tags);
     }
 }
