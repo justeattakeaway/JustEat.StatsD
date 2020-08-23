@@ -54,6 +54,18 @@ namespace JustEat.StatsD
         }
         
         [Theory]
+        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|c")]
+        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|c")]
+        [InlineData(TagsStyle.InfluxDb, "prefix.bucket:128|c")]
+        [InlineData(TagsStyle.Librato, "prefix.bucket:128|c")]
+        [InlineData(TagsStyle.SignalFx, "prefix.bucket:128|c")]
+        public static void CounterWithoutTags(TagsStyle tagsStyle, string expected)
+        {
+            var message = StatsDMessage.Counter(128, "bucket", null);
+            Check(message, tagsStyle, expected);
+        }
+        
+        [Theory]
         [InlineData(TagsStyle.Disabled, "prefix.bucket:128|ms")]
         [InlineData(TagsStyle.DataDog, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms")]
