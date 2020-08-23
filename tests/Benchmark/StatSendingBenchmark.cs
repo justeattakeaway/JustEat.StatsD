@@ -73,14 +73,14 @@ namespace Benchmark
             _ipSender!.Increment(20, "increment.i");
             _ipSender!.Timing(Timed, "timer.i");
             _ipSender!.Gauge(354654, "gauge.i");
-            _ipSender.Gauge(25.1, "free-space.i");
+            _ipSender!.Gauge(25.1, "free-space.i");
         }
 
         [Benchmark]
         public void RunIPWithSampling()
         {
             _ipSender!.Increment(2, 0.2, "increment.i");
-            _ipSender.Timing(2, 0.2, "increment.i");
+            _ipSender!.Timing(2, 0.2, "increment.i");
         }
 
         [Benchmark]
@@ -90,14 +90,14 @@ namespace Benchmark
             _udpSender!.Increment(20, "increment.u");
             _udpSender!.Timing(Timed, "timer.u");
             _udpSender!.Gauge(354654, "gauge.u");
-            _udpSender.Gauge(25.1, "free-space.u");
+            _udpSender!.Gauge(25.1, "free-space.u");
         }
 
         [Benchmark]
         public void RunUdpWithSampling()
         {
             _udpSender!.Increment(2, 0.2, "increment.u");
-            _udpSender.Timing(2, 0.2, "increment.u");
+            _udpSender!.Timing(2, 0.2, "increment.u");
         }
     }
 }

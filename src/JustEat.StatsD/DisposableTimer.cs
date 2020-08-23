@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace JustEat.StatsD
@@ -12,7 +13,14 @@ namespace JustEat.StatsD
 
         public string Bucket { get; set; }
 
+        public IDictionary<string, string?>? Tags { get; set; }
+
         public DisposableTimer(IStatsDPublisher publisher, string bucket)
+            : this(publisher, bucket, null)
+        {
+        }
+
+        public DisposableTimer(IStatsDPublisher publisher, string bucket, IDictionary<string, string?>? tags)
         {
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
@@ -22,6 +30,7 @@ namespace JustEat.StatsD
             }
 
             Bucket = bucket;
+            Tags = tags;
             _stopwatch = Stopwatch.StartNew();
         }
 
@@ -37,7 +46,7 @@ namespace JustEat.StatsD
                     throw new InvalidOperationException($"The {nameof(Bucket)} property must have a value.");
                 }
 
-                _publisher.Timing(_stopwatch.Elapsed, Bucket);
+                _publisher.Timing(_stopwatch.Elapsed, Bucket, Tags);
             }
         }
     }

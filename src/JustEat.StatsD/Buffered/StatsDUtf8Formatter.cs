@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -22,6 +24,7 @@ namespace JustEat.StatsD.Buffered
 
             const int MaxMessageKindSuffixSize = 3;
             const int MaxSamplingSuffixSize = 2;
+            const int MaxTaggingSuffixSize = 2;
 
             return _utf8Prefix.Length
                     + Encoding.UTF8.GetByteCount(msg.StatBucket)
@@ -29,7 +32,9 @@ namespace JustEat.StatsD.Buffered
                     + MaxSerializedDoubleSymbols
                     + MaxMessageKindSuffixSize
                     + MaxSamplingSuffixSize
-                    + MaxSerializedDoubleSymbols;
+                    + MaxSerializedDoubleSymbols
+                    + MaxTaggingSuffixSize
+                    + Encoding.UTF8.GetByteCount(GetFormattedTags(msg.Tags));
         }
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
@@ -39,7 +44,8 @@ namespace JustEat.StatsD.Buffered
             bool isFormattingSuccessful =
                   TryWriteBucketNameWithColon(ref buffer, msg.StatBucket)
                && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
-               && TryWriteSampleRateIfNeeded(ref buffer, sampleRate);
+               && TryWriteSampleRateIfNeeded(ref buffer, sampleRate)
+               && TryWriteTagsIfNeeded(ref buffer, msg.Tags);
 
             written = isFormattingSuccessful ? buffer.Written : 0;
             return isFormattingSuccessful;
@@ -102,6 +108,26 @@ namespace JustEat.StatsD.Buffered
             }
 
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryWriteTagsIfNeeded(ref Buffer buffer, IDictionary<string, string?>? tags)
+        {
+            // {<optional> "|#" + tag1:value1,tag2:value2}
+
+            if (tags != null && tags.Any())
+            {
+                return buffer.TryWriteBytes((byte)'|', (byte)'#')
+                       && buffer.TryWriteUtf8String(GetFormattedTags(tags));
+            }
+
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetFormattedTags(IDictionary<string, string?>? tags)
+        {
+            return tags == null ? string.Empty : string.Join(",", tags.Select(tag => $"{tag.Key}:{tag.Value}"));
         }
     }
 }

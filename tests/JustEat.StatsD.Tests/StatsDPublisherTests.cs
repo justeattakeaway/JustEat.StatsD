@@ -60,6 +60,29 @@ namespace JustEat.StatsD
         }
 
         [Fact]
+        public static void Metrics_Sent_If_Tags_Are_Null()
+        {
+            // Arrange
+            var mock = new Mock<IStatsDTransport>();
+
+            var config = new StatsDConfiguration
+            {
+                Prefix = "red",
+            };
+
+            using (var publisher = new StatsDPublisher(config, mock.Object))
+            {
+                // Act
+                publisher.Increment(10, 1.0, "black", null);
+                publisher.Gauge(10, "black", null);
+                publisher.Timing(10, 1.0, "black", null);
+            }
+
+            // Assert
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(3));
+        }
+
+        [Fact]
         public static void Metrics_Not_Sent_If_Array_Is_Null_Or_Empty()
         {
             // Arrange
