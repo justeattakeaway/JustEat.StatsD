@@ -33,7 +33,7 @@ namespace JustEat.StatsD.Buffered.Tags
 
             return _utf8Prefix.Length
                 + Encoding.UTF8.GetByteCount(GetFormattedTags(tags!))
-                + this._utf8Suffix.Length;
+                + _utf8Suffix.Length;
         }
 
         public bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
