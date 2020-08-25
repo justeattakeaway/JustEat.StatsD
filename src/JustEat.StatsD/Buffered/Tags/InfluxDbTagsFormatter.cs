@@ -2,7 +2,7 @@ namespace JustEat.StatsD.Buffered.Tags
 {
     /// <summary>
     /// Formats StatsD tags for InfluxDB.
-    /// Tags placed right after the bucket name with format: "," + tag1=value1,tag2,tag3=value
+    /// Tags placed right after the bucket name with format: <code>"," + tag1=value1,tag2,tag3=value</code>.
     /// </summary>
     public sealed class InfluxDbTagsFormatter : StatsDTagsFormatter
     {
