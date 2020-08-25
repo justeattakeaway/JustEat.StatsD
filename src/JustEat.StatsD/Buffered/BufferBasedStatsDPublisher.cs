@@ -29,7 +29,7 @@ namespace JustEat.StatsD.Buffered
 
             _onError = configuration.OnError;
             _transport = transport;
-            _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsStyle);
+            _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsFormatter);
         }
 
         public void Increment(long value, double sampleRate, string bucket, IDictionary<string, string?>? tags)

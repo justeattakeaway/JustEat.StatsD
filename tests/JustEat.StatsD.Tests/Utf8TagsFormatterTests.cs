@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
+using JustEat.StatsD.Buffered.Tags;
 using Shouldly;
 using Xunit;
 
@@ -18,99 +19,99 @@ namespace JustEat.StatsD
         };
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|c|@0.5")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c|@0.5")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c|@0.5")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c|@0.5")]
-        public static void CounterSampled(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c|@0.5")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c|@0.5")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c|@0.5")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c|@0.5")]
+        public static void CounterSampled(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Counter(128, "bucket", AnyValidTags);
-            Check(message, 0.5, tagsStyle, expected);
+            Check(message, 0.5, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|c")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c")]
-        public static void CounterRegular(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c")]
+        public static void CounterRegular(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Counter(128, "bucket", AnyValidTags);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:-128|c")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:-128|c")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:-128|c")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:-128|c")]
-        public static void CounterNegative(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:-128|c")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:-128|c")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:-128|c")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:-128|c")]
+        public static void CounterNegative(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Counter(-128, "bucket", AnyValidTags);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|c")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|c")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket:128|c")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket:128|c")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket:128|c")]
-        public static void CounterWithoutTags(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket:128|c")]
+        public static void CounterWithoutTags(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Counter(128, "bucket", null);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|ms")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms")]
-        public static void Timing(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|ms")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms")]
+        public static void Timing(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Timing(128, "bucket", AnyValidTags);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|ms|@0.5")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms|@0.5")]
-        public static void TimingSampled(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|ms|@0.5")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms|@0.5")]
+        public static void TimingSampled(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Timing(128, "bucket", AnyValidTags);
-            Check(message, 0.5, tagsStyle, expected);
+            Check(message, 0.5, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128|g")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|g")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|g")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|g")]
-        public static void GaugeIntegral(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|g")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|g")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|g")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|g")]
+        public static void GaugeIntegral(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Gauge(128, "bucket", AnyValidTags);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
         
         [Theory]
-        [InlineData(TagsStyle.Disabled, "prefix.bucket:128.5|g")]
-        [InlineData(TagsStyle.DataDog, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum")]
-        [InlineData(TagsStyle.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128.5|g")]
-        [InlineData(TagsStyle.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128.5|g")]
-        [InlineData(TagsStyle.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128.5|g")]
-        public static void GaugeFloat(TagsStyle tagsStyle, string expected)
+        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128.5|g")]
+        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128.5|g")]
+        [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128.5|g")]
+        [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128.5|g")]
+        public static void GaugeFloat(TagsFormatter tagsFormatter, string expected)
         {
             var message = StatsDMessage.Gauge(128.5, "bucket", AnyValidTags);
-            Check(message, tagsStyle, expected);
+            Check(message, tagsFormatter, expected);
         }
 
         [Theory]
@@ -122,8 +123,8 @@ namespace JustEat.StatsD
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
             var expected = $"prefix.{hugeBucket}:128.5|g|#foo:bar,empty,lorem:ipsum";
-            var anyTagsStyle = TagsStyle.DataDog;
-            var formatter = new StatsDUtf8Formatter("prefix", anyTagsStyle);
+            var anyTagsFormatter = TagsFormatter.DataDog;
+            var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
 
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
 
@@ -141,8 +142,8 @@ namespace JustEat.StatsD
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
             var expected = $"prefix.{hugeBucket}:128.5|g";
-            var anyTagsStyle = TagsStyle.DataDog;
-            var formatter = new StatsDUtf8Formatter("prefix", anyTagsStyle);
+            var anyTagsFormatter = TagsFormatter.DataDog;
+            var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
 
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
 
@@ -160,7 +161,7 @@ namespace JustEat.StatsD
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
             var expected = $"prefix.{hugeBucket}:128.5|g";
-            var formatter = new StatsDUtf8Formatter("prefix", TagsStyle.Disabled);
+            var formatter = GetStatsDUtf8Formatter();
 
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
 
@@ -169,17 +170,41 @@ namespace JustEat.StatsD
             actual.ShouldBe(expected);
         }
 
-        private static void Check(StatsDMessage message, TagsStyle tagsStyle, string expected)
+        private static void Check(StatsDMessage message, TagsFormatter tagsFormatter, string expected)
         {
-            Check(message, 1, tagsStyle, expected);
+            Check(message, 1, tagsFormatter, expected);
         }
 
-        private static void Check(StatsDMessage message, double sampleRate, TagsStyle tagsStyle, string expected)
+        private static void Check(StatsDMessage message, double sampleRate, TagsFormatter tagsFormatter, string expected)
         {
-            var formatter = new StatsDUtf8Formatter("prefix", tagsStyle);
+            var formatter = GetStatsDUtf8Formatter(tagsFormatter);
             formatter.TryFormat(message, sampleRate, Buffer, out int written).ShouldBe(true);
             var result = Encoding.UTF8.GetString(Buffer.AsSpan(0, written));
             result.ShouldBe(expected);
+        }
+
+        private static StatsDUtf8Formatter GetStatsDUtf8Formatter(TagsFormatter tagsFormatter = TagsFormatter.Disabled)
+        {
+            IStatsDTagsFormatter statsDTagsFormatter = tagsFormatter switch
+            {
+                TagsFormatter.Disabled => new NoOpTagsFormatter(),
+                TagsFormatter.DataDog => new DataDogTagsFormatter(),
+                TagsFormatter.InfluxDb => new InfluxDbTagsFormatter(),
+                TagsFormatter.Librato => new LibratoTagsFormatter(),
+                TagsFormatter.SignalFx => new SignalFxTagsFormatter(),
+                _ => throw new ArgumentOutOfRangeException(nameof(tagsFormatter))
+            };
+
+            return new StatsDUtf8Formatter("prefix", statsDTagsFormatter);
+        }
+
+        public enum TagsFormatter
+        {
+            Disabled,
+            DataDog,
+            InfluxDb,
+            Librato,
+            SignalFx,
         }
     }
 }

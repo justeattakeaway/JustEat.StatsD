@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD.Buffered;
-using JustEat.StatsD;
+using JustEat.StatsD.Buffered.Tags;
 
 namespace Benchmark
 {
     [MemoryDiagnoser]
     public class Utf8FormatterBenchmark
     {
-        private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", TagsStyle.Disabled);
+        private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", new NoOpTagsFormatter());
 
         private static readonly byte[] Buffer = new byte[512];
 

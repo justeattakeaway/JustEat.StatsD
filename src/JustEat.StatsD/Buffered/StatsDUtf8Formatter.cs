@@ -10,12 +10,12 @@ namespace JustEat.StatsD.Buffered
         private readonly byte[] _utf8Prefix;
         private readonly IStatsDTagsFormatter _tagsFormatter;
 
-        public StatsDUtf8Formatter(string prefix, TagsStyle tagsStyle)
+        public StatsDUtf8Formatter(string prefix, IStatsDTagsFormatter tagsFormatter)
         {
             _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ?
                 Array.Empty<byte>() :
                 Encoding.UTF8.GetBytes(prefix + ".");
-            _tagsFormatter = new StatsDTagsFormatter(tagsStyle);
+            _tagsFormatter = tagsFormatter ?? new NoOpTagsFormatter();
         }
 
         public int GetMaxBufferSize(in StatsDMessage msg)

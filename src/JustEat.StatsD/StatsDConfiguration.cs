@@ -1,4 +1,5 @@
 using System;
+using JustEat.StatsD.Buffered.Tags;
 
 namespace JustEat.StatsD
 {
@@ -52,9 +53,9 @@ namespace JustEat.StatsD
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the style for tagging. By default Disabled.
+        /// Gets or sets the formatter for tags. By default NoOpTagsFormatter.
         /// </summary>
-        public TagsStyle TagsStyle { get; set; } = TagsStyle.Disabled;
+        public IStatsDTagsFormatter TagsFormatter { get; set; } = new NoOpTagsFormatter();
 
         /// <summary>
         /// Gets or sets an optional delegate to invoke when an error occurs

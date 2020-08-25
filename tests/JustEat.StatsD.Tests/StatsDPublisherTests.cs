@@ -171,19 +171,20 @@ namespace JustEat.StatsD
         }
 
         [Fact]
-        public static void Constructor_Throws_If_Style_Is_Not_Supported()
+        public static void Constructor_Does_Not_Throw_If_Tags_Formatter_Is_Null()
         {
             // Arrange
             var configuration = new StatsDConfiguration
             {
-                TagsStyle = (TagsStyle)(-1),
+                TagsFormatter = null!,
             };
             var transport = Mock.Of<IStatsDTransport>();
 
-            // Act and Assert
-            Assert.Throws<ArgumentOutOfRangeException>(
-                "tagsStyle",
-                () => new StatsDPublisher(configuration, transport));
+            // Act
+            using var publisher = new StatsDPublisher(configuration, transport);
+
+            // Assert
+            Assert.NotNull(publisher);
         }
     }
 }

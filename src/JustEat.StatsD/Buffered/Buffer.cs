@@ -2,15 +2,18 @@ using System;
 
 namespace JustEat.StatsD.Buffered
 {
-    internal ref struct Buffer
+    /// <summary>
+    /// A class representing the buffer where the StatsD message is written.
+    /// </summary>
+    public ref struct Buffer
     {
-        public Buffer(Span<byte> source)
+        internal Buffer(Span<byte> source)
         {
             Tail = source;
             Written = 0;
         }
 
-        public Span<byte> Tail;
-        public int Written;
+        internal Span<byte> Tail;
+        internal int Written;
     }
 }
