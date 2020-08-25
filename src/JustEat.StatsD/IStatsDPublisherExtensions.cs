@@ -105,13 +105,25 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to increment the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
+        /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
+        public static void Increment(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
+        {
+            publisher.Increment(value, sampleRate, tags: null, buckets);
+        }
+
+        /// <summary>
+        /// Publishes counter(s) for the specified bucket(s) and value.
+        /// </summary>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
+        /// <param name="value">The value to increment the counter(s) by.</param>
+        /// <param name="sampleRate">The sample rate for the counter(s).</param>
         /// <param name="tags">The tag(s) to publish with the counter.</param>
         /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
         public static void Increment(
             this IStatsDPublisher publisher,
             long value,
             double sampleRate,
-            IDictionary<string, string?>? tags = null,
+            IDictionary<string, string?>? tags,
             params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
@@ -204,13 +216,25 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to decrement the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
+        /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
+        public static void Decrement(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
+        {
+            publisher.Decrement(value, sampleRate, tags: null, buckets);
+        }
+
+        /// <summary>
+        /// Publishes counter decrement(s) for the specified bucket(s) and value.
+        /// </summary>
+        /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
+        /// <param name="value">The value to decrement the counter(s) by.</param>
+        /// <param name="sampleRate">The sample rate for the counter(s).</param>
         /// <param name="tags">The tag(s) to publish with the counter(s).</param>
         /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
         public static void Decrement(
             this IStatsDPublisher publisher,
             long value,
             double sampleRate,
-            IDictionary<string, string?>? tags = null,
+            IDictionary<string, string?>? tags,
             params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
