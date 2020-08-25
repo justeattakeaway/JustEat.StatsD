@@ -196,8 +196,6 @@ The template class `StatsDTagsFormatter` can be inherited providing:
 * **tagsSeparator**: the string that will be placed between tags.
 * **keyValueSeparator**: the string that will be placed between the tag key and its value.
 
-A new implementation of `IStatsDTagsFormatter` can be written from scratch. For this purpose there are available extension methods to write in the `Buffer`.
-
 ### Example of using the interface
 
 Given an existing instance of `IStatsDPublisher` called `stats` you can do for e.g.:
