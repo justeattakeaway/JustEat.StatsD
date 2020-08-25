@@ -221,7 +221,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="func">A delegate to a method whose invocation should be timed and result returned.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
