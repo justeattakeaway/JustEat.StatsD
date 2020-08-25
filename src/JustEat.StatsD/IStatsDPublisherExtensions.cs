@@ -232,7 +232,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="duration">The value to publish for the timer.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         public static void Timing(
             this IStatsDPublisher publisher,
             TimeSpan duration,
