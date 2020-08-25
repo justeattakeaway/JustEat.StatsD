@@ -16,7 +16,7 @@ namespace JustEat.StatsD
         /// </summary>
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <returns>
         /// An <see cref="IDisposableTimer"/> that publishes the metric when the instance is disposed of.
         /// </returns>
@@ -38,7 +38,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="publisher"/>, <paramref name="bucket"/> or <paramref name="action"/> is <see langword="null"/>.
         /// </exception>
@@ -66,7 +66,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="publisher"/>, <paramref name="bucket"/> or <paramref name="action"/> is <see langword="null"/>.
         /// </exception>
@@ -94,7 +94,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
@@ -125,7 +125,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to publish the timer for.</param>
         /// <param name="action">A delegate to a method whose invocation should be timed.</param>
-        /// <param name="tags">The tags to publish with the timer.</param>
+        /// <param name="tags">The tag(s) to publish with the timer.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to time.
         /// </returns>
