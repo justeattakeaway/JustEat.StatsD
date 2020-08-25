@@ -36,7 +36,7 @@ namespace JustEat.StatsD.Buffered.Tags
                 + _utf8Suffix.Length;
         }
 
-        public bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
+        public virtual bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
             TryWriteTagsIfNeeded(ref buffer, tags, TagsLocation.BucketName);
 
         public bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
