@@ -27,7 +27,7 @@ namespace JustEat.StatsD.Buffered.Tags
         {
             _prefix = prefix ?? string.Empty;
             _suffix = suffix ?? string.Empty;
-            this.AreTrailing = areTrailing;
+            AreTrailing = areTrailing;
             _tagsSeparator = tagsSeparator ?? string.Empty;
             _keyValueSeparator = keyValueSeparator ?? string.Empty;
         }
