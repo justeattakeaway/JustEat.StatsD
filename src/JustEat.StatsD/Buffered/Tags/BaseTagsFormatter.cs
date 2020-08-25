@@ -67,6 +67,6 @@ namespace JustEat.StatsD.Buffered.Tags
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool AreTagsPresent(IDictionary<string, string?>? tags) =>
-            tags != null && tags.Any();
+            tags != null && tags.Count > 0;
     }
 }
