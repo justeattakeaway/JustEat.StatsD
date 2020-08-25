@@ -1,5 +1,6 @@
 #nullable enable
 JustEat.StatsD.Buffered.Buffer
+JustEat.StatsD.Buffered.BufferExtensions
 JustEat.StatsD.Buffered.Tags.DataDogTagsFormatter
 JustEat.StatsD.Buffered.Tags.DataDogTagsFormatter.DataDogTagsFormatter() -> void
 JustEat.StatsD.Buffered.Tags.InfluxDbTagsFormatter
@@ -73,6 +74,13 @@ JustEat.StatsD.StatsDPublisher.Timing(long duration, double sampleRate, string! 
 JustEat.StatsD.StatsDServiceCollectionExtensions
 JustEat.StatsD.TimerExtensions
 const JustEat.StatsD.StatsDConfiguration.DefaultPort = 8125 -> int
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteByte(this ref JustEat.StatsD.Buffered.Buffer src, byte ch) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteBytes(this ref JustEat.StatsD.Buffered.Buffer src, System.Span<byte> destination) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteBytes(this ref JustEat.StatsD.Buffered.Buffer src, byte ch1, byte ch2) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteBytes(this ref JustEat.StatsD.Buffered.Buffer src, byte ch1, byte ch2, byte ch3) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteDouble(this ref JustEat.StatsD.Buffered.Buffer src, double val) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteInt64(this ref JustEat.StatsD.Buffered.Buffer src, long val) -> bool
+static JustEat.StatsD.Buffered.BufferExtensions.TryWriteUtf8String(this ref JustEat.StatsD.Buffered.Buffer src, string! str) -> bool
 static JustEat.StatsD.EndpointLookups.EndPointFactory.MakeEndPointSource(System.Net.EndPoint! endpoint, System.TimeSpan? endpointCacheDuration) -> JustEat.StatsD.EndpointLookups.IEndPointSource!
 static JustEat.StatsD.EndpointLookups.EndPointFactory.MakeEndPointSource(string! host, int port, System.TimeSpan? endpointCacheDuration) -> JustEat.StatsD.EndpointLookups.IEndPointSource!
 static JustEat.StatsD.IStatsDPublisherExtensions.Decrement(this JustEat.StatsD.IStatsDPublisher! publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string!>! buckets, System.Collections.Generic.IDictionary<string!, string?>? tags = null) -> void
