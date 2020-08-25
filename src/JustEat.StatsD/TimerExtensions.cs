@@ -150,7 +150,7 @@ namespace JustEat.StatsD
         }
 
         /// <summary>
-        /// Starts a new timer for the specified bucket and tags which is started when the specified delegate is invoked
+        /// Starts a new timer for the specified bucket and any tag(s) which is started when the specified delegate is invoked
         /// and is stopped and published when the delegate invocation completes.
         /// </summary>
         /// <typeparam name="T">The type of the result of the delegate to invoke.</typeparam>
