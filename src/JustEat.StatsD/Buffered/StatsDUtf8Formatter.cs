@@ -33,7 +33,7 @@ namespace JustEat.StatsD.Buffered
                    + MaxMessageKindSuffixSize
                    + MaxSamplingSuffixSize
                    + MaxSerializedDoubleSymbols
-                   + this._tagsFormatter.GetTagsBufferSize(msg.Tags);
+                   + _tagsFormatter.GetTagsBufferSize(msg.Tags);
         }
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
