@@ -53,7 +53,7 @@ namespace JustEat.StatsD
         public string Prefix { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the formatter for tags. By default NoOpTagsFormatter.
+        /// Gets or sets the formatter for tags. By default an instance of <see cref="NoOpTagsFormatter"/> is used.
         /// </summary>
         public IStatsDTagsFormatter TagsFormatter { get; set; } = new NoOpTagsFormatter();
 

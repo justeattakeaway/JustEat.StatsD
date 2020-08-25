@@ -8,6 +8,11 @@ namespace JustEat.StatsD.Buffered.Tags
     public interface IStatsDTagsFormatter
     {
         /// <summary>
+        /// Gets a value indicating whether the tags are at the end of the message or otherwise, they are placed with the bucket name.
+        /// </summary>
+        bool AreTrailing { get; }
+
+        /// <summary>
         /// Calculates the buffer size to write tags considering the fixed characters and the size of the tag(s).
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
@@ -15,19 +20,10 @@ namespace JustEat.StatsD.Buffered.Tags
         int GetTagsBufferSize(in IDictionary<string, string?>? tags);
 
         /// <summary>
-        /// Writes to the buffer the tag(s) if the are included and they are placed along with the bucket name.
+        /// Calculates the tag(s) formatted to be included in the StatsD message.
         /// </summary>
-        /// <param name="buffer">The buffer where the tag(s) should be written.</param>
         /// <param name="tags">The tag(s) included.</param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
-        bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags);
-        
-        /// <summary>
-        /// Writes to the buffer the tag(s) if the are included and they are placed at the end of the StatsD message.
-        /// </summary>
-        /// <param name="buffer">The buffer where the tag(s) should be written.</param>
-        /// <param name="tags">The tag(s) included.</param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
-        bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags);
+        /// <returns>The tag(s) formatted.</returns>
+        string GetFormattedTags(in IDictionary<string, string?>? tags);
     }
 }

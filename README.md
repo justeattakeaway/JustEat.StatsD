@@ -192,7 +192,7 @@ The template class `StatsDTagsFormatter` can be inherited providing:
 
 * **prefix**: the string that will appear before the tag(s).
 * **suffix**: the string that will appear after the tag(s).
-* **areBucketNameTags**: a boolean indicating if the tag(s) are placed right after the bucket name (like it is supported by InfluxDB, Librato or SignalFX) or otherwise at the end of the StatsD message (like it is supported by AWS CloudWatch, DataDog or Splunk).
+* **areTrailing**: a boolean indicating if the tag(s) are placed at the end of the StatsD message (like it is supported by AWS CloudWatch, DataDog or Splunk) or otherwise they are right after the bucket name (like it is supported by InfluxDB, Librato or SignalFX).
 * **tagsSeparator**: the string that will be placed between tags.
 * **keyValueSeparator**: the string that will be placed between the tag key and its value.
 

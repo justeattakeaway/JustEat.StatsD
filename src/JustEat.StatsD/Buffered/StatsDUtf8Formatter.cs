@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using JustEat.StatsD.Buffered.Tags;
@@ -44,7 +45,7 @@ namespace JustEat.StatsD.Buffered
                   TryWriteBucketNameWithColon(ref buffer, msg)
                && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
                && TryWriteSampleRateIfNeeded(ref buffer, sampleRate)
-               && _tagsFormatter.TryWriteSuffixTagsIfNeeded(ref buffer, msg.Tags);
+               && TryWriteTrailingTagsIfNeeded(ref buffer, msg.Tags);
 
             written = isFormattingSuccessful ? buffer.Written : 0;
             return isFormattingSuccessful;
@@ -57,7 +58,7 @@ namespace JustEat.StatsD.Buffered
 
             return buffer.TryWriteBytes(_utf8Prefix)
                 && buffer.TryWriteUtf8String(msg.StatBucket)
-                && _tagsFormatter.TryWriteBucketNameTagsIfNeeded(ref buffer, msg.Tags)
+                && TryWriteBucketNameTagsIfNeeded(ref buffer, msg.Tags)
                 && buffer.TryWriteByte((byte)':');
         }
 
@@ -109,5 +110,17 @@ namespace JustEat.StatsD.Buffered
 
             return true;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
+            !_tagsFormatter.AreTrailing
+                ? buffer.TryWriteUtf8String(_tagsFormatter.GetFormattedTags(tags))
+                : true;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteTrailingTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
+            _tagsFormatter.AreTrailing
+                ? buffer.TryWriteUtf8String(_tagsFormatter.GetFormattedTags(tags))
+                : true;
     }
 }

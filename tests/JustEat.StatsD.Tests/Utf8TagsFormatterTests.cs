@@ -19,8 +19,8 @@ namespace JustEat.StatsD
         };
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c|@0.5")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|c|@0.5")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c|@0.5")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c|@0.5")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c|@0.5")]
@@ -31,8 +31,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c")]
@@ -43,8 +43,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:-128|c")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:-128|c")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:-128|c")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:-128|c")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:-128|c")]
@@ -55,8 +55,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|c")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|c")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|c")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket:128|c")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket:128|c")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket:128|c")]
@@ -67,8 +67,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|ms")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|ms")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms")]
@@ -79,8 +79,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|ms|@0.5")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|ms|@0.5")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms|@0.5")]
@@ -91,8 +91,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128|g")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128|g")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|g")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|g")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|g")]
@@ -103,8 +103,8 @@ namespace JustEat.StatsD
         }
         
         [Theory]
-        [InlineData(TagsFormatter.Disabled, "prefix.bucket:128.5|g")]
-        [InlineData(TagsFormatter.DataDog, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum")]
+        [InlineData(TagsFormatter.NoOp, "prefix.bucket:128.5|g")]
+        [InlineData(TagsFormatter.Trailing, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum")]
         [InlineData(TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128.5|g")]
         [InlineData(TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128.5|g")]
         [InlineData(TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128.5|g")]
@@ -123,7 +123,7 @@ namespace JustEat.StatsD
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
             var expected = $"prefix.{hugeBucket}:128.5|g|#foo:bar,empty,lorem:ipsum";
-            var anyTagsFormatter = TagsFormatter.DataDog;
+            var anyTagsFormatter = TagsFormatter.Trailing;
             var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
 
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
@@ -142,7 +142,7 @@ namespace JustEat.StatsD
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
             var expected = $"prefix.{hugeBucket}:128.5|g";
-            var anyTagsFormatter = TagsFormatter.DataDog;
+            var anyTagsFormatter = TagsFormatter.Trailing;
             var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
 
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
@@ -183,12 +183,12 @@ namespace JustEat.StatsD
             result.ShouldBe(expected);
         }
 
-        private static StatsDUtf8Formatter GetStatsDUtf8Formatter(TagsFormatter tagsFormatter = TagsFormatter.Disabled)
+        private static StatsDUtf8Formatter GetStatsDUtf8Formatter(TagsFormatter tagsFormatter = TagsFormatter.NoOp)
         {
             IStatsDTagsFormatter statsDTagsFormatter = tagsFormatter switch
             {
-                TagsFormatter.Disabled => new NoOpTagsFormatter(),
-                TagsFormatter.DataDog => new DataDogTagsFormatter(),
+                TagsFormatter.NoOp => new NoOpTagsFormatter(),
+                TagsFormatter.Trailing => new TrailingTagsFormatter(),
                 TagsFormatter.InfluxDb => new InfluxDbTagsFormatter(),
                 TagsFormatter.Librato => new LibratoTagsFormatter(),
                 TagsFormatter.SignalFx => new SignalFxTagsFormatter(),
@@ -200,8 +200,8 @@ namespace JustEat.StatsD
 
         public enum TagsFormatter
         {
-            Disabled,
-            DataDog,
+            NoOp,
+            Trailing,
             InfluxDb,
             Librato,
             SignalFx,

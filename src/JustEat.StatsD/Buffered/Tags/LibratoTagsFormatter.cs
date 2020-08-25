@@ -7,7 +7,7 @@ namespace JustEat.StatsD.Buffered.Tags
     public sealed class LibratoTagsFormatter : StatsDTagsFormatter
     {
         private const string Prefix = "#";
-        private const bool AreBucketNameTags = true;
+        private const bool AreTrailingTags = false;
         private const string TagsSeparator = ",";
         private const string KeyValueSeparator = "=";
         
@@ -15,7 +15,7 @@ namespace JustEat.StatsD.Buffered.Tags
         /// Initializes a new instance of the <see cref="LibratoTagsFormatter"/> class.
         /// </summary>
         public LibratoTagsFormatter()
-            : base(Prefix, string.Empty, AreBucketNameTags, TagsSeparator, KeyValueSeparator)
+            : base(Prefix, string.Empty, AreTrailingTags, TagsSeparator, KeyValueSeparator)
         {
         }
     }

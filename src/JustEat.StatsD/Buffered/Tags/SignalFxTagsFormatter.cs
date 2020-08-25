@@ -8,7 +8,7 @@ namespace JustEat.StatsD.Buffered.Tags
     {
         private const string Prefix = "[";
         private const string Suffix = "]";
-        private const bool AreBucketNameTags = true;
+        private const bool AreTrailingTags = false;
         private const string TagsSeparator = ",";
         private const string KeyValueSeparator = "=";
         
@@ -16,7 +16,7 @@ namespace JustEat.StatsD.Buffered.Tags
         /// Initializes a new instance of the <see cref="SignalFxTagsFormatter"/> class.
         /// </summary>
         public SignalFxTagsFormatter()
-            : base(Prefix, Suffix, AreBucketNameTags, TagsSeparator, KeyValueSeparator)
+            : base(Prefix, Suffix, AreTrailingTags, TagsSeparator, KeyValueSeparator)
         {
         }
     }

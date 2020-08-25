@@ -6,18 +6,9 @@ using System.Text;
 
 namespace JustEat.StatsD.Buffered
 {
-    /// <summary>
-    /// Extension methods to work with <see cref="Buffer"/>.
-    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class BufferExtensions
+    internal static class BufferExtensions
     {
-        /// <summary>
-        /// Writes the <paramref name="destination"/> into the buffer.
-        /// </summary>
-        /// <param name="src">The source buffer.</param>
-        /// <param name="destination">The memory span to copy to the buffer.</param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteBytes(this ref Buffer src, Span<byte> destination)
         {
@@ -31,13 +22,8 @@ namespace JustEat.StatsD.Buffered
             src.Written += destination.Length;
             return true;
         }
-
-        /// <summary>
-        /// Writes the <paramref name="str"/> into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="str"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUtf8String(this ref Buffer src, string str)
         {
 #if NETSTANDARD2_0 || NET461
@@ -62,12 +48,6 @@ namespace JustEat.StatsD.Buffered
 #endif
         }
 
-        /// <summary>
-        /// Writes the <paramref name="ch"/> into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="ch"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteByte(this ref Buffer src, byte ch)
         {
@@ -84,13 +64,6 @@ namespace JustEat.StatsD.Buffered
             return true;
         }
 
-        /// <summary>
-        /// Writes the given bytes into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="ch1"></param>
-        /// <param name="ch2"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2)
         {
@@ -108,14 +81,6 @@ namespace JustEat.StatsD.Buffered
             return true;
         }
 
-        /// <summary>
-        /// Writes the given bytes into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="ch1"></param>
-        /// <param name="ch2"></param>
-        /// <param name="ch3"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2, byte ch3)
         {
@@ -134,12 +99,6 @@ namespace JustEat.StatsD.Buffered
             return true;
         }
 
-        /// <summary>
-        /// Writes the <paramref name="val"/> into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="val"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteInt64(this ref Buffer src, long val)
         {
@@ -154,12 +113,6 @@ namespace JustEat.StatsD.Buffered
             return true;
         }
 
-        /// <summary>
-        /// Writes the <paramref name="val"/> into the buffer.
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="val"></param>
-        /// <returns>A value indicating whether the operation was performed successfully.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteDouble(this ref Buffer src, double val)
         {

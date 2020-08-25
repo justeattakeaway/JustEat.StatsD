@@ -4,10 +4,10 @@ namespace JustEat.StatsD.Buffered.Tags
 {
     internal sealed class NoOpTagsFormatter : IStatsDTagsFormatter
     {
+        public bool AreTrailing { get; }
+
         public int GetTagsBufferSize(in IDictionary<string, string?>? tags) => 0;
         
-        public bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) => true;
-        
-        public bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) => true;
+        public string GetFormattedTags(in IDictionary<string, string?>? tags) => string.Empty;
     }
 }

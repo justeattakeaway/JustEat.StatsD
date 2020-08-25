@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,9 +10,8 @@ namespace JustEat.StatsD.Buffered.Tags
     /// </summary>
     public abstract class StatsDTagsFormatter : IStatsDTagsFormatter
     {
-        private readonly byte[] _utf8Prefix;
-        private readonly byte[] _utf8Suffix;
-        private readonly bool _areBucketNameTags;
+        private readonly string _prefix;
+        private readonly string _suffix;
         private readonly string _tagsSeparator;
         private readonly string _keyValueSeparator;
         
@@ -22,17 +20,20 @@ namespace JustEat.StatsD.Buffered.Tags
         /// </summary>
         /// <param name="prefix">The characters before the tag(s).</param>
         /// <param name="suffix">The characters after the tag(s).</param>
-        /// <param name="areBucketNameTags"><c>true</c> if the tags are placed along with the bucket name. <c>false</c> if tags are at the end of the message.</param>
+        /// <param name="areTrailing"><c>true</c> if the tags at the end of the message. <c>false</c> if tags are placed along with the bucket name.</param>
         /// <param name="tagsSeparator">The characters between tags.</param>
         /// <param name="keyValueSeparator">The characters between the tag key and its value.</param>
-        protected StatsDTagsFormatter(string prefix, string suffix, bool areBucketNameTags, string tagsSeparator, string keyValueSeparator)
+        protected StatsDTagsFormatter(string prefix, string suffix, bool areTrailing, string tagsSeparator, string keyValueSeparator)
         {
-            _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(prefix);
-            _utf8Suffix = string.IsNullOrWhiteSpace(suffix) ? Array.Empty<byte>() : Encoding.UTF8.GetBytes(suffix);
-            _areBucketNameTags = areBucketNameTags;
-            _tagsSeparator = tagsSeparator;
-            _keyValueSeparator = keyValueSeparator;
+            _prefix = prefix ?? string.Empty;
+            _suffix = suffix ?? string.Empty;
+            this.AreTrailing = areTrailing;
+            _tagsSeparator = tagsSeparator ?? string.Empty;
+            _keyValueSeparator = keyValueSeparator ?? string.Empty;
         }
+        
+        /// <inheritdoc />
+        public bool AreTrailing { get; }
 
         /// <inheritdoc />
         public virtual int GetTagsBufferSize(in IDictionary<string, string?>? tags)
@@ -43,30 +44,20 @@ namespace JustEat.StatsD.Buffered.Tags
                 return NoTagsSize;
             }
 
-            return _utf8Prefix.Length
+            return _prefix.Length
                 + Encoding.UTF8.GetByteCount(GetFormattedTags(tags!))
-                + _utf8Suffix.Length;
+                + _suffix.Length;
         }
         
         /// <inheritdoc />
-        public virtual bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
-            TryWriteTagsIfNeeded(ref buffer, tags, _areBucketNameTags);
-        
-        /// <inheritdoc />
-        public virtual bool TryWriteSuffixTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
-            TryWriteTagsIfNeeded(ref buffer, tags, !_areBucketNameTags);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags, bool include)
+        public virtual string GetFormattedTags(in IDictionary<string, string?>? tags)
         {
-            if (include && AreTagsPresent(tags))
+            if (AreTagsPresent(tags))
             {
-                return buffer.TryWriteBytes(_utf8Prefix)
-                       && buffer.TryWriteUtf8String(GetFormattedTags(tags!))
-                       && buffer.TryWriteBytes(_utf8Suffix);
+                return _prefix + GetFormattedTags(tags!) + _suffix;
             }
 
-            return true;
+            return string.Empty;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
