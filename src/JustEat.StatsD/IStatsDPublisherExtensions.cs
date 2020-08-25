@@ -130,7 +130,7 @@ namespace JustEat.StatsD
         /// </summary>
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to decrement the counter for.</param>
-        /// <param name="tags">The tags to publish with the counter.</param>
+        /// <param name="tags">The tag(s) to publish with the counter.</param>
         public static void Decrement(this IStatsDPublisher publisher, string bucket, IDictionary<string, string?>? tags = null)
         {
             publisher.Increment(-1, DefaultSampleRate, bucket, tags);
