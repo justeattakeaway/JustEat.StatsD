@@ -180,7 +180,7 @@ namespace JustEat.StatsD
 
             // Act and assert
             Check(message, 0.5, formatter, "prefix.bucket:128|c|@0.5");
-            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
         
         [Fact]
@@ -192,7 +192,7 @@ namespace JustEat.StatsD
 
             // Act and assert
             Check(message, 0.5, formatter, "prefix.bucket:128|ms|@0.5");
-            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
 
         [Fact]
@@ -204,7 +204,7 @@ namespace JustEat.StatsD
 
             // Act and assert
             Check(message, formatter, "prefix.bucket:128|g");
-            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
 
         private static void Check(StatsDMessage message, TagsFormatter tagsFormatter, string expected)
@@ -248,7 +248,7 @@ namespace JustEat.StatsD
         private static Mock<IStatsDTagsFormatter> GetNullTagsFormatterMock(out StatsDUtf8Formatter formatter)
         {
             var tagsFormatterMock = new Mock<IStatsDTagsFormatter>();
-            tagsFormatterMock.Setup(x => x.GetFormattedTags(AnyValidTags)).Returns((string?) null!);
+            tagsFormatterMock.Setup(x => x.FormatTags(AnyValidTags)).Returns((string?) null!);
             formatter = GetStatsDUtf8Formatter(tagsFormatterMock.Object);
             return tagsFormatterMock;
         }

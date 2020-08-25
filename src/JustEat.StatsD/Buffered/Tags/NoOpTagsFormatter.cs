@@ -8,6 +8,6 @@ namespace JustEat.StatsD.Buffered.Tags
 
         public int GetTagsBufferSize(in IDictionary<string, string?>? tags) => 0;
         
-        public string GetFormattedTags(in IDictionary<string, string?>? tags) => string.Empty;
+        public string FormatTags(in IDictionary<string, string?>? tags) => string.Empty;
     }
 }

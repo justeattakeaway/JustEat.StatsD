@@ -24,6 +24,6 @@ namespace JustEat.StatsD.Buffered.Tags
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
         /// <returns>The tag(s) formatted.</returns>
-        string GetFormattedTags(in IDictionary<string, string?>? tags);
+        string FormatTags(in IDictionary<string, string?>? tags);
     }
 }

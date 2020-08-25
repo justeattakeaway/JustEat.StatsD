@@ -114,13 +114,13 @@ namespace JustEat.StatsD.Buffered
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
             !_tagsFormatter.AreTrailing
-                ? buffer.TryWriteUtf8String(_tagsFormatter.GetFormattedTags(tags))
+                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags))
                 : true;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteTrailingTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
             _tagsFormatter.AreTrailing
-                ? buffer.TryWriteUtf8String(_tagsFormatter.GetFormattedTags(tags))
+                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags))
                 : true;
     }
 }

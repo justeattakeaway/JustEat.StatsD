@@ -45,27 +45,27 @@ namespace JustEat.StatsD.Buffered.Tags
             }
 
             return _prefix.Length
-                + Encoding.UTF8.GetByteCount(GetFormattedTags(tags!))
+                + Encoding.UTF8.GetByteCount(this.FormatTags(tags!))
                 + _suffix.Length;
         }
         
         /// <inheritdoc />
-        public virtual string GetFormattedTags(in IDictionary<string, string?>? tags)
+        public virtual string FormatTags(in IDictionary<string, string?>? tags)
         {
             if (AreTagsPresent(tags))
             {
-                return _prefix + GetFormattedTags(tags!) + _suffix;
+                return _prefix + this.FormatTags(tags!) + _suffix;
             }
 
             return string.Empty;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string GetFormattedTags(IDictionary<string, string?> tags) =>
-            string.Join(_tagsSeparator,tags.Select(tag => GetFormattedTag(tag)));
+        private string FormatTags(IDictionary<string, string?> tags) =>
+            string.Join(_tagsSeparator,tags.Select(tag => this.FormatTags(tag)));
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string GetFormattedTag(KeyValuePair<string, string?> tag) =>
+        private string FormatTags(KeyValuePair<string, string?> tag) =>
             tag.Value == null
                 ? tag.Key
                 : tag.Key + _keyValueSeparator + tag.Value;
