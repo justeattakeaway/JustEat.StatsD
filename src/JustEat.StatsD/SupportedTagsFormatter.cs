@@ -8,32 +8,32 @@ namespace JustEat.StatsD
     public static class SupportedTagsFormatter
     {
         /// <summary>
-        /// Gets the AWS CloudWatch tags formatter.
+        /// Gets an AWS CloudWatch tags formatter.
         /// </summary>
         public static IStatsDTagsFormatter CloudWatch => new TrailingTagsFormatter();
 
         /// <summary>
-        /// Gets the DataDog tags formatter.
+        /// Gets a DataDog tags formatter.
         /// </summary>
         public static IStatsDTagsFormatter DataDog => new TrailingTagsFormatter();
         
         /// <summary>
-        /// Gets the InfluxDB tags formatter.
+        /// Gets an InfluxDB tags formatter.
         /// </summary>
         public static IStatsDTagsFormatter InfluxDb => new InfluxDbTagsFormatter();
         
         /// <summary>
-        /// Gets the Librato tags formatter.
+        /// Gets a Librato tags formatter.
         /// </summary>
         public static IStatsDTagsFormatter Librato => new LibratoTagsFormatter();
         
         /// <summary>
-        /// Gets the SignalFX dimensions formatter.
+        /// Gets a SignalFX dimensions formatter.
         /// </summary>
         public static IStatsDTagsFormatter SignalFx => new SignalFxTagsFormatter();
         
         /// <summary>
-        /// Gets the Splunk tags formatter.
+        /// Gets a Splunk tags formatter.
         /// </summary>
         public static IStatsDTagsFormatter Splunk => new TrailingTagsFormatter();
     }
