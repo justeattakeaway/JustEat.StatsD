@@ -23,7 +23,7 @@ namespace JustEat.StatsD.Buffered.Tags
             _keyValueSeparator = keyValueSeparator;
         }
 
-        public int GetTagsBufferSize(in IDictionary<string, string?>? tags)
+        public virtual int GetTagsBufferSize(in IDictionary<string, string?>? tags)
         {
             const int NoTagsSize = 0;
             if (!AreTagsPresent(tags))
