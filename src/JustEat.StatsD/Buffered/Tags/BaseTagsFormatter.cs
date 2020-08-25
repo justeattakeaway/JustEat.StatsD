@@ -63,7 +63,7 @@ namespace JustEat.StatsD.Buffered.Tags
         private string GetFormattedTag(KeyValuePair<string, string?> tag) =>
             tag.Value == null
                 ? tag.Key
-                : $"{tag.Key}{this._keyValueSeparator}{tag.Value}";
+                : tag.Key + _keyValueSeparator + tag.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool AreTagsPresent(IDictionary<string, string?>? tags) =>
