@@ -162,7 +162,7 @@ namespace JustEat.StatsD
         /// The value from invoking <paramref name="func"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="publisher"/>, <paramref name="bucket"/>, <paramref name="tags"/> or <paramref name="func"/> is <see langword="null"/>.
+        /// <paramref name="publisher"/>, <paramref name="bucket"/> or <paramref name="func"/> is <see langword="null"/>.
         /// </exception>
         public static T Time<T>(
             this IStatsDPublisher publisher,
