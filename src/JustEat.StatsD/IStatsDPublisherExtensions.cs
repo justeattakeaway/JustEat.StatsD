@@ -177,7 +177,7 @@ namespace JustEat.StatsD
         /// <param name="value">The value to decrement the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
         /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
-        /// <param name="tags">The tags to publish with the counter.</param>
+        /// <param name="tags">The tag((s) to publish with the counter(s).</param>
         public static void Decrement(
             this IStatsDPublisher publisher,
             long value,
