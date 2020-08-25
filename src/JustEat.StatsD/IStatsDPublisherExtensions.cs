@@ -105,7 +105,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="value">The value to increment the counter(s) by.</param>
         /// <param name="sampleRate">The sample rate for the counter(s).</param>
-        /// <param name="tags">The tags to publish with the counter.</param>
+        /// <param name="tags">The tag(s) to publish with the counter.</param>
         /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
         public static void Increment(
             this IStatsDPublisher publisher,
