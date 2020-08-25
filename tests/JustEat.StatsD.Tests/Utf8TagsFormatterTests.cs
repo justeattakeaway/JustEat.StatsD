@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.Buffered.Tags;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -169,6 +170,42 @@ namespace JustEat.StatsD
             var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
             actual.ShouldBe(expected);
         }
+        
+        [Fact]
+        public static void CounterWithNullFormattedTags()
+        {
+            // Arrange
+            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var message = StatsDMessage.Counter(128, "bucket", AnyValidTags);
+
+            // Act and assert
+            Check(message, 0.5, formatter, "prefix.bucket:128|c|@0.5");
+            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+        }
+        
+        [Fact]
+        public static void TimingWithNullFormattedTags()
+        {
+            // Arrange
+            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var message = StatsDMessage.Timing(128, "bucket", AnyValidTags);
+
+            // Act and assert
+            Check(message, 0.5, formatter, "prefix.bucket:128|ms|@0.5");
+            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+        }
+
+        [Fact]
+        public static void GaugeWithNullFormattedTags()
+        {
+            // Arrange
+            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var message = StatsDMessage.Gauge(128, "bucket", AnyValidTags);
+
+            // Act and assert
+            Check(message, formatter, "prefix.bucket:128|g");
+            nullTagsFormatterMock.Verify(x => x.GetFormattedTags(AnyValidTags), Times.Once);
+        }
 
         private static void Check(StatsDMessage message, TagsFormatter tagsFormatter, string expected)
         {
@@ -178,6 +215,16 @@ namespace JustEat.StatsD
         private static void Check(StatsDMessage message, double sampleRate, TagsFormatter tagsFormatter, string expected)
         {
             var formatter = GetStatsDUtf8Formatter(tagsFormatter);
+            Check(message, sampleRate, formatter, expected);
+        }
+        
+        private static void Check(StatsDMessage message, StatsDUtf8Formatter formatter, string expected)
+        {
+            Check(message, 1, formatter, expected);
+        }
+
+        private static void Check(StatsDMessage message, double sampleRate, StatsDUtf8Formatter formatter, string expected)
+        {
             formatter.TryFormat(message, sampleRate, Buffer, out int written).ShouldBe(true);
             var result = Encoding.UTF8.GetString(Buffer.AsSpan(0, written));
             result.ShouldBe(expected);
@@ -195,7 +242,20 @@ namespace JustEat.StatsD
                 _ => throw new ArgumentOutOfRangeException(nameof(tagsFormatter))
             };
 
-            return new StatsDUtf8Formatter("prefix", statsDTagsFormatter);
+            return GetStatsDUtf8Formatter(statsDTagsFormatter);
+        }
+
+        private static Mock<IStatsDTagsFormatter> GetNullTagsFormatterMock(out StatsDUtf8Formatter formatter)
+        {
+            var tagsFormatterMock = new Mock<IStatsDTagsFormatter>();
+            tagsFormatterMock.Setup(x => x.GetFormattedTags(AnyValidTags)).Returns((string?) null!);
+            formatter = GetStatsDUtf8Formatter(tagsFormatterMock.Object);
+            return tagsFormatterMock;
+        }
+
+        private static StatsDUtf8Formatter GetStatsDUtf8Formatter(IStatsDTagsFormatter tagsFormatter)
+        {
+            return new StatsDUtf8Formatter("prefix", tagsFormatter);
         }
 
         public enum TagsFormatter
