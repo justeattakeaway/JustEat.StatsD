@@ -62,7 +62,7 @@ namespace JustEat.StatsD.Buffered.Tags
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(IDictionary<string, string?> tags) =>
-            string.Join(_tagsSeparator,tags.Select(tag => FormatTags(tag)));
+            string.Join(_tagsSeparator,tags.Select(FormatTags));
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(KeyValuePair<string, string?> tag) =>
