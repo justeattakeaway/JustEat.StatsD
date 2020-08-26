@@ -1,5 +1,5 @@
 using System;
-using JustEat.StatsD.Buffered.Tags;
+using JustEat.StatsD.TagsFormatters;
 
 namespace JustEat.StatsD
 {

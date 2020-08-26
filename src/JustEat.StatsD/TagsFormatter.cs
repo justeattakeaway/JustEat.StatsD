@@ -1,11 +1,11 @@
-using JustEat.StatsD.Buffered.Tags;
+using JustEat.StatsD.TagsFormatters;
 
 namespace JustEat.StatsD
 {
     /// <summary>
     /// A class that can be used to retrieve supported <see cref="IStatsDTagsFormatter"/> implementations for some of the major metric providers.
     /// </summary>
-    public static class SupportedTagsFormatter
+    public static class TagsFormatter
     {
         /// <summary>
         /// Gets an AWS CloudWatch tags formatter.

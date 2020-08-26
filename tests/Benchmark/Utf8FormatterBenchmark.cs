@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using JustEat.StatsD;
 using JustEat.StatsD.Buffered;
-using JustEat.StatsD.Buffered.Tags;
+using JustEat.StatsD.TagsFormatters;
 
 namespace Benchmark
 {
@@ -10,7 +10,7 @@ namespace Benchmark
     public class Utf8FormatterBenchmark
     {
         private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", new NoOpTagsFormatter());
-        private static readonly StatsDUtf8Formatter FormatterWithTagsBuffer = new StatsDUtf8Formatter("hello.world", SupportedTagsFormatter.DataDog);
+        private static readonly StatsDUtf8Formatter FormatterWithTagsBuffer = new StatsDUtf8Formatter("hello.world", TagsFormatter.DataDog);
 
         private static readonly IDictionary<string, string?> EmptyTags = new Dictionary<string, string?>();
         private static readonly IDictionary<string, string?> AnyValidTags = new Dictionary<string, string?>

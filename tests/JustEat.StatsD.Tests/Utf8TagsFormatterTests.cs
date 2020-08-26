@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
-using JustEat.StatsD.Buffered.Tags;
+using JustEat.StatsD.TagsFormatters;
 using Moq;
 using Shouldly;
 using Xunit;

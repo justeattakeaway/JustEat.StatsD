@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace JustEat.StatsD.Buffered.Tags
+namespace JustEat.StatsD.TagsFormatters
 {
     /// <summary>
     /// A template class to format StatsD tags with configured values.
@@ -25,11 +25,11 @@ namespace JustEat.StatsD.Buffered.Tags
         /// <param name="keyValueSeparator">The characters between the tag key and its value.</param>
         protected StatsDTagsFormatter(string prefix, string suffix, bool areTrailing, string tagsSeparator, string keyValueSeparator)
         {
-            _prefix = prefix ?? string.Empty;
-            _suffix = suffix ?? string.Empty;
-            AreTrailing = areTrailing;
-            _tagsSeparator = tagsSeparator ?? string.Empty;
-            _keyValueSeparator = keyValueSeparator ?? string.Empty;
+            this._prefix = prefix ?? string.Empty;
+            this._suffix = suffix ?? string.Empty;
+            this.AreTrailing = areTrailing;
+            this._tagsSeparator = tagsSeparator ?? string.Empty;
+            this._keyValueSeparator = keyValueSeparator ?? string.Empty;
         }
         
         /// <inheritdoc />
@@ -44,9 +44,9 @@ namespace JustEat.StatsD.Buffered.Tags
                 return NoTagsSize;
             }
 
-            return _prefix.Length
-                + Encoding.UTF8.GetByteCount(FormatTags(tags!))
-                + _suffix.Length;
+            return this._prefix.Length
+                + Encoding.UTF8.GetByteCount(this.FormatTags(tags!))
+                + this._suffix.Length;
         }
         
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace JustEat.StatsD.Buffered.Tags
         {
             if (AreTagsPresent(tags))
             {
-                return _prefix + FormatTags(tags!) + _suffix;
+                return this._prefix + this.FormatTags(tags!) + this._suffix;
             }
 
             return string.Empty;
@@ -62,13 +62,13 @@ namespace JustEat.StatsD.Buffered.Tags
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(IDictionary<string, string?> tags) =>
-            string.Join(_tagsSeparator,tags.Select(FormatTags));
+            string.Join(this._tagsSeparator,tags.Select(this.FormatTags));
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(KeyValuePair<string, string?> tag) =>
             tag.Value == null
                 ? tag.Key
-                : tag.Key + _keyValueSeparator + tag.Value;
+                : tag.Key + this._keyValueSeparator + tag.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool AreTagsPresent(IDictionary<string, string?>? tags) =>

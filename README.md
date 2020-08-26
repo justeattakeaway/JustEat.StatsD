@@ -154,7 +154,7 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>().InSingletonScope();
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
 | Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
 | SocketProtocol    | `SocketProtocol`, one of `Udp`, `IP`| `Udp`              | Type of socket to use when sending stats to the server.                                                 |
-| TagsFormatter     | `IStatsDTagsFormatter`  | `NoOpTagsFormatter`            | Format used for tags for the different providers. Out-of-the-box formatters can be accessed using the `SupportedTagsFormatter` class. |
+| TagsFormatter     | `IStatsDTagsFormatter`  | `NoOpTagsFormatter`            | Format used for tags for the different providers. Out-of-the-box formatters can be accessed using the `TagsFormatter` class. |
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
@@ -180,7 +180,7 @@ var config = new StatsDConfiguration
 {
     Prefix = "prefix",
     Host = "127.0.0.1",
-    TagsFormatter = SupportedTagsFormatter.CloudWatch,
+    TagsFormatter = TagsFormatter.CloudWatch,
 };
 ```
 

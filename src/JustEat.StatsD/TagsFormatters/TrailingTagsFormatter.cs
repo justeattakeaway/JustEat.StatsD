@@ -1,4 +1,4 @@
-namespace JustEat.StatsD.Buffered.Tags
+namespace JustEat.StatsD.TagsFormatters
 {
     /// <summary>
     /// Formats StatsD tags placed at the end of the message. Supported by DataDog, Splunk and AWS CloudWatch.

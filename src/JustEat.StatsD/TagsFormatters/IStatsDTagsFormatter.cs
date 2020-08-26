@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace JustEat.StatsD.Buffered.Tags
+namespace JustEat.StatsD.TagsFormatters
 {
     /// <summary>
     /// Defines an interface for formatting tags for extended StatsD specification.
