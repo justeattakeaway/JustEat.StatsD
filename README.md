@@ -188,13 +188,13 @@ var config = new StatsDConfiguration
 
 As tags are not part of the StatsD specification, the `IStatsDTagsFormatter` used can be extended and injected in the `StatsDConfiguration`.
 
-The template class `StatsDTagsFormatter` can be inherited providing:
+The template class `StatsDTagsFormatter` can be inherited providing the `StatsDTagsFormatterConfiguration`:
 
-* **prefix**: the string that will appear before the tag(s).
-* **suffix**: the string that will appear after the tag(s).
-* **areTrailing**: a boolean indicating if the tag(s) are placed at the end of the StatsD message (like it is supported by AWS CloudWatch, DataDog or Splunk) or otherwise they are right after the bucket name (like it is supported by InfluxDB, Librato or SignalFX).
-* **tagsSeparator**: the string that will be placed between tags.
-* **keyValueSeparator**: the string that will be placed between the tag key and its value.
+* **Prefix**: the string that will appear before the tag(s).
+* **Suffix**: the string that will appear after the tag(s).
+* **AreTrailing**: a boolean indicating if the tag(s) are placed at the end of the StatsD message (like it is supported by AWS CloudWatch, DataDog or Splunk) or otherwise they are right after the bucket name (like it is supported by InfluxDB, Librato or SignalFX).
+* **TagsSeparator**: the string that will be placed between tags.
+* **KeyValueSeparator**: the string that will be placed between the tag key and its value.
 
 ### Example of using the interface
 

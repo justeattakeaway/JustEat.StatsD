@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -18,18 +19,19 @@ namespace JustEat.StatsD.TagsFormatters
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDTagsFormatter"/> class.
         /// </summary>
-        /// <param name="prefix">The characters before the tag(s).</param>
-        /// <param name="suffix">The characters after the tag(s).</param>
-        /// <param name="areTrailing"><c>true</c> if the tags at the end of the message. <c>false</c> if tags are placed along with the bucket name.</param>
-        /// <param name="tagsSeparator">The characters between tags.</param>
-        /// <param name="keyValueSeparator">The characters between the tag key and its value.</param>
-        protected StatsDTagsFormatter(string prefix, string suffix, bool areTrailing, string tagsSeparator, string keyValueSeparator)
+        /// <param name="configuration">The configuration.</param>
+        protected StatsDTagsFormatter(StatsDTagsFormatterConfiguration configuration)
         {
-            _prefix = prefix ?? string.Empty;
-            _suffix = suffix ?? string.Empty;
-            AreTrailing = areTrailing;
-            _tagsSeparator = tagsSeparator ?? string.Empty;
-            _keyValueSeparator = keyValueSeparator ?? string.Empty;
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            _prefix = configuration.Prefix ?? string.Empty;
+            _suffix = configuration.Suffix ?? string.Empty;
+            AreTrailing = configuration.AreTrailing;
+            _tagsSeparator = configuration.TagsSeparator ?? string.Empty;
+            _keyValueSeparator = configuration.KeyValueSeparator ?? string.Empty;
         }
         
         /// <inheritdoc />

@@ -16,7 +16,14 @@ namespace JustEat.StatsD.TagsFormatters
         /// Initializes a new instance of the <see cref="SignalFxTagsFormatter"/> class.
         /// </summary>
         public SignalFxTagsFormatter()
-            : base(Prefix, Suffix, AreTrailingTags, TagsSeparator, KeyValueSeparator)
+            : base(new StatsDTagsFormatterConfiguration
+                {
+                    Prefix = Prefix,
+                    Suffix = Suffix,
+                    AreTrailing = AreTrailingTags,
+                    TagsSeparator = TagsSeparator,
+                    KeyValueSeparator = KeyValueSeparator,
+                })
         {
         }
     }

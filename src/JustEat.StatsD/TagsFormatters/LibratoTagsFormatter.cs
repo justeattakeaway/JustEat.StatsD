@@ -15,7 +15,14 @@ namespace JustEat.StatsD.TagsFormatters
         /// Initializes a new instance of the <see cref="LibratoTagsFormatter"/> class.
         /// </summary>
         public LibratoTagsFormatter()
-            : base(Prefix, string.Empty, AreTrailingTags, TagsSeparator, KeyValueSeparator)
+            : base(new StatsDTagsFormatterConfiguration
+                {
+                    Prefix = Prefix,
+                    Suffix = string.Empty,
+                    AreTrailing = AreTrailingTags,
+                    TagsSeparator = TagsSeparator,
+                    KeyValueSeparator = KeyValueSeparator,
+                })
         {
         }
     }
