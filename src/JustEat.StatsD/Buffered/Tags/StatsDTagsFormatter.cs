@@ -36,7 +36,7 @@ namespace JustEat.StatsD.Buffered.Tags
         public bool AreTrailing { get; }
 
         /// <inheritdoc />
-        public virtual int GetTagsBufferSize(in IDictionary<string, string?>? tags)
+        public virtual int GetTagsBufferSize(in IDictionary<string, string?> tags)
         {
             const int NoTagsSize = 0;
             if (!AreTagsPresent(tags))
@@ -50,7 +50,7 @@ namespace JustEat.StatsD.Buffered.Tags
         }
         
         /// <inheritdoc />
-        public virtual string FormatTags(in IDictionary<string, string?>? tags)
+        public virtual string FormatTags(in IDictionary<string, string?> tags)
         {
             if (AreTagsPresent(tags))
             {

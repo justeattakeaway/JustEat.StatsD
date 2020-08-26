@@ -26,6 +26,11 @@ namespace JustEat.StatsD.Buffered
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryWriteUtf8String(this ref Buffer src, string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                return true;
+            }
+
 #if NETSTANDARD2_0 || NET461
             var bucketBytes = Encoding.UTF8.GetBytes(str);
             return src.TryWriteBytes(bucketBytes);

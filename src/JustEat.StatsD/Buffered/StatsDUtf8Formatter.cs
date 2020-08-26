@@ -34,7 +34,7 @@ namespace JustEat.StatsD.Buffered
                    + MaxMessageKindSuffixSize
                    + MaxSamplingSuffixSize
                    + MaxSerializedDoubleSymbols
-                   + _tagsFormatter.GetTagsBufferSize(msg.Tags);
+                   + GetTagsBufferSize(msg.Tags);
         }
 
         public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
@@ -110,17 +110,27 @@ namespace JustEat.StatsD.Buffered
 
             return true;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetTagsBufferSize(IDictionary<string, string?>? tags) =>
+            AreTagsPresent(tags)
+                ? _tagsFormatter.GetTagsBufferSize(tags!)
+                : 0;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteBucketNameTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
-            !_tagsFormatter.AreTrailing
-                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags))
+            AreTagsPresent(tags) && !_tagsFormatter.AreTrailing
+                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags!))
                 : true;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteTrailingTagsIfNeeded(ref Buffer buffer, in IDictionary<string, string?>? tags) =>
-            _tagsFormatter.AreTrailing
-                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags))
+            AreTagsPresent(tags) && _tagsFormatter.AreTrailing
+                ? buffer.TryWriteUtf8String(_tagsFormatter.FormatTags(tags!))
                 : true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool AreTagsPresent(IDictionary<string, string?>? tags) =>
+            tags != null && tags.Count > 0;
     }
 }

@@ -17,13 +17,13 @@ namespace JustEat.StatsD.Buffered.Tags
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
         /// <returns>The amount of bytes dedicated in the buffer for the tags.</returns>
-        int GetTagsBufferSize(in IDictionary<string, string?>? tags);
+        int GetTagsBufferSize(in IDictionary<string, string?> tags);
 
         /// <summary>
         /// Calculates the tag(s) formatted to be included in the StatsD message.
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
         /// <returns>The tag(s) formatted.</returns>
-        string FormatTags(in IDictionary<string, string?>? tags);
+        string FormatTags(in IDictionary<string, string?> tags);
     }
 }
