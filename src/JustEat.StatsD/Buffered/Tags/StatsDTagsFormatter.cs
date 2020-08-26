@@ -45,7 +45,7 @@ namespace JustEat.StatsD.Buffered.Tags
             }
 
             return _prefix.Length
-                + Encoding.UTF8.GetByteCount(this.FormatTags(tags!))
+                + Encoding.UTF8.GetByteCount(FormatTags(tags!))
                 + _suffix.Length;
         }
         
@@ -54,7 +54,7 @@ namespace JustEat.StatsD.Buffered.Tags
         {
             if (AreTagsPresent(tags))
             {
-                return _prefix + this.FormatTags(tags!) + _suffix;
+                return _prefix + FormatTags(tags!) + _suffix;
             }
 
             return string.Empty;
@@ -62,7 +62,7 @@ namespace JustEat.StatsD.Buffered.Tags
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(IDictionary<string, string?> tags) =>
-            string.Join(_tagsSeparator,tags.Select(tag => this.FormatTags(tag)));
+            string.Join(_tagsSeparator,tags.Select(tag => FormatTags(tag)));
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string FormatTags(KeyValuePair<string, string?> tag) =>
