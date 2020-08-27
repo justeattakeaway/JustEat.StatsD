@@ -83,7 +83,7 @@ namespace JustEat.StatsD.TagsFormatters
 
                 if (!TryFormatTags(destination, tags, out written))
                 {
-                    throw new Exception("Failed to format tags.");
+                    throw new FormatException("Failed to format tags.");
                 }
             }
 
@@ -106,7 +106,7 @@ namespace JustEat.StatsD.TagsFormatters
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TryWriteTags(ref Buffer<char> src, in Dictionary<string, string?> tags)
         {
-            var enumerator = tags.GetEnumerator();
+            using var enumerator = tags.GetEnumerator();
             var index = 0;
             bool isFormattingSuccessful = true;
             while (isFormattingSuccessful && enumerator.MoveNext())

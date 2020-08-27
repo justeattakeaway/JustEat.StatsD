@@ -15,8 +15,8 @@ namespace Benchmark
         private static readonly Dictionary<string, string?> EmptyTags = new Dictionary<string, string?>();
         private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
         {
-            { "key", "value" },
-            { "key2", "value2" },
+            ["key"] = "value",
+            ["key2"] = "value2",
         };
 
         private static readonly byte[] Buffer = new byte[512];

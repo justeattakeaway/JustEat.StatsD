@@ -13,9 +13,9 @@ namespace JustEat.StatsD
         private static readonly byte[] Buffer = new byte[512];
         private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
         {
-            { "foo", "bar" },
-            { "empty", null },
-            { "lorem", "ipsum" },
+            ["foo"] = "bar",
+            ["empty"] = null,
+            ["lorem"] = "ipsum",
         };
         
         [Theory]
@@ -144,7 +144,7 @@ namespace JustEat.StatsD
             // Arrange
             var hugeBucket = new string(ch, size);
             var hugeTag = new string(ch, size);
-            var anyValidTags = new Dictionary<string, string?> { { hugeTag, null } };
+            var anyValidTags = new Dictionary<string, string?> { [hugeTag] = null };
             var message = StatsDMessage.Gauge(128.5, hugeBucket, anyValidTags);
 
             var expected = $"prefix.{hugeBucket}:128.5|g|#{hugeTag}";

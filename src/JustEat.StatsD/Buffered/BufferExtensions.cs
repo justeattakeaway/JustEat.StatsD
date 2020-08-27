@@ -22,8 +22,7 @@ namespace JustEat.StatsD.Buffered
             src.Written += destination.Length;
             return true;
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
         public static bool TryWriteUtf8String(this ref Buffer<byte> src, string str)
         {
             if (string.IsNullOrEmpty(str))
@@ -52,8 +51,7 @@ namespace JustEat.StatsD.Buffered
             return true;
 #endif
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
         public static bool TryWriteUtf8Chars(this ref Buffer<byte> src, ReadOnlySpan<char> chars)
         {
             if (chars.Length == 0)
