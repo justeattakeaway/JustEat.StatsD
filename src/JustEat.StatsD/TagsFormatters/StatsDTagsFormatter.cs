@@ -104,26 +104,26 @@ namespace JustEat.StatsD.TagsFormatters
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteTags(ref Buffer<char> src, in Dictionary<string, string?> tags)
+        private bool TryWriteTags(ref Buffer<char> buffer, in Dictionary<string, string?> tags)
         {
-            using var enumerator = tags.GetEnumerator();
             var index = 0;
-            bool isFormattingSuccessful = true;
-            while (isFormattingSuccessful && enumerator.MoveNext())
+            foreach (var tag in tags)
             {
-                isFormattingSuccessful = TryWriteTag(ref src, enumerator.Current)
-                    && TryWriteTagsSeparator(ref src, index, tags);
-
-                index++;
+                var isFormattingSuccessful = TryWriteTag(ref buffer, tag)
+                                             && TryWriteTagsSeparator(ref buffer, index++, tags);
+                if (!isFormattingSuccessful)
+                {
+                    return false;
+                }
             }
 
-            return isFormattingSuccessful;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteTagsSeparator(ref Buffer<char> src, int index, in Dictionary<string, string?> tags) =>
+        private bool TryWriteTagsSeparator(ref Buffer<char> buffer, int index, in Dictionary<string, string?> tags) =>
             !IsLastTag(index, tags)
-                ? src.TryWrite(_tagsSeparator)
+                ? buffer.TryWrite(_tagsSeparator)
                 : true;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,14 +131,14 @@ namespace JustEat.StatsD.TagsFormatters
             index == tags.Count - 1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteTag(ref Buffer<char> src, in KeyValuePair<string, string?> tag) =>
-            src.TryWriteString(tag.Key)
-            && TryWriteTagValueIfNeeded(ref src, tag);
+        private bool TryWriteTag(ref Buffer<char> buffer, in KeyValuePair<string, string?> tag) =>
+            buffer.TryWriteString(tag.Key)
+            && TryWriteTagValueIfNeeded(ref buffer, tag);
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteTagValueIfNeeded(ref Buffer<char> src, KeyValuePair<string, string?> tag) =>
+        private bool TryWriteTagValueIfNeeded(ref Buffer<char> buffer, KeyValuePair<string, string?> tag) =>
             tag.Value != null
-                ? src.TryWrite(_keyValueSeparator) && src.TryWriteString(tag.Value!)
+                ? buffer.TryWrite(_keyValueSeparator) && buffer.TryWriteString(tag.Value!)
                 : true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
