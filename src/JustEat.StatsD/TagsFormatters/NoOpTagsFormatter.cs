@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace JustEat.StatsD.TagsFormatters
@@ -6,8 +7,8 @@ namespace JustEat.StatsD.TagsFormatters
     {
         public bool AreTrailing { get; }
 
-        public int GetTagsBufferSize(in IDictionary<string, string?>? tags) => 0;
+        public int GetTagsBufferSize(in Dictionary<string, string?> tags) => 0;
         
-        public string FormatTags(in IDictionary<string, string?>? tags) => string.Empty;
+        public ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags) => ReadOnlySpan<char>.Empty;
     }
 }

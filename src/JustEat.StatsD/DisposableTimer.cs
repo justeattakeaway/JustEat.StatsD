@@ -13,14 +13,14 @@ namespace JustEat.StatsD
 
         public string Bucket { get; set; }
 
-        public IDictionary<string, string?>? Tags { get; set; }
+        public Dictionary<string, string?>? Tags { get; set; }
 
         public DisposableTimer(IStatsDPublisher publisher, string bucket)
             : this(publisher, bucket, null)
         {
         }
 
-        public DisposableTimer(IStatsDPublisher publisher, string bucket, IDictionary<string, string?>? tags)
+        public DisposableTimer(IStatsDPublisher publisher, string bucket, Dictionary<string, string?>? tags)
         {
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
 

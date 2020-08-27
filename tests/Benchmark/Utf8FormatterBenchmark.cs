@@ -12,11 +12,11 @@ namespace Benchmark
         private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", new NoOpTagsFormatter());
         private static readonly StatsDUtf8Formatter FormatterWithTagsBuffer = new StatsDUtf8Formatter("hello.world", TagsFormatter.DataDog);
 
-        private static readonly IDictionary<string, string?> EmptyTags = new Dictionary<string, string?>();
-        private static readonly IDictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
+        private static readonly Dictionary<string, string?> EmptyTags = new Dictionary<string, string?>();
+        private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
         {
-            ["key"] = "value",
-            ["key2"] = "value2",
+            { "key", "value" },
+            { "key2", "value2" },
         };
 
         private static readonly byte[] Buffer = new byte[512];

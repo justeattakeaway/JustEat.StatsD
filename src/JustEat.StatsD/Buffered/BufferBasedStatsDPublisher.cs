@@ -10,11 +10,11 @@ namespace JustEat.StatsD.Buffered
 
         [ThreadStatic]
         private static byte[]? _buffer;
-        private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
+        private static byte[] Buffer => _buffer ??= new byte[SafeUdpPacketSize];
 
         [ThreadStatic]
         private static Random? _random;
-        private static Random Random => _random ?? (_random = new Random());
+        private static Random Random => _random ??= new Random();
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransport _transport;
@@ -32,17 +32,17 @@ namespace JustEat.StatsD.Buffered
             _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsFormatter);
         }
 
-        public void Increment(long value, double sampleRate, string bucket, IDictionary<string, string?>? tags)
+        public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             SendMessage(sampleRate, StatsDMessage.Counter(value, bucket, tags));
         }
 
-        public void Gauge(double value, string bucket, IDictionary<string, string?>? tags)
+        public void Gauge(double value, string bucket, Dictionary<string, string?>? tags)
         {
             SendMessage(DefaultSampleRate, StatsDMessage.Gauge(value, bucket, tags));
         }
 
-        public void Timing(long duration, double sampleRate, string bucket, IDictionary<string, string?>? tags)
+        public void Timing(long duration, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             SendMessage(sampleRate, StatsDMessage.Timing(duration, bucket, tags));
         }

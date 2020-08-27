@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace JustEat.StatsD.TagsFormatters
@@ -17,13 +18,13 @@ namespace JustEat.StatsD.TagsFormatters
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
         /// <returns>The amount of bytes dedicated in the buffer for the tags.</returns>
-        int GetTagsBufferSize(in IDictionary<string, string?> tags);
+        int GetTagsBufferSize(in Dictionary<string, string?> tags);
 
         /// <summary>
         /// Calculates the tag(s) formatted to be included in the StatsD message.
         /// </summary>
         /// <param name="tags">The tag(s) included.</param>
         /// <returns>The tag(s) formatted.</returns>
-        string FormatTags(in IDictionary<string, string?> tags);
+        ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags);
     }
 }

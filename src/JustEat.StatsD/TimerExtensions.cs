@@ -26,7 +26,7 @@ namespace JustEat.StatsD
         public static IDisposableTimer StartTimer(
             this IStatsDPublisher publisher,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             return new DisposableTimer(publisher, bucket, tags);
         }
@@ -46,7 +46,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Action action,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (action == null)
             {
@@ -74,7 +74,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Action<IDisposableTimer> action,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (action == null)
             {
@@ -105,7 +105,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<Task> action,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (action == null)
             {
@@ -136,7 +136,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<IDisposableTimer, Task> action,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (action == null)
             {
@@ -168,7 +168,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<T> func,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (func == null)
             {
@@ -200,7 +200,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<IDisposableTimer, T> func,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (func == null)
             {
@@ -232,7 +232,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<Task<T>> func,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (func == null)
             {
@@ -264,7 +264,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             string bucket,
             Func<IDisposableTimer, Task<T>> func,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (func == null)
             {

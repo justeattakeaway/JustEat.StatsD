@@ -83,19 +83,19 @@ namespace JustEat.StatsD
         }
 
         /// <inheritdoc />
-        public void Increment(long value, double sampleRate, string bucket, IDictionary<string, string?>? tags)
+        public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             _inner.Increment(value, sampleRate, bucket, tags);
         }
 
         /// <inheritdoc />
-        public void Gauge(double value, string bucket, IDictionary<string, string?>? tags)
+        public void Gauge(double value, string bucket, Dictionary<string, string?>? tags)
         {
             _inner.Gauge(value, bucket, tags);
         }
 
         /// <inheritdoc />
-        public void Timing(long duration, double sampleRate, string bucket, IDictionary<string, string?>? tags)
+        public void Timing(long duration, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             _inner.Timing(duration, sampleRate, bucket, tags);
         }

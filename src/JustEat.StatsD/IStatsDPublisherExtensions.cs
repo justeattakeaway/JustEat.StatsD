@@ -53,7 +53,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to increment the counter for.</param>
         /// <param name="tags">The tag(s) to publish with the counter.</param>
-        public static void Increment(this IStatsDPublisher publisher, string bucket, IDictionary<string, string?>? tags = null)
+        public static void Increment(this IStatsDPublisher publisher, string bucket, Dictionary<string, string?>? tags = null)
         {
             publisher.Increment(1, DefaultSampleRate, bucket, tags);
         }
@@ -69,7 +69,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long value,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Increment(value, DefaultSampleRate, bucket, tags);
         }
@@ -86,7 +86,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long value, double sampleRate,
             IEnumerable<string> buckets,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (buckets == null)
             {
@@ -123,7 +123,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long value,
             double sampleRate,
-            IDictionary<string, string?>? tags,
+            Dictionary<string, string?>? tags,
             params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
@@ -143,7 +143,7 @@ namespace JustEat.StatsD
         /// <param name="publisher">The <see cref="IStatsDPublisher"/> to publish with.</param>
         /// <param name="bucket">The bucket to decrement the counter for.</param>
         /// <param name="tags">The tag(s) to publish with the counter.</param>
-        public static void Decrement(this IStatsDPublisher publisher, string bucket, IDictionary<string, string?>? tags = null)
+        public static void Decrement(this IStatsDPublisher publisher, string bucket, Dictionary<string, string?>? tags = null)
         {
             publisher.Increment(-1, DefaultSampleRate, bucket, tags);
         }
@@ -159,7 +159,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long value,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Increment(value > 0 ? -value : value, DefaultSampleRate, bucket, tags);
         }
@@ -177,7 +177,7 @@ namespace JustEat.StatsD
             long value,
             double sampleRate,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Increment(value > 0 ? -value : value, sampleRate, bucket, tags);
         }
@@ -195,7 +195,7 @@ namespace JustEat.StatsD
             long value,
             double sampleRate,
             IEnumerable<string> buckets,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             if (buckets == null)
             {
@@ -234,7 +234,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long value,
             double sampleRate,
-            IDictionary<string, string?>? tags,
+            Dictionary<string, string?>? tags,
             params string[] buckets)
         {
             if (buckets == null || buckets.Length == 0)
@@ -261,7 +261,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             TimeSpan duration,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Timing((long)duration.TotalMilliseconds, DefaultSampleRate, bucket, tags);
         }
@@ -279,7 +279,7 @@ namespace JustEat.StatsD
             TimeSpan duration,
             double sampleRate,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Timing((long)duration.TotalMilliseconds, sampleRate, bucket, tags);
         }
@@ -295,7 +295,7 @@ namespace JustEat.StatsD
             this IStatsDPublisher publisher,
             long duration,
             string bucket,
-            IDictionary<string, string?>? tags = null)
+            Dictionary<string, string?>? tags = null)
         {
             publisher.Timing(duration, DefaultSampleRate, bucket, tags);
         }

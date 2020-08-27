@@ -140,7 +140,7 @@ namespace JustEat.StatsD
             timed.ShouldBeTrue();
             publisher.Verify(
                 (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                    It.IsAny<IDictionary<string, string?>>()),
+                    It.IsAny<Dictionary<string, string?>>()),
                     Times.Once());
         }
 
@@ -166,7 +166,7 @@ namespace JustEat.StatsD
             actual.ShouldBe(42);
             publisher.Verify(
                 (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                    It.IsAny<IDictionary<string, string?>>()),
+                    It.IsAny<Dictionary<string, string?>>()),
                     Times.Once());
         }
 
@@ -196,7 +196,7 @@ namespace JustEat.StatsD
             timed.ShouldBeTrue();
             publisher.Verify(
                 (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                    It.IsAny<IDictionary<string, string?>>()),
+                    It.IsAny<Dictionary<string, string?>>()),
                     Times.Once());
         }
 
@@ -222,7 +222,7 @@ namespace JustEat.StatsD
             actual.ShouldBe(42);
             publisher.Verify(
                 (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                    It.IsAny<IDictionary<string, string?>>()),
+                    It.IsAny<Dictionary<string, string?>>()),
                     Times.Once());
         }
     }

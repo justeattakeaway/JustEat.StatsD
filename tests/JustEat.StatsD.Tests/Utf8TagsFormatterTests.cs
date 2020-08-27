@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.TagsFormatters;
-using Moq;
 using Shouldly;
 using Xunit;
 
@@ -12,11 +11,11 @@ namespace JustEat.StatsD
     public static class Utf8TagsFormatterTests
     {
         private static readonly byte[] Buffer = new byte[512];
-        private static readonly IDictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
+        private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
         {
-            ["foo"] = "bar",
-            ["empty"] = null,
-            ["lorem"] = "ipsum",
+            { "foo", "bar" },
+            { "empty", null },
+            { "lorem", "ipsum" },
         };
         
         [Theory]
@@ -117,18 +116,46 @@ namespace JustEat.StatsD
 
         [Theory]
         [InlineData(1, 'z')]
+        [InlineData(2, 'z')]
+        [InlineData(4, 'z')]
+        [InlineData(8, 'z')]
         [InlineData(16, 'z')]
+        [InlineData(32, 'z')]
+        [InlineData(64, 'z')]
+        [InlineData(128, 'z')]
         [InlineData(256, 'z')]
-        public static void GetMaxBufferSizeCalculatesValidBufferSizesWithTags(int bucketSize, char ch)
+        [InlineData(512, 'z')]
+        [InlineData(1024, 'z')]
+        [InlineData(2048, 'z')]
+        [InlineData(1, 'Ж')]
+        [InlineData(2, 'Ж')]
+        [InlineData(4, 'Ж')]
+        [InlineData(8, 'Ж')]
+        [InlineData(16, 'Ж')]
+        [InlineData(32, 'Ж')]
+        [InlineData(64, 'Ж')]
+        [InlineData(128, 'Ж')]
+        [InlineData(256, 'Ж')]
+        [InlineData(512, 'Ж')]
+        [InlineData(1024, 'Ж')]
+        [InlineData(2048, 'Ж')]
+        public static void GetMaxBufferSizeCalculatesValidBufferSizesWithTags(int size, char ch)
         {
-            var hugeBucket = new string(ch, bucketSize);
-            var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
-            var expected = $"prefix.{hugeBucket}:128.5|g|#foo:bar,empty,lorem:ipsum";
+            // Arrange
+            var hugeBucket = new string(ch, size);
+            var hugeTag = new string(ch, size);
+            var anyValidTags = new Dictionary<string, string?> { { hugeTag, null } };
+            var message = StatsDMessage.Gauge(128.5, hugeBucket, anyValidTags);
+
+            var expected = $"prefix.{hugeBucket}:128.5|g|#{hugeTag}";
+
             var anyTagsFormatter = TagsFormatter.Trailing;
             var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
 
+            // Act
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
 
+            // Assert
             formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
             var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
             actual.ShouldBe(expected);
@@ -140,14 +167,19 @@ namespace JustEat.StatsD
         [InlineData(256, 'z')]
         public static void GetMaxBufferSizeCalculatesValidBufferSizesWithoutTags(int bucketSize, char ch)
         {
+            // Arrange
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
+
             var expected = $"prefix.{hugeBucket}:128.5|g";
+
             var anyTagsFormatter = TagsFormatter.Trailing;
             var formatter = GetStatsDUtf8Formatter(anyTagsFormatter);
-
+            
+            // Act
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
-
+            
+            // Assert
             formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
             var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
             actual.ShouldBe(expected);
@@ -159,52 +191,57 @@ namespace JustEat.StatsD
         [InlineData(256, 'z')]
         public static void GetMaxBufferSizeCalculatesValidBufferSizesIgnoringTags(int bucketSize, char ch)
         {
+            // Arrange
             var hugeBucket = new string(ch, bucketSize);
             var message = StatsDMessage.Gauge(128.5, hugeBucket, AnyValidTags);
+
             var expected = $"prefix.{hugeBucket}:128.5|g";
+
             var formatter = GetStatsDUtf8Formatter();
-
+            
+            // Act
             var buffer = new byte[formatter.GetMaxBufferSize(message)];
-
+            
+            // Assert
             formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
             var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
             actual.ShouldBe(expected);
         }
-        
+
         [Fact]
         public static void CounterWithNullFormattedTags()
         {
             // Arrange
-            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var nullTagsFormatterMock = new AlwaysNullStatsDTagsFormatter();
+            var formatter = GetStatsDUtf8Formatter(nullTagsFormatterMock);
             var message = StatsDMessage.Counter(128, "bucket", AnyValidTags);
 
             // Act and assert
             Check(message, 0.5, formatter, "prefix.bucket:128|c|@0.5");
-            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
-        
+
         [Fact]
         public static void TimingWithNullFormattedTags()
         {
             // Arrange
-            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var nullTagsFormatterMock = new AlwaysNullStatsDTagsFormatter();
+            var formatter = GetStatsDUtf8Formatter(nullTagsFormatterMock);
             var message = StatsDMessage.Timing(128, "bucket", AnyValidTags);
 
             // Act and assert
             Check(message, 0.5, formatter, "prefix.bucket:128|ms|@0.5");
-            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
 
         [Fact]
         public static void GaugeWithNullFormattedTags()
         {
             // Arrange
-            var nullTagsFormatterMock = GetNullTagsFormatterMock(out var formatter);
+            var nullTagsFormatterMock = new AlwaysNullStatsDTagsFormatter();
+            var formatter = GetStatsDUtf8Formatter(nullTagsFormatterMock);
             var message = StatsDMessage.Gauge(128, "bucket", AnyValidTags);
 
             // Act and assert
             Check(message, formatter, "prefix.bucket:128|g");
-            nullTagsFormatterMock.Verify(x => x.FormatTags(AnyValidTags), Times.Once);
         }
 
         private static void Check(StatsDMessage message, TagsFormatter tagsFormatter, string expected)
@@ -235,22 +272,14 @@ namespace JustEat.StatsD
             IStatsDTagsFormatter statsDTagsFormatter = tagsFormatter switch
             {
                 TagsFormatter.NoOp => new NoOpTagsFormatter(),
-                TagsFormatter.Trailing => new TrailingTagsFormatter(),
-                TagsFormatter.InfluxDb => new InfluxDbTagsFormatter(),
-                TagsFormatter.Librato => new LibratoTagsFormatter(),
-                TagsFormatter.SignalFx => new SignalFxTagsFormatter(),
+                TagsFormatter.Trailing => JustEat.StatsD.TagsFormatter.CloudWatch,
+                TagsFormatter.InfluxDb => JustEat.StatsD.TagsFormatter.InfluxDb,
+                TagsFormatter.Librato => JustEat.StatsD.TagsFormatter.Librato,
+                TagsFormatter.SignalFx => JustEat.StatsD.TagsFormatter.SignalFx,
                 _ => throw new ArgumentOutOfRangeException(nameof(tagsFormatter))
             };
 
             return GetStatsDUtf8Formatter(statsDTagsFormatter);
-        }
-
-        private static Mock<IStatsDTagsFormatter> GetNullTagsFormatterMock(out StatsDUtf8Formatter formatter)
-        {
-            var tagsFormatterMock = new Mock<IStatsDTagsFormatter>();
-            tagsFormatterMock.Setup(x => x.FormatTags(AnyValidTags)).Returns((string?) null!);
-            formatter = GetStatsDUtf8Formatter(tagsFormatterMock.Object);
-            return tagsFormatterMock;
         }
 
         private static StatsDUtf8Formatter GetStatsDUtf8Formatter(IStatsDTagsFormatter tagsFormatter)
@@ -265,6 +294,15 @@ namespace JustEat.StatsD
             InfluxDb,
             Librato,
             SignalFx,
+        }
+
+        private class AlwaysNullStatsDTagsFormatter : IStatsDTagsFormatter
+        {
+            public bool AreTrailing { get; }
+
+            public int GetTagsBufferSize(in Dictionary<string, string?> tags) => 0;
+
+            public ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags) => null;
         }
     }
 }

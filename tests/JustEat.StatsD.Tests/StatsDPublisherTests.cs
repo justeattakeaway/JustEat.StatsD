@@ -90,9 +90,9 @@ namespace JustEat.StatsD
             var config = new StatsDConfiguration();
             var anyValidTags = new Dictionary<string, string?>
             {
-                ["foo"] = "bar",
-                ["empty"] = null,
-                ["lorem"] = "ipsum",
+                { "foo", "bar" },
+                { "empty", null },
+                { "lorem", "ipsum" },
             };
 
             using (var publisher = new StatsDPublisher(config, mock.Object))

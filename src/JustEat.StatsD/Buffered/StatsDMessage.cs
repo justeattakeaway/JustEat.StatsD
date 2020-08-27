@@ -7,13 +7,13 @@ namespace JustEat.StatsD.Buffered
         public readonly string StatBucket;
         public readonly double Magnitude;
         public readonly StatsDMessageKind MessageKind;
-        public readonly IDictionary<string, string?>? Tags;
+        public readonly Dictionary<string, string?>? Tags;
 
         private StatsDMessage(
             string statBucket,
             double magnitude,
             StatsDMessageKind messageKind,
-            IDictionary<string, string?>? tags)
+            Dictionary<string, string?>? tags)
         {
             StatBucket = statBucket;
             Magnitude = magnitude;
@@ -24,7 +24,7 @@ namespace JustEat.StatsD.Buffered
         public static StatsDMessage Timing(
             long milliseconds,
             string statBucket,
-            IDictionary<string, string?>? tags)
+            Dictionary<string, string?>? tags)
         {
             return new StatsDMessage(statBucket, milliseconds, StatsDMessageKind.Timing, tags);
         }
@@ -32,7 +32,7 @@ namespace JustEat.StatsD.Buffered
         public static StatsDMessage Counter(
             long magnitude,
             string statBucket,
-            IDictionary<string, string?>? tags)
+            Dictionary<string, string?>? tags)
         {
             return new StatsDMessage(statBucket, magnitude, StatsDMessageKind.Counter, tags);
         }
@@ -40,7 +40,7 @@ namespace JustEat.StatsD.Buffered
         public static StatsDMessage Gauge(
             double magnitude,
             string statBucket,
-            IDictionary<string, string?>? tags)
+            Dictionary<string, string?>? tags)
         {
             return new StatsDMessage(statBucket, magnitude, StatsDMessageKind.Gauge, tags);
         }

@@ -10,7 +10,7 @@ namespace JustEat.StatsD.Buffered
     internal static class BufferExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, Span<byte> destination)
+        public static bool TryWrite<T>(this ref Buffer<T> src, ReadOnlySpan<T> destination)
         {
             if (destination.Length > src.Tail.Length)
             {
@@ -24,7 +24,7 @@ namespace JustEat.StatsD.Buffered
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteUtf8String(this ref Buffer src, string str)
+        public static bool TryWriteUtf8String(this ref Buffer<byte> src, string str)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -33,7 +33,7 @@ namespace JustEat.StatsD.Buffered
 
 #if NETSTANDARD2_0 || NET461
             var bucketBytes = Encoding.UTF8.GetBytes(str);
-            return src.TryWriteBytes(bucketBytes);
+            return src.TryWrite(bucketBytes);
 #else
             int written = 0;
             try
@@ -52,9 +52,39 @@ namespace JustEat.StatsD.Buffered
             return true;
 #endif
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWriteUtf8Chars(this ref Buffer<byte> src, ReadOnlySpan<char> chars)
+        {
+            if (chars.Length == 0)
+            {
+                return true;
+            }
+
+#if NETSTANDARD2_0 || NET461
+            var bytes = Encoding.UTF8.GetBytes(chars.ToArray());
+            return src.TryWrite(bytes);
+#else
+            int written = 0;
+            try
+            {
+                written = Encoding.UTF8.GetBytes(chars, src.Tail);
+            }
+#pragma warning disable CA1031
+            catch (ArgumentException)
+#pragma warning restore CA1031
+            {
+                return false;
+            }
+
+            src.Tail = src.Tail.Slice(written);
+            src.Written += written;
+            return true;
+#endif
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteByte(this ref Buffer src, byte ch)
+        public static bool TryWrite<T>(this ref Buffer<T> src, T ch)
         {
             const int OneByte = 1;
             if (src.Tail.Length < OneByte)
@@ -70,7 +100,7 @@ namespace JustEat.StatsD.Buffered
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2)
+        public static bool TryWrite<T>(this ref Buffer<T> src, T ch1, T ch2)
         {
             const int TwoBytes = 2;
             if (src.Tail.Length < TwoBytes)
@@ -87,7 +117,7 @@ namespace JustEat.StatsD.Buffered
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteBytes(this ref Buffer src, byte ch1, byte ch2, byte ch3)
+        public static bool TryWrite<T>(this ref Buffer<T> src, T ch1, T ch2, T ch3)
         {
             const int ThreeBytes = 3;
             if (src.Tail.Length < ThreeBytes)
@@ -105,7 +135,7 @@ namespace JustEat.StatsD.Buffered
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteInt64(this ref Buffer src, long val)
+        public static bool TryWriteInt64(this ref Buffer<byte> src, long val)
         {
             if (!Utf8Formatter.TryFormat(val, src.Tail, out var consumed))
             {
@@ -119,7 +149,7 @@ namespace JustEat.StatsD.Buffered
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteDouble(this ref Buffer src, double val)
+        public static bool TryWriteDouble(this ref Buffer<byte> src, double val)
         {
             if (!Utf8Formatter.TryFormat((decimal)val, src.Tail, out var consumed))
             {
@@ -131,5 +161,9 @@ namespace JustEat.StatsD.Buffered
 
             return true;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWriteString(this ref Buffer<char> src, string str) =>
+            TryWrite(ref src, str.AsSpan());
     }
 }

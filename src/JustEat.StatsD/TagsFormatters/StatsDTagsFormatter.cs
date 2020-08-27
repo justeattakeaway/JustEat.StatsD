@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using JustEat.StatsD.Buffered;
 
 namespace JustEat.StatsD.TagsFormatters
 {
@@ -11,10 +12,20 @@ namespace JustEat.StatsD.TagsFormatters
     /// </summary>
     public abstract class StatsDTagsFormatter : IStatsDTagsFormatter
     {
-        private readonly string _prefix;
-        private readonly string _suffix;
-        private readonly string _tagsSeparator;
-        private readonly string _keyValueSeparator;
+        private const int SafeUdpPacketSize = 512;
+
+        [ThreadStatic]
+        private static char[]? _buffer;
+        private static char[] Buffer => _buffer ??= new char[SafeUdpPacketSize];
+
+        private readonly char[] _prefix;
+        private readonly char[] _suffix;
+        private readonly char[] _tagsSeparator;
+        private readonly char[] _keyValueSeparator;
+        private readonly int _prefixSize;
+        private readonly int _suffixSize;
+        private readonly int _tagsSeparatorSize;
+        private readonly int _keyValueSeparatorSize;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="StatsDTagsFormatter"/> class.
@@ -27,18 +38,22 @@ namespace JustEat.StatsD.TagsFormatters
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            _prefix = configuration.Prefix ?? string.Empty;
-            _suffix = configuration.Suffix ?? string.Empty;
+            _prefix = configuration.Prefix?.ToArray() ?? Array.Empty<char>();
+            _suffix = configuration.Suffix?.ToArray() ?? Array.Empty<char>();
             AreTrailing = configuration.AreTrailing;
-            _tagsSeparator = configuration.TagsSeparator ?? string.Empty;
-            _keyValueSeparator = configuration.KeyValueSeparator ?? string.Empty;
+            _tagsSeparator = configuration.TagsSeparator?.ToArray() ?? Array.Empty<char>();
+            _keyValueSeparator = configuration.KeyValueSeparator?.ToArray() ?? Array.Empty<char>();
+            _prefixSize = Encoding.UTF8.GetByteCount(_prefix);
+            _suffixSize = Encoding.UTF8.GetByteCount(_suffix);
+            _tagsSeparatorSize = Encoding.UTF8.GetByteCount(_tagsSeparator);
+            _keyValueSeparatorSize = Encoding.UTF8.GetByteCount(_keyValueSeparator);
         }
         
         /// <inheritdoc />
         public bool AreTrailing { get; }
 
         /// <inheritdoc />
-        public virtual int GetTagsBufferSize(in IDictionary<string, string?> tags)
+        public virtual int GetTagsBufferSize(in Dictionary<string, string?> tags)
         {
             const int NoTagsSize = 0;
             if (!AreTagsPresent(tags))
@@ -46,34 +61,112 @@ namespace JustEat.StatsD.TagsFormatters
                 return NoTagsSize;
             }
 
-            return _prefix.Length
-                + Encoding.UTF8.GetByteCount(FormatTags(tags!))
-                + _suffix.Length;
+            return _prefixSize
+                + GetTagsSize(tags)
+                + _suffixSize;
         }
         
         /// <inheritdoc />
-        public virtual string FormatTags(in IDictionary<string, string?> tags)
+        public virtual ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags)
         {
-            if (AreTagsPresent(tags))
+            if (!AreTagsPresent(tags))
             {
-                return _prefix + FormatTags(tags!) + _suffix;
+                return ReadOnlySpan<char>.Empty;
             }
 
-            return string.Empty;
+            char[] destination = Buffer;
+            if (!TryFormatTags(destination, tags, out int written))
+            {
+                var newSize = GetTagsBufferSize(tags);
+                _buffer = new char[newSize];
+                destination = Buffer;
+
+                if (!TryFormatTags(destination, tags, out written))
+                {
+                    throw new Exception("Failed to format tags.");
+                }
+            }
+
+            return new ArraySegment<char>(destination, 0, written);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryFormatTags(Span<char> destination, in Dictionary<string, string?> tags, out int written)
+        {
+            var buffer = new Buffer<char>(destination);
+            bool isFormattingSuccessful = buffer.TryWrite(_prefix)
+                && TryWriteTags(ref buffer, tags)
+                && buffer.TryWrite(_suffix);
+
+            written = isFormattingSuccessful ? buffer.Written : 0;
+
+            return isFormattingSuccessful;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string FormatTags(IDictionary<string, string?> tags) =>
-            string.Join(_tagsSeparator,tags.Select(FormatTags));
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private string FormatTags(KeyValuePair<string, string?> tag) =>
-            tag.Value == null
-                ? tag.Key
-                : tag.Key + _keyValueSeparator + tag.Value;
+        private bool TryWriteTags(ref Buffer<char> src, in Dictionary<string, string?> tags)
+        {
+            var enumerator = tags.GetEnumerator();
+            var index = 0;
+            bool isFormattingSuccessful = true;
+            while (isFormattingSuccessful && enumerator.MoveNext())
+            {
+                isFormattingSuccessful = TryWriteTag(ref src, enumerator.Current)
+                    && TryWriteTagsSeparator(ref src, index, tags);
+
+                index++;
+            }
+
+            return isFormattingSuccessful;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AreTagsPresent(IDictionary<string, string?>? tags) =>
+        private bool TryWriteTagsSeparator(ref Buffer<char> src, int index, in Dictionary<string, string?> tags) =>
+            !IsLastTag(index, tags)
+                ? src.TryWrite(_tagsSeparator)
+                : true;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsLastTag(int index, in Dictionary<string, string?> tags) =>
+            index == tags.Count - 1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteTag(ref Buffer<char> src, in KeyValuePair<string, string?> tag) =>
+            src.TryWriteString(tag.Key)
+            && TryWriteTagValueIfNeeded(ref src, tag);
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool TryWriteTagValueIfNeeded(ref Buffer<char> src, KeyValuePair<string, string?> tag) =>
+            tag.Value != null
+                ? src.TryWrite(_keyValueSeparator) && src.TryWriteString(tag.Value!)
+                : true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool AreTagsPresent(in Dictionary<string, string?>? tags) =>
             tags != null && tags.Count > 0;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetTagsSize(in Dictionary<string, string?> tags)
+        {
+            var tagsSize = 0;
+            foreach (KeyValuePair<string, string?> tag in tags)
+            {
+                tagsSize += GetTagSize(tag);
+            }
+
+            tagsSize += (tags.Count - 1) * _tagsSeparatorSize;
+
+            return tagsSize;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetTagSize(KeyValuePair<string, string?> tag) =>
+            Encoding.UTF8.GetByteCount(tag.Key) + GetTagValueSize(tag);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetTagValueSize(KeyValuePair<string, string?> tag) =>
+            tag.Value != null
+                ? Encoding.UTF8.GetByteCount(tag.Value) + _keyValueSeparatorSize
+                : 0;
     }
 }
