@@ -35,9 +35,17 @@ jobs:
 
     - name: Install StatsD
       shell: pwsh
+      if: ${{ runner.os == 'Windows' }}
       run: |
         git clone https://github.com/etsy/statsd.git ./_statsd
         Start-Process "node" -ArgumentList "./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js" -WindowStyle Hidden
+
+    - name: Install StatsD
+      shell:
+      if: ${{ runner.os != 'Windows' }}
+      run: |
+        git clone https://github.com/etsy/statsd.git ./_statsd
+        node ./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js &
 
     - name: Build, Test and Package
       shell: pwsh
