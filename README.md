@@ -68,7 +68,7 @@ public class MyService
 
 #### Simplest example
 
-No service registration or IoC. Works for both .NET 4.5.1 and .NET Core.
+No service registration or IoC. Works for both .NET Framework and .NET Core.
 
 ```csharp
 var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
@@ -117,7 +117,7 @@ services.AddStatsD(
     });
 ```
 
-#### .NET 4.5.1
+#### .NET Framework
 
 An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
