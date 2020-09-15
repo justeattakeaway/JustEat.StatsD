@@ -9,7 +9,7 @@ install:
   - ps: Start-Process "node" -ArgumentList "..\statsd\stats.js .\tests\JustEat.StatsD.Tests\statsdconfig.js" -WindowStyle Hidden
   - ps: .\SetAppVeyorBuildVersion.ps1
 build_script:
-  - ps: .\Build.ps1
+  - ps: .\build.ps1
 after_build:
   - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov

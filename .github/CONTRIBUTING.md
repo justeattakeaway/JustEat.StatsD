@@ -18,7 +18,7 @@ If you wish to contribute code, please consider the guidelines below:
   1. If fixing a bug or adding new functionality, add any tests you deem appropriate.
   1. Test coverage should not go down.
   1. Note any breaking changes in your PR description.
-  1. Ensure ```Build.ps1```/```build.sh``` runs with no errors or warnings and all the tests pass.
+  1. Ensure `build.ps1`/`build.sh` runs with no errors or warnings and all the tests pass.
   1. Open a pull request against the ```master``` branch, referencing your issue, if appropriate.
 
 Once your pull request is opened, the project maintainers will assess it for validity and an appropriate level of quality. For example, the Pull Request status checks should all be green.
