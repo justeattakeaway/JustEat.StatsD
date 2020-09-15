@@ -1,15 +1,22 @@
+#! /usr/bin/pwsh
 param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
+    [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
-    [Parameter(Mandatory = $false)][switch] $SkipTests,
-    [Parameter(Mandatory = $false)][bool]   $CreatePackages = $true,
-    [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
+    [Parameter(Mandatory = $false)][switch] $SkipTests
 )
 
 $ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
 
 $solutionPath = Split-Path $MyInvocation.MyCommand.Definition
 $sdkFile = Join-Path $solutionPath "global.json"
+
+$libraryProject = Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj"
+
+$testProjects = @(
+    (Join-Path $solutionPath "tests\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
+)
 
 $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
 
@@ -19,7 +26,7 @@ if ($OutputPath -eq "") {
 
 $installDotNetSdk = $false;
 
-if (($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue))) {
+if (($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue))) {
     Write-Host "The .NET Core SDK is not installed."
     $installDotNetSdk = $true
 }
@@ -38,6 +45,7 @@ else {
 }
 
 if ($installDotNetSdk -eq $true) {
+
     $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
     $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
 
@@ -45,63 +53,67 @@ if ($installDotNetSdk -eq $true) {
         if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
             mkdir $env:DOTNET_INSTALL_DIR | Out-Null
         }
-        $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
-        Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
-        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
-    }
 
-    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-    $dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
+        if (($PSVersionTable.PSVersion.Major -ge 6) -And !$IsWindows) {
+            $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.sh"
+            Invoke-WebRequest "https://dot.net/v1/dotnet-install.sh" -OutFile $installScript -UseBasicParsing
+            chmod +x $installScript
+            & $installScript --version "$dotnetVersion" --install-dir "$env:DOTNET_INSTALL_DIR" --no-path
+        }
+        else {
+            $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
+            Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
+            & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        }
+    }
 }
 else {
-    $dotnet = "dotnet"
+    $env:DOTNET_INSTALL_DIR = Split-Path -Path (Get-Command dotnet).Path
 }
 
-function DotNetBuild {
-    param([string]$Project, [string]$Configuration)
-    & $dotnet build $Project --output $OutputPath --configuration $Configuration
+$dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet"
+
+if ($installDotNetSdk -eq $true) {
+    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+}
+
+function DotNetPack {
+    param([string]$Project)
+
+    if ($VersionSuffix) {
+        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
+    }
+    else {
+        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --include-symbols --include-source
+    }
     if ($LASTEXITCODE -ne 0) {
-        throw "dotnet build failed with exit code $LASTEXITCODE"
+        throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
 }
 
 function DotNetTest {
     param([string]$Project)
-    if ($DisableCodeCoverage -eq $true) {
-        & $dotnet test $Project --output $OutputPath
-        $dotNetTestExitCode = $LASTEXITCODE
-    }
-    else {
 
-        if ($installDotNetSdk -eq $true) {
-            $dotnetPath = $dotnet
-        }
-        else {
-            $dotnetPath = (Get-Command "dotnet.exe").Source
-        }
+    $nugetPath = Join-Path ($env:USERPROFILE ?? "~") ".nuget\packages"
+    $propsFile = Join-Path $solutionPath "Directory.Build.props"
+    $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
+    $reportGeneratorPath = Join-Path $nugetPath "reportgenerator\$reportGeneratorVersion\tools\netcoreapp3.0\ReportGenerator.dll"
 
-        $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
-        $propsFile = Join-Path $solutionPath "Directory.Build.props"
+    $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
+    $reportOutput = Join-Path $OutputPath "coverage"
 
-        $reportGeneratorVersion = (Select-Xml -Path $propsFile -XPath "//PackageReference[@Include='ReportGenerator']/@Version").Node.'#text'
-        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
+    & $dotnet test $Project --output $OutputPath
 
-        $coverageOutput = Join-Path $OutputPath "coverage.cobertura.xml"
-        $reportOutput = Join-Path $OutputPath "coverage"
+    $dotNetTestExitCode = $LASTEXITCODE
 
-        & $dotnetPath test $Project --output $OutputPath
-
-        $dotNetTestExitCode = $LASTEXITCODE
-
-        if ((Test-Path $coverageOutput)) {
-            & $dotnet `
-                $reportGeneratorPath `
-                `"-reports:$coverageOutput`" `
-                `"-targetdir:$reportOutput`" `
-                -reporttypes:HTML `
-                -verbosity:Warning
-        }
+    if (Test-Path $coverageOutput) {
+        & $dotnet `
+            $reportGeneratorPath `
+            `"-reports:$coverageOutput`" `
+            `"-targetdir:$reportOutput`" `
+            -reporttypes:HTML `
+            -verbosity:Warning
     }
 
     if ($dotNetTestExitCode -ne 0) {
@@ -109,43 +121,12 @@ function DotNetTest {
     }
 }
 
-function DotNetPack {
-    param([string]$Project, [string]$Configuration)
-    & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet pack failed with exit code $LASTEXITCODE"
-    }
-}
 
-$projects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj")
-)
+Write-Host "Packaging library..." -ForegroundColor Green
+DotNetPack $libraryProject
 
-$testProjects = @(
-    (Join-Path $solutionPath "tests\JustEat.StatsD.Tests\JustEat.StatsD.Tests.csproj")
-)
-
-$packageProjects = @(
-    (Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj")
-)
-
-Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
-ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration
-    DotNetBuild $project $Configuration
-}
-
-if ($SkipTests -eq $false) {
-    Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
-    Remove-Item -Path (Join-Path $OutputPath "coverage.json") -Force -ErrorAction SilentlyContinue | Out-Null
-    ForEach ($project in $testProjects) {
-        DotNetTest $project
-    }
-}
-
-if ($CreatePackages -eq $true) {
-    Write-Host "Creating $($packageProjects.Count) package(s)..." -ForegroundColor Green
-    ForEach ($project in $packageProjects) {
-        DotNetPack $project $Configuration
-    }
+Write-Host "Running tests..." -ForegroundColor Green
+Remove-Item -Path (Join-Path $OutputPath "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
+ForEach ($testProject in $testProjects) {
+    DotNetTest $testProject
 }
