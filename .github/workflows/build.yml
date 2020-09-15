@@ -41,7 +41,7 @@ jobs:
         Start-Process "node" -ArgumentList "./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js" -WindowStyle Hidden
 
     - name: Install StatsD
-      shell:
+      shell: bash
       if: ${{ runner.os != 'Windows' }}
       run: |
         git clone https://github.com/etsy/statsd.git ./_statsd
