@@ -18,7 +18,6 @@ We use this library within our components to publish [StatsD](http://github.com/
 * `netstandard2.0`
 * `netstandard2.1`
 * `netcoreapp2.1`
-* `netcoreapp2.2`
 
 ### Features
 
