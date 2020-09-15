@@ -18,8 +18,8 @@ If you wish to contribute code, please consider the guidelines below:
   1. If fixing a bug or adding new functionality, add any tests you deem appropriate.
   1. Test coverage should not go down.
   1. Note any breaking changes in your PR description.
-  1. Ensure `build.ps1`/`build.sh` runs with no errors or warnings and all the tests pass.
-  1. Open a pull request against the ```master``` branch, referencing your issue, if appropriate.
+  1. Ensure `build.ps1` runs with no errors or warnings and all the tests pass.
+  1. Open a pull request against the `master` branch, referencing your issue, if appropriate.
 
 Once your pull request is opened, the project maintainers will assess it for validity and an appropriate level of quality. For example, the Pull Request status checks should all be green.
 
@@ -27,11 +27,10 @@ If the project maintainers are satisfied that your contribution is appropriate i
 
 ## Releases
 
-  * AppVeyor and Travis CI should be green on the master branch.
   * Check the version number has been updated since the last release - follow [SemVer rules](http://semver.org)
-    * Bump the version in `appveyor.yml` and `version.props` if neccessary.
+    * Bump the version in `version.props` if neccessary.
   * Update the CHANGELOG.md
-  * Create a new release in [GitHub](https://github.com/justeat/JustEat.StatsD/releases) with appropriate release notes and tagged version number (for example `v1.2.3-beta01`).
-  * Wait for the tag build to complete in AppVeyor and check the metadata/version is as expected.
-  * Push the tag build's package to [NuGet](https://www.nuget.org/packages/JustEat.StatsD) using an AppVeyor deployment and wait for the pushed version to be indexed.
+  * Create a new release in [GitHub](https://github.com/justeat/JustEat.StatsD/releases) with appropriate release notes and tagged version number (for example `v1.2.3`).
+  * A build will run for the tag in GitHub Actions and publish the package to [NuGet](https://www.nuget.org/packages/JustEat.StatsD).
+  * Wait for NuGet.org to index the package.
   * Share the news! 🎉
