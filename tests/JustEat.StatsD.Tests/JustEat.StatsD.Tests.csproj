@@ -2,7 +2,7 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn);CA1707;CA2007</NoWarn>
     <RootNamespace>JustEat.StatsD</RootNamespace>
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\JustEat.StatsD\JustEat.StatsD.csproj" />
