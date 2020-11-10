@@ -57,7 +57,7 @@ namespace JustEat.StatsD.EndpointLookups
 
             IEndPointSource source;
 
-            if (IPAddress.TryParse(host, out IPAddress address))
+            if (IPAddress.TryParse(host, out IPAddress? address))
             {
                 // If we were given an IP instead of a hostname,
                 // we can happily keep it the life of this class
