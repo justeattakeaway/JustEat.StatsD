@@ -7,17 +7,15 @@
     <PackageId>JustEat.StatsD</PackageId>
     <RootNamespace>JustEat.StatsD</RootNamespace>
     <Summary>A .NET library for publishing metrics to StatsD.</Summary>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp2.1;net5.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="$(MicrosoftNETFrameworkReferenceAssembliesVersion)" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="System.Memory" Version="4.5.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
+    <PackageReference Include="System.Memory" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="PublicAPI.Shipped.txt" />

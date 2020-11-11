@@ -48,7 +48,7 @@ namespace JustEat.StatsD
         /// <returns>An object from the pool. </returns>
         private Socket? Pop()
         {
-            if (_pool.TryTake(out Socket result))
+            if (_pool.TryTake(out Socket? result))
             {
                 return result;
             }

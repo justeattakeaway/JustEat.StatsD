@@ -1,16 +1,5 @@
 <Project>
   <Import Project="version.props" />
-  <PropertyGroup>
-    <AnalyzersVersion>3.3.0</AnalyzersVersion>
-    <MicrosoftNETFrameworkReferenceAssembliesVersion>1.0.0</MicrosoftNETFrameworkReferenceAssembliesVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.9.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="$(AnalyzersVersion)" PrivateAssets="All" />
-    <PackageReference Include="ReportGenerator" Version="4.6.4" PrivateAssets="All" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)package-icon.png" Pack="True" PackagePath="" />
   </ItemGroup>
@@ -25,6 +14,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <LangVersion>latest</LangVersion>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Nullable>enable</Nullable>
     <PackageIcon>package-icon.png</PackageIcon>

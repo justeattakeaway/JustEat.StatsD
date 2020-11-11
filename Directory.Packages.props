@@ -1,0 +1,35 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageVersion Include="coverlet.msbuild" Version="2.9.0" />
+    <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
+    <PackageVersion Include="Moq" Version="4.15.1" />
+    <PackageVersion Include="ReportGenerator" Version="4.7.1" />
+    <PackageVersion Include="Shouldly" Version="4.0.0" />
+    <PackageVersion Include="xunit" Version="2.4.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.4.13" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageVersion Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.StatsD' ">
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    <PackageReference Include="ReportGenerator" PrivateAssets="All" />
+  </ItemGroup>
+</Project>

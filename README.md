@@ -2,10 +2,9 @@
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.StatsD?includePreReleases=false)](http://www.nuget.org/packages/JustEat.StatsD)
 
-| | Linux | Windows |
-|:-:|:-:|:-:|
-| **Build Status** | [![Build status](https://img.shields.io/travis/justeat/JustEat.StatsD/master.svg)](https://travis-ci.org/justeat/JustEat.StatsD) | [![Build status](https://img.shields.io/appveyor/ci/justeattech/justeat-statsd/master.svg)](https://ci.appveyor.com/project/justeattech/justeat-statsd) [![codecov](https://codecov.io/gh/justeat/JustEat.StatsD/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/JustEat.StatsD) |
-| **Build History** | [![Build history](https://buildstats.info/travisci/chart/justeat/JustEat.StatsD?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/justeat/JustEat.StatsD) |  [![Build history](https://buildstats.info/appveyor/chart/justeattech/justeat-statsd?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/justeattech/justeat-statsd) |
+[![Build status](https://github.com/justeat/JustEat.StatsD/workflows/build/badge.svg?branch=master&event=push)](https://github.com/justeat/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amaster+event%3Apush)
+
+[![codecov](https://codecov.io/gh/justeat/JustEat.StatsD/branch/master/graph/badge.svg)](https://codecov.io/gh/justeat/JustEat.StatsD)
 
 ## Summary
 
@@ -13,13 +12,13 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 ### Supported platforms
 
-`JustEat.StatsD` version 4.1.0 is built for these target frameworks:
+`JustEat.StatsD` version 4.2.0 is built for these target frameworks:
 
 * `net461`
 * `netstandard2.0`
 * `netstandard2.1`
 * `netcoreapp2.1`
-* `netcoreapp2.2`
+* `net5.0`
 
 ### Features
 
@@ -70,7 +69,7 @@ public class MyService
 
 #### Simplest example
 
-No service registration or IoC. Works for both .NET 4.5.1 and .NET Core.
+No service registration or IoC. Works for both .NET Framework and .NET Core.
 
 ```csharp
 var statsDConfig = new StatsDConfiguration { Host = "metrics_server.mycompany.com" };
@@ -119,7 +118,7 @@ services.AddStatsD(
     });
 ```
 
-#### .NET 4.5.1
+#### .NET Framework
 
 An example of IoC in Ninject for StatsD publisher with values for all options, read from configuration:
 
