@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1707;CA2007</NoWarn>
+    <NoWarn>$(NoWarn);CA1014;CA1002;CA1707;CA1711;CA2007</NoWarn>
     <RootNamespace>JustEat.StatsD</RootNamespace>
     <TargetFrameworks>net5.0</TargetFrameworks>
   </PropertyGroup>

@@ -62,7 +62,9 @@ namespace JustEat.StatsD
         /// <param name="buckets">The bucket(s) to increment the counter(s) for.</param>
         public static void Increment(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
         {
+#pragma warning disable CA1508
             if (buckets == null || buckets.Length == 0)
+#pragma warning restore CA1508
             {
                 return;
             }
@@ -137,7 +139,9 @@ namespace JustEat.StatsD
         /// <param name="buckets">The bucket(s) to decrement the counter(s) for.</param>
         public static void Decrement(this IStatsDPublisher publisher, long value, double sampleRate, params string[] buckets)
         {
+#pragma warning disable CA1508
             if (buckets == null || buckets.Length == 0)
+#pragma warning restore CA1508
             {
                 return;
             }
