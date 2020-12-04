@@ -11,9 +11,11 @@ namespace JustEat.StatsD.Buffered
         private static byte[]? _buffer;
         private static byte[] Buffer => _buffer ?? (_buffer = new byte[SafeUdpPacketSize]);
 
+#pragma warning disable CA5394
         [ThreadStatic]
         private static Random? _random;
         private static Random Random => _random ?? (_random = new Random());
+#pragma warning disable CA5394
 
         private readonly StatsDUtf8Formatter _formatter;
         private readonly IStatsDTransport _transport;
@@ -75,11 +77,13 @@ namespace JustEat.StatsD.Buffered
                     }
                     else
                     {
-                        throw new Exception("Failed to format buffer to UTF-8.");
+                        throw new InvalidOperationException("Failed to format buffer to UTF-8.");
                     }
                 }
             }
+#pragma warning disable CA2201
             catch (Exception ex)
+#pragma warning restore CA2201
             {
                 var handled = _onError?.Invoke(ex) ?? true;
                 if (!handled)
