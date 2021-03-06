@@ -54,18 +54,12 @@ JustEat.StatsD.StatsDPublisher.StatsDPublisher(JustEat.StatsD.StatsDConfiguratio
 JustEat.StatsD.StatsDPublisher.Timing(long duration, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
 JustEat.StatsD.StatsDServiceCollectionExtensions
 JustEat.StatsD.TagsFormatter
-JustEat.StatsD.TagsFormatters.InfluxDbTagsFormatter
-JustEat.StatsD.TagsFormatters.InfluxDbTagsFormatter.InfluxDbTagsFormatter() -> void
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.AreTrailing.get -> bool
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.GetTagsBufferSize(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> int
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.FormatTags(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>
-JustEat.StatsD.TagsFormatters.LibratoTagsFormatter
-JustEat.StatsD.TagsFormatters.LibratoTagsFormatter.LibratoTagsFormatter() -> void
-JustEat.StatsD.TagsFormatters.SignalFxTagsFormatter
-JustEat.StatsD.TagsFormatters.SignalFxTagsFormatter.SignalFxTagsFormatter() -> void
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatter
-JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.AreTrailing.get -> bool
+virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.AreTrailing.get -> bool
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.StatsDTagsFormatter(JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration! configuration) -> void
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.StatsDTagsFormatterConfiguration() -> void
@@ -79,8 +73,6 @@ JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Suffix.get -> str
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Suffix.set -> void
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.TagsSeparator.get -> string!
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.TagsSeparator.set -> void
-JustEat.StatsD.TagsFormatters.TrailingTagsFormatter
-JustEat.StatsD.TagsFormatters.TrailingTagsFormatter.TrailingTagsFormatter() -> void
 JustEat.StatsD.TimerExtensions
 const JustEat.StatsD.StatsDConfiguration.DefaultPort = 8125 -> int
 static JustEat.StatsD.EndpointLookups.EndPointFactory.MakeEndPointSource(System.Net.EndPoint! endpoint, System.TimeSpan? endpointCacheDuration) -> JustEat.StatsD.EndpointLookups.IEndPointSource!

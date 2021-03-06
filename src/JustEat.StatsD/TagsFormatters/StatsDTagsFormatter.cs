@@ -31,6 +31,7 @@ namespace JustEat.StatsD.TagsFormatters
         /// Initializes a new instance of the <see cref="StatsDTagsFormatter"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
+        /// <exception cref="ArgumentNullException"> Thrown when the configuration is null.</exception>
         protected StatsDTagsFormatter(StatsDTagsFormatterConfiguration configuration)
         {
             if (configuration == null)
@@ -50,7 +51,7 @@ namespace JustEat.StatsD.TagsFormatters
         }
         
         /// <inheritdoc />
-        public bool AreTrailing { get; }
+        public virtual bool AreTrailing { get; }
 
         /// <inheritdoc />
         public virtual int GetTagsBufferSize(in Dictionary<string, string?> tags)
