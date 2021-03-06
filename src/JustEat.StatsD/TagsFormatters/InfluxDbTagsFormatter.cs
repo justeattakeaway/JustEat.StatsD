@@ -4,7 +4,7 @@ namespace JustEat.StatsD.TagsFormatters
     /// Formats StatsD tags for InfluxDB.
     /// Tags placed right after the bucket name with format: <code>"," + tag1=value1,tag2,tag3=value</code>.
     /// </summary>
-    public sealed class InfluxDbTagsFormatter : StatsDTagsFormatter
+    internal sealed class InfluxDbTagsFormatter : StatsDTagsFormatter
     {
         private const string Prefix = ",";
         private const bool AreTrailingTags = false;
