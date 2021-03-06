@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1001;CA1822</NoWarn>
+    <NoWarn>$(NoWarn);CA1001;CA1014;CA1822</NoWarn>
     <OutputType>Exe</OutputType>
     <!-- Workaround for https://github.com/dotnet/BenchmarkDotNet/pull/1420 -->
     <LangVersion>9.0</LangVersion>
