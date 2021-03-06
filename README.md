@@ -165,7 +165,7 @@ The default behaviour is to ignore the error.
 
 #### Tagging support
 
-Tags or dimensions are not covered by the StatsD specification. Providers supporting tags have implemented their flavours. Some of the major providers are supported out-of-the-box:
+Tags or dimensions are not covered by the StatsD specification. Providers supporting tags have implemented their own flavours. Some of the major providers are supported out-of-the-box from 5.0.0+ are:
 
 * [CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-custom-metrics-statsd.html).
 * [DataDog](https://docs.datadoghq.com/developers/dogstatsd/datagram_shell/?tab=metrics)
