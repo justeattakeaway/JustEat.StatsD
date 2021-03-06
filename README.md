@@ -185,7 +185,7 @@ var config = new StatsDConfiguration
 
 ##### Extending tags formatter
 
-As tags are not part of the StatsD specification, the `IStatsDTagsFormatter` used can be extended and injected in the `StatsDConfiguration`.
+As tags are not part of the StatsD specification, the `IStatsDTagsFormatter` used can be extended and specified by the `StatsDConfiguration`.
 
 The template class `StatsDTagsFormatter` can be inherited from providing the `StatsDTagsFormatterConfiguration`:
 
