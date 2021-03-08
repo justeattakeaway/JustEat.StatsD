@@ -31,7 +31,7 @@ namespace JustEat.StatsD.TagsFormatters
         /// Initializes a new instance of the <see cref="StatsDTagsFormatter"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        /// <exception cref="ArgumentNullException"> Thrown when the configuration is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="configuration"/> is <see langword="null"/>.</exception>
         protected StatsDTagsFormatter(StatsDTagsFormatterConfiguration configuration)
         {
             if (configuration == null)
