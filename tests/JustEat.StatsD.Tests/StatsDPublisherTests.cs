@@ -60,11 +60,40 @@ namespace JustEat.StatsD
         }
 
         [Fact]
+        public static void Metrics_Sent_If_Tags_Are_Null()
+        {
+            // Arrange
+            var mock = new Mock<IStatsDTransport>();
+
+            var config = new StatsDConfiguration
+            {
+                Prefix = "red",
+            };
+
+            using (var publisher = new StatsDPublisher(config, mock.Object))
+            {
+                // Act
+                publisher.Increment(10, 1.0, "black");
+                publisher.Gauge(10, "black");
+                publisher.Timing(10, 1.0, "black");
+            }
+
+            // Assert
+            mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(3));
+        }
+
+        [Fact]
         public static void Metrics_Not_Sent_If_Array_Is_Null_Or_Empty()
         {
             // Arrange
             var mock = new Mock<IStatsDTransport>();
             var config = new StatsDConfiguration();
+            var anyValidTags = new Dictionary<string, string?>
+            {
+                ["foo"] = "bar",
+                ["empty"] = null,
+                ["lorem"] = "ipsum",
+            };
 
             using (var publisher = new StatsDPublisher(config, mock.Object))
             {
@@ -84,6 +113,12 @@ namespace JustEat.StatsD
                 publisher.Increment(1, 1, null as IEnumerable<string>);
                 publisher.Decrement(1, 1, new[] { string.Empty });
                 publisher.Increment(1, 1, new[] { string.Empty });
+                publisher.Decrement(1, 1, new[] { string.Empty }, anyValidTags);
+                publisher.Increment(1, 1, new[] { string.Empty }, anyValidTags);
+                publisher.Decrement(1, 1, anyValidTags, new[] { string.Empty });
+                publisher.Increment(1, 1, anyValidTags, new[] { string.Empty });
+                publisher.Decrement(1, 1, anyValidTags, null as string[]);
+                publisher.Increment(1, 1, anyValidTags, null as string[]);
 #nullable enable
             }
 
@@ -133,6 +168,23 @@ namespace JustEat.StatsD
             Assert.Throws<ArgumentNullException>(
                 "transport",
                 () => new StatsDPublisher(configuration, transport!));
+        }
+
+        [Fact]
+        public static void Constructor_Does_Not_Throw_If_Tags_Formatter_Is_Null()
+        {
+            // Arrange
+            var configuration = new StatsDConfiguration
+            {
+                TagsFormatter = null!,
+            };
+            var transport = Mock.Of<IStatsDTransport>();
+
+            // Act
+            using var publisher = new StatsDPublisher(configuration, transport);
+
+            // Assert
+            Assert.NotNull(publisher);
         }
     }
 }

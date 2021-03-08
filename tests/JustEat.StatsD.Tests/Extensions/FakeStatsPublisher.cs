@@ -16,26 +16,26 @@ namespace JustEat.StatsD.Extensions
 
         public TimeSpan LastDuration { get; set; }
 
-        public List<string> BucketNames { get; private set; }
+        public List<string> BucketNames { get; }
 
         public void Dispose()
         {
             DisposeCount++;
         }
 
-        public void Increment(long value, double sampleRate, string bucket)
+        public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             CallCount++;
             BucketNames.Add(bucket);
         }
 
-        public void Gauge(double value, string bucket)
+        public void Gauge(double value, string bucket, Dictionary<string, string?>? tags)
         {
             CallCount++;
             BucketNames.Add(bucket);
         }
 
-        public void Timing(long duration, double sampleRate, string bucket)
+        public void Timing(long duration, double sampleRate, string bucket, Dictionary<string, string?>? tags)
         {
             CallCount++;
             LastDuration = TimeSpan.FromMilliseconds(duration);

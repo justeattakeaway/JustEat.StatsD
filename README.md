@@ -22,15 +22,16 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 ### Features
 
-* Easy to use
-* Robust and proven
+* Easy to use.
+* Robust and proven.
 * Tuned for high performance and low resource usage using [BenchmarkDotNet](https://benchmarkdotnet.org/). Typically zero allocation on sending a metric on target frameworks where `Span<T>` is available.
 * Works well with modern .NET apps - `async ... await`, .NET Core, .NET Standard 2.0.
 * Supports standard StatsD primitives: `Increment`, `Decrement`, `Timing` and `Gauge`.
+* Supports tagging on `Increment`, `Decrement`, `Timing` and `Gauge`.
 * Supports sample rate for cutting down of sends of high-volume metrics.
 * Helpers to make it easy to time a delegate such as a `Func<T>` or `Action<T>`, or a code block inside a `using` statement.
-* Send stats over UDP or IP
-* Send stats to a server by name or IP address
+* Send stats over UDP or IP.
+* Send stats to a server by name or IP address.
 
 #### Publishing statistics
 
@@ -143,15 +144,16 @@ Bind<StatsDConfiguration>().ToConstant(statsDConfig>);
 Bind<IStatsDPublisher>().To<StatsDPublisher>().InSingletonScope();
 ```
 
-## StatsDConfiguration fields
+### StatsDConfiguration fields
 
 | Name              | Type                    | Default                        | Comments                                                                                                |
 |-------------------|-------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------|
 | Host              | `string`                |                                | The host name or IP address of the StatsD server. There is no default, this must be set.                |
 | Port              | `int`                   | `8125`                         | The StatsD port.                                                                                        |
 | DnsLookupInterval | `TimeSpan?`             | `5 minutes`                    | Length of time to cache the host name to IP address lookup. Only used when "Host" contains a host name. |
-| Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.
-| SocketProtocol    | `SocketProtocol`, one of `Udp`, `IP`| `Udp`              | Type of socket to use when sending stats to the server.                                                                          |
+| Prefix            | `string`                | `string.Empty`                 | Prepend a prefix to all stats.                                                                          |
+| SocketProtocol    | `SocketProtocol`, one of `Udp`, `IP`| `Udp`              | Type of socket to use when sending stats to the server.                                                 |
+| TagsFormatter     | `IStatsDTagsFormatter`  | `NoOpTagsFormatter`            | Format used for tags for the different providers. Out-of-the-box formatters can be accessed using the `TagsFormatter` class. |
 | OnError           | `Func<Exception, bool>` | `null`                         | Function to receive notification of any exceptions.                                                     |
 
 `OnError` is a function to receive notification of any errors that occur when trying to publish a metric. This function should return:
@@ -161,7 +163,39 @@ Bind<IStatsDPublisher>().To<StatsDPublisher>().InSingletonScope();
 
 The default behaviour is to ignore the error.
 
-#### Example of using the interface
+#### Tagging support
+
+Tags or dimensions are not covered by the StatsD specification. Providers supporting tags have implemented their own flavours. Some of the major providers are supported out-of-the-box from 5.0.0+ are:
+
+* [CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-custom-metrics-statsd.html).
+* [DataDog](https://docs.datadoghq.com/developers/dogstatsd/datagram_shell/?tab=metrics)
+* [InfluxDB](https://www.influxdata.com/blog/getting-started-with-sending-statsd-metrics-to-telegraf-influxdb/#introducing-influx-statsd).
+* [Librato](https://github.com/librato/statsd-librato-backend#tags).
+* [SignalFX](https://docs.signalfx.com/en/latest/integrations/agent/monitors/collectd-statsd.html#adding-dimensions-to-statsd-metrics).
+* [Splunk](https://docs.splunk.com/Documentation/Splunk/8.0.5/Metrics/GetMetricsInStatsd).
+
+```csharp
+var config = new StatsDConfiguration
+{
+    Prefix = "prefix",
+    Host = "127.0.0.1",
+    TagsFormatter = TagsFormatter.CloudWatch,
+};
+```
+
+##### Extending tags formatter
+
+As tags are not part of the StatsD specification, the `IStatsDTagsFormatter` used can be extended and specified by the `StatsDConfiguration`.
+
+The template class `StatsDTagsFormatter` can be inherited from providing the `StatsDTagsFormatterConfiguration`:
+
+* **Prefix**: the string that will appear before the tag(s).
+* **Suffix**: the string that will appear after the tag(s).
+* **AreTrailing**: a boolean indicating if the tag(s) are placed at the end of the StatsD message (like it is supported by AWS CloudWatch, DataDog and Splunk) or otherwise they are right after the bucket name (like it is supported by InfluxDB, Librato and SignalFX).
+* **TagsSeparator**: the string that will be placed between tags.
+* **KeyValueSeparator**: the string that will be placed between the tag key and its value.
+
+### Example of using the interface
 
 Given an existing instance of `IStatsDPublisher` called `stats` you can do for e.g.:
 
@@ -176,7 +210,7 @@ var statName = "DoSomething." + success ? "Success" : "Failure";
 stats.Timing(statName, stopWatch.Elapsed);
 ```
 
-#### Simple timers
+### Simple timers
 
 This syntax for timers less typing in simple cases, where you always want to time the operation, and always with the same stat name. Given an existing instance of `IStatsDPublisher` you can do:
 
@@ -197,7 +231,7 @@ using (stats.StartTimer("someStat"))
 The `StartTimer` returns an `IDisposableTimer` that wraps a stopwatch and implements `IDisposable`.
 The stopwatch is automatically stopped and the metric sent when it falls out of scope and is disposed on the closing `}` of the `using` statement.
 
-##### Changing the name of simple timers
+#### Changing the name of simple timers
 
 Sometimes the decision of which stat to send should not be taken before the operation completes. e.g. When you are timing http operations and want different status codes to be logged under different stats.
 
@@ -214,7 +248,7 @@ using (var timer = stats.StartTimer("SomeHttpOperation."))
 }
 ```
 
-##### Functional style
+#### Functional style
 
 ```csharp
 //  timing an action without a return value:
@@ -228,9 +262,9 @@ await stats.Time("someStat", async t => await DoSomethingAsync());
 var result = await stats.Time("someStat", async t => await GetSomethingAsync());
 ```
 
-In all these cases the function or delegate is supplied with a `IDisposableTimer t` so that the stat name can be changed if need be.
+In all these cases the function or delegate is supplied with an `IDisposableTimer t` so that the stat name can be changed if need be.
 
-##### Credits
+#### Credits
 
 The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client) and [MiniProfiler](https://miniprofiler.com/dotnet/HowTo/ProfileCode).
 
