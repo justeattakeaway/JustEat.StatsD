@@ -1,8 +1,2 @@
 <Project>
-  <!-- Disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
-  <Target Name="_RemoveMSSourceLinkGitHub" AfterTargets="CollectPackageReferences" Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">
-    <ItemGroup>
-      <PackageReference Remove="Microsoft.SourceLink.GitHub" />
-    </ItemGroup>
-  </Target>
 </Project>
