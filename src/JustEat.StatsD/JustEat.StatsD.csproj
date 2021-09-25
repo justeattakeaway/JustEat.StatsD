@@ -7,7 +7,7 @@
     <PackageId>JustEat.StatsD</PackageId>
     <RootNamespace>JustEat.StatsD</RootNamespace>
     <Summary>A .NET library for publishing metrics to StatsD.</Summary>
-    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;netcoreapp2.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <!--

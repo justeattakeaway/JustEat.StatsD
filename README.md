@@ -17,7 +17,6 @@ We use this library within our components to publish [StatsD](http://github.com/
 * `net461`
 * `netstandard2.0`
 * `netstandard2.1`
-* `netcoreapp2.1`
 * `net5.0`
 
 ### Features
