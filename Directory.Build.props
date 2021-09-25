@@ -15,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <LangVersion>latest</LangVersion>
@@ -27,6 +28,10 @@
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>statsd,graphite,metrics,monitoring</PackageTags>
+    <!-- TODO Enable when v5 ships -->
+    <!--
+    <PackageValidationBaselineVersion>5.0.0</PackageValidationBaselineVersion>
+    -->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
