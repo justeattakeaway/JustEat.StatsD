@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.TagsFormatters;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD
 {

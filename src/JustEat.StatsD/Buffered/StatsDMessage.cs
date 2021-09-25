@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace JustEat.StatsD.Buffered
 {
     internal readonly struct StatsDMessage

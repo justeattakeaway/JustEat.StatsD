@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
 using JustEat.StatsD.Buffered;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD
 {

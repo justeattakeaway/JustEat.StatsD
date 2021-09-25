@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JustEat.StatsD.TagsFormatters
 {
     internal sealed class NoOpTagsFormatter : IStatsDTagsFormatter

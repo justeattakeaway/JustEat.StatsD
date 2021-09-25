@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;

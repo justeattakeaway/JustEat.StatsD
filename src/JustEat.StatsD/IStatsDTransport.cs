@@ -1,5 +1,3 @@
-using System;
-
 namespace JustEat.StatsD
 {
     /// <summary>

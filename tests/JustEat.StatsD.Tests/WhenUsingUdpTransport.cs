@@ -1,8 +1,5 @@
-using System;
 using System.Net;
-using System.Threading.Tasks;
 using JustEat.StatsD.EndpointLookups;
-using Xunit;
 
 namespace JustEat.StatsD
 {

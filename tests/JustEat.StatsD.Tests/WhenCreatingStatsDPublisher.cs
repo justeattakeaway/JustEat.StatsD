@@ -1,6 +1,3 @@
-using System;
-using Xunit;
-
 namespace JustEat.StatsD
 {
     public class WhenCreatingStatsDPublisher

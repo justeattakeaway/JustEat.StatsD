@@ -1,4 +1,3 @@
-using System;
 using JustEat.StatsD.TagsFormatters;
 
 namespace JustEat.StatsD
