@@ -94,7 +94,7 @@ namespace JustEat.StatsD
 
             using (var client = new TcpClient())
             {
-                client.Connect("localhost", 8126);
+                await client.ConnectAsync("localhost", 8126);
 
                 byte[] input = Encoding.UTF8.GetBytes(command);
                 byte[] output = new byte[client.ReceiveBufferSize];
