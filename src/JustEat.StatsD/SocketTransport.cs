@@ -2,100 +2,99 @@ using System.Net;
 using System.Net.Sockets;
 using JustEat.StatsD.EndpointLookups;
 
-namespace JustEat.StatsD
+namespace JustEat.StatsD;
+
+/// <summary>
+/// A class representing an implementation of <see cref="IStatsDTransport"/>
+/// that uses UDP or IP sockets and pools them.
+/// This class cannot be inherited.
+/// </summary>
+public sealed class SocketTransport : IStatsDTransport, IDisposable
 {
+    private readonly IEndPointSource _endpointSource;
+    private readonly SocketProtocol _socketProtocol;
+    private ConnectedSocketPool? _pool;
+
     /// <summary>
-    /// A class representing an implementation of <see cref="IStatsDTransport"/>
-    /// that uses UDP or IP sockets and pools them.
-    /// This class cannot be inherited.
+    /// Initializes a new instance of the <see cref="SocketTransport"/> class.
     /// </summary>
-    public sealed class SocketTransport : IStatsDTransport, IDisposable
+    /// <param name="endPointSource">The <see cref="IEndPointSource"/> to use.</param>
+    /// <param name="socketProtocol">Udp or Ip sockets</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="endPointSource"/> is <see langword="null"/>.
+    /// </exception>
+    public SocketTransport(IEndPointSource endPointSource, SocketProtocol socketProtocol)
     {
-        private readonly IEndPointSource _endpointSource;
-        private readonly SocketProtocol _socketProtocol;
-        private ConnectedSocketPool? _pool;
+        _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SocketTransport"/> class.
-        /// </summary>
-        /// <param name="endPointSource">The <see cref="IEndPointSource"/> to use.</param>
-        /// <param name="socketProtocol">Udp or Ip sockets</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="endPointSource"/> is <see langword="null"/>.
-        /// </exception>
-        public SocketTransport(IEndPointSource endPointSource, SocketProtocol socketProtocol)
+        if (!Enum.IsDefined(typeof(SocketProtocol), socketProtocol))
         {
-            _endpointSource = endPointSource ?? throw new ArgumentNullException(nameof(endPointSource));
+            throw new ArgumentOutOfRangeException(nameof(socketProtocol), socketProtocol, $"Invalid {nameof(SocketProtocol)} value specified.");
+        }
+        _socketProtocol = socketProtocol;
+    }
 
-            if (!Enum.IsDefined(typeof(SocketProtocol), socketProtocol))
-            {
-                throw new ArgumentOutOfRangeException(nameof(socketProtocol), socketProtocol, $"Invalid {nameof(SocketProtocol)} value specified.");
-            }
-            _socketProtocol = socketProtocol;
+    /// <inheritdoc />
+    public void Send(in ArraySegment<byte> metric)
+    {
+        if (metric.Array == null || metric.Count == 0)
+        {
+            return;
         }
 
-        /// <inheritdoc />
-        public void Send(in ArraySegment<byte> metric)
+        var endpoint = _endpointSource.GetEndpoint();
+        if (endpoint == null)
         {
-            if (metric.Array == null || metric.Count == 0)
-            {
-                return;
-            }
-
-            var endpoint = _endpointSource.GetEndpoint();
-            if (endpoint == null)
-            {
-                return;
-            }
+            return;
+        }
 
 #pragma warning disable CA2000
-            var pool = GetPool(endpoint);
+        var pool = GetPool(endpoint);
 #pragma warning restore CA2000
 
-            var socket = pool.PopOrCreate();
+        var socket = pool.PopOrCreate();
 
-            try
-            {
-                socket.Send(metric.Array, 0, metric.Count, SocketFlags.None);
-            }
-            catch (Exception)
-            {
-                socket.Dispose();
-                throw;
-            }
-
-            pool.Push(socket);
+        try
+        {
+            socket.Send(metric.Array, 0, metric.Count, SocketFlags.None);
+        }
+        catch (Exception)
+        {
+            socket.Dispose();
+            throw;
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        pool.Push(socket);
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        _pool?.Dispose();
+        _pool = null;
+    }
+
+    private ConnectedSocketPool GetPool(EndPoint endPoint)
+    {
+        var oldPool = _pool;
+
+        if (oldPool != null && (ReferenceEquals(oldPool.EndPoint, endPoint) || oldPool.EndPoint.Equals(endPoint)))
         {
-            _pool?.Dispose();
-            _pool = null;
+            return oldPool;
         }
 
-        private ConnectedSocketPool GetPool(EndPoint endPoint)
+        var newPool = new ConnectedSocketPool(
+            endPoint, _socketProtocol, Environment.ProcessorCount);
+
+        if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
         {
-            var oldPool = _pool;
-
-            if (oldPool != null && (ReferenceEquals(oldPool.EndPoint, endPoint) || oldPool.EndPoint.Equals(endPoint)))
-            {
-                return oldPool;
-            }
-
-            var newPool = new ConnectedSocketPool(
-                endPoint, _socketProtocol, Environment.ProcessorCount);
-
-            if (Interlocked.CompareExchange(ref _pool, newPool, oldPool) == oldPool)
-            {
-                oldPool?.Dispose();
-                return newPool;
-            }
-            else
-            {
-                newPool.Dispose();
-                return _pool!;
-            }
+            oldPool?.Dispose();
+            return newPool;
+        }
+        else
+        {
+            newPool.Dispose();
+            return _pool!;
         }
     }
 }

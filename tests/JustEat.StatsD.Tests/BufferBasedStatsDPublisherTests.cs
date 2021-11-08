@@ -1,61 +1,60 @@
 using System.Text;
 using JustEat.StatsD.Buffered;
 
-namespace JustEat.StatsD
+namespace JustEat.StatsD;
+
+public class BufferBasedStatsDPublisherTests
 {
-    public class BufferBasedStatsDPublisherTests
+    private readonly FakeTransport _transport = new FakeTransport();
+    private readonly StatsDConfiguration _configuration = new StatsDConfiguration { Prefix = "test" };
+    private readonly BufferBasedStatsDPublisher _sut;
+
+    public BufferBasedStatsDPublisherTests()
     {
-        private readonly FakeTransport _transport = new FakeTransport();
-        private readonly StatsDConfiguration _configuration = new StatsDConfiguration { Prefix = "test" };
-        private readonly BufferBasedStatsDPublisher _sut;
+        _sut = new BufferBasedStatsDPublisher(_configuration, _transport);
+    }
 
-        public BufferBasedStatsDPublisherTests()
+    [Fact]
+    public void TestTiming_TimeSpan()
+    {
+        _sut.Timing(TimeSpan.FromSeconds(1.234), "timing");
+        _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms");
+    }
+
+    [Fact]
+    public void TestTimingSampled_TimeSpan()
+    {
+        for (int i = 0; _transport.Messages.Count == 0 && i < 10000; i++)
         {
-            _sut = new BufferBasedStatsDPublisher(_configuration, _transport);
+            _sut.Timing(TimeSpan.FromSeconds(1.234), 0.99, "timing");
         }
+        _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
+    }
 
-        [Fact]
-        public void TestTiming_TimeSpan()
+    [Fact]
+    public void TestTiming_Long()
+    {
+        _sut.Timing(1234, "timing");
+        _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms");
+    }
+
+    [Fact]
+    public void TestTimingSampled_Long()
+    {
+        for (int i = 0; _transport.Messages.Count == 0 && i < 10000; i++)
         {
-            _sut.Timing(TimeSpan.FromSeconds(1.234), "timing");
-            _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms");
+            _sut.Timing(1234, 0.99, "timing");
         }
+        _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
+    }
 
-        [Fact]
-        public void TestTimingSampled_TimeSpan()
+    private class FakeTransport : IStatsDTransport
+    {
+        public List<string> Messages { get; } = new List<string>();
+
+        public void Send(in ArraySegment<byte> metric)
         {
-            for (int i = 0; _transport.Messages.Count == 0 && i < 10000; i++)
-            {
-                _sut.Timing(TimeSpan.FromSeconds(1.234), 0.99, "timing");
-            }
-            _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
-        }
-
-        [Fact]
-        public void TestTiming_Long()
-        {
-            _sut.Timing(1234, "timing");
-            _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms");
-        }
-
-        [Fact]
-        public void TestTimingSampled_Long()
-        {
-            for (int i = 0; _transport.Messages.Count == 0 && i < 10000; i++)
-            {
-                _sut.Timing(1234, 0.99, "timing");
-            }
-            _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
-        }
-
-        private class FakeTransport : IStatsDTransport
-        {
-            public List<string> Messages { get; } = new List<string>();
-
-            public void Send(in ArraySegment<byte> metric)
-            {
-                Messages.Add(Encoding.UTF8.GetString(metric.Array!, metric.Offset, metric.Count));
-            }
+            Messages.Add(Encoding.UTF8.GetString(metric.Array!, metric.Offset, metric.Count));
         }
     }
 }

@@ -1,39 +1,38 @@
 using System.Net;
 
-namespace JustEat.StatsD.EndpointLookups
+namespace JustEat.StatsD.EndpointLookups;
+
+public static class SimpleEndpointTests
 {
-    public static class SimpleEndpointTests
+    [Fact]
+    public static void CanHoldValue()
     {
-        [Fact]
-        public static void CanHoldValue()
-        {
-            var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
+        var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
 
-            var expected = MakeTestIpEndPoint();
-            wrapped.GetEndpoint().ShouldBe(expected);
-        }
+        var expected = MakeTestIpEndPoint();
+        wrapped.GetEndpoint().ShouldBe(expected);
+    }
 
-        [Fact]
-        public static void ValueIsConsistent()
-        {
-            var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
+    [Fact]
+    public static void ValueIsConsistent()
+    {
+        var wrapped = new SimpleEndpointSource(MakeTestIpEndPoint());
 
-            wrapped.GetEndpoint().ShouldBe(wrapped.GetEndpoint());
-        }
+        wrapped.GetEndpoint().ShouldBe(wrapped.GetEndpoint());
+    }
 
-        [Fact]
-        public static void ConstructorThrowsIfValueIsNull()
-        {
-            // Arrange
-            EndPoint? value = null;
+    [Fact]
+    public static void ConstructorThrowsIfValueIsNull()
+    {
+        // Arrange
+        EndPoint? value = null;
 
-            // Act and Assert
-            Assert.Throws<ArgumentNullException>("value", () => new SimpleEndpointSource(value!));
-        }
+        // Act and Assert
+        Assert.Throws<ArgumentNullException>("value", () => new SimpleEndpointSource(value!));
+    }
 
-        private static IPEndPoint MakeTestIpEndPoint()
-        {
-            return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);
-        }
+    private static IPEndPoint MakeTestIpEndPoint()
+    {
+        return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);
     }
 }
