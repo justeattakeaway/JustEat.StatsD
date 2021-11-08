@@ -1,52 +1,51 @@
-namespace JustEat.StatsD
+namespace JustEat.StatsD;
+
+public class WhenCreatingStatsDPublisher
 {
-    public class WhenCreatingStatsDPublisher
+    [Fact]
+    public void ConfigurationIsValidWithHostName()
     {
-        [Fact]
-        public void ConfigurationIsValidWithHostName()
+        var validConfig = new StatsDConfiguration
         {
-            var validConfig = new StatsDConfiguration
-            {
-                Host = "someserver.somewhere.com"
-            };
+            Host = "someserver.somewhere.com"
+        };
 
-            using (new StatsDPublisher(validConfig))
-            {
-            }
-        }
-
-        [Fact]
-        public void ConfigurationIsValidWithHostIp()
+        using (new StatsDPublisher(validConfig))
         {
-            var validConfig = new StatsDConfiguration
-            {
-                Host = "10.0.1.2"
-            };
-
-            using var stats = new StatsDPublisher(validConfig);
         }
+    }
 
-        [Fact]
-        public void ConfigurationIsNull()
+    [Fact]
+    public void ConfigurationIsValidWithHostIp()
+    {
+        var validConfig = new StatsDConfiguration
         {
-            StatsDConfiguration? configuration = null;
+            Host = "10.0.1.2"
+        };
 
-            Assert.Throws<ArgumentNullException>(
-                "configuration",
-                () => new StatsDPublisher(configuration!));
-        }
+        using var stats = new StatsDPublisher(validConfig);
+    }
 
-        [Fact]
-        public void ConfigurationHasNoHost()
+    [Fact]
+    public void ConfigurationIsNull()
+    {
+        StatsDConfiguration? configuration = null;
+
+        Assert.Throws<ArgumentNullException>(
+            "configuration",
+            () => new StatsDPublisher(configuration!));
+    }
+
+    [Fact]
+    public void ConfigurationHasNoHost()
+    {
+        var configuration = new StatsDConfiguration
         {
-            var configuration = new StatsDConfiguration
-            {
-                Host = null
-            };
+            Host = null
+        };
 
-            Assert.Throws<ArgumentException>(
-                "configuration",
-                () => new StatsDPublisher(configuration));
-        }
+        Assert.Throws<ArgumentException>(
+            "configuration",
+            () => new StatsDPublisher(configuration));
     }
 }

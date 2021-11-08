@@ -1,111 +1,110 @@
-namespace JustEat.StatsD.Extensions
+namespace JustEat.StatsD.Extensions;
+
+public static class SimpleTimerStatNameTests
 {
-    public static class SimpleTimerStatNameTests
+    [Fact]
+    public static void DefaultIsToKeepStatName()
     {
-        [Fact]
-        public static void DefaultIsToKeepStatName()
+        var publisher = new FakeStatsPublisher();
+
+        using (var timer = publisher.StartTimer("initialStat"))
         {
-            var publisher = new FakeStatsPublisher();
-
-            using (var timer = publisher.StartTimer("initialStat"))
-            {
-                Delay();
-            }
-
-            PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
+            Delay();
         }
 
-        [Fact]
-        public static void CanChangeStatNameDuringOperation()
+        PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
+    }
+
+    [Fact]
+    public static void CanChangeStatNameDuringOperation()
+    {
+        var publisher = new FakeStatsPublisher();
+
+        using (var timer = publisher.StartTimer("initialStat"))
         {
-            var publisher = new FakeStatsPublisher();
-
-            using (var timer = publisher.StartTimer("initialStat"))
-            {
-                Delay();
-                timer.Bucket = "changedValue";
-            }
-
-            PublisherAssertions.SingleStatNameIs(publisher, "changedValue");
+            Delay();
+            timer.Bucket = "changedValue";
         }
 
-        [Fact]
-        public static void StatNameCanBeAppended()
+        PublisherAssertions.SingleStatNameIs(publisher, "changedValue");
+    }
+
+    [Fact]
+    public static void StatNameCanBeAppended()
+    {
+        var publisher = new FakeStatsPublisher();
+
+        using (var timer = publisher.StartTimer("Some."))
         {
-            var publisher = new FakeStatsPublisher();
-
-            using (var timer = publisher.StartTimer("Some."))
-            {
-                Delay();
-                timer.Bucket += "More";
-            }
-
-            PublisherAssertions.SingleStatNameIs(publisher, "Some.More");
+            Delay();
+            timer.Bucket += "More";
         }
 
-        [Fact]
-        public static void StatWithoutNameAtStartThrows()
+        PublisherAssertions.SingleStatNameIs(publisher, "Some.More");
+    }
+
+    [Fact]
+    public static void StatWithoutNameAtStartThrows()
+    {
+        var publisher = new FakeStatsPublisher();
+
+        Assert.Throws<ArgumentNullException>(() => publisher.StartTimer(string.Empty));
+
+        publisher.CallCount.ShouldBe(0);
+        publisher.BucketNames.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public static void StatWithoutNameAtEndThrows()
+    {
+        var publisher = new FakeStatsPublisher();
+
+        Assert.Throws<InvalidOperationException>(() =>
         {
-            var publisher = new FakeStatsPublisher();
+            using var timer = publisher.StartTimer("valid.Stat");
 
-            Assert.Throws<ArgumentNullException>(() => publisher.StartTimer(string.Empty));
+            Delay();
 
-            publisher.CallCount.ShouldBe(0);
-            publisher.BucketNames.ShouldBeEmpty();
+            timer.Bucket = null!;
+        });
+
+        publisher.CallCount.ShouldBe(0);
+        publisher.BucketNames.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public static void StatNameIsInitialValueWhenExceptionIsThrown()
+    {
+        var publisher = new FakeStatsPublisher();
+        var failCount = 0;
+
+        try
+        {
+            using var timer = publisher.StartTimer("initialStat");
+
+            Fail();
+
+            timer.Bucket = "changedValue";
         }
-
-        [Fact]
-        public static void StatWithoutNameAtEndThrows()
-        {
-            var publisher = new FakeStatsPublisher();
-
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                using var timer = publisher.StartTimer("valid.Stat");
-
-                Delay();
-
-                timer.Bucket = null!;
-            });
-
-            publisher.CallCount.ShouldBe(0);
-            publisher.BucketNames.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public static void StatNameIsInitialValueWhenExceptionIsThrown()
-        {
-            var publisher = new FakeStatsPublisher();
-            var failCount = 0;
-
-            try
-            {
-                using var timer = publisher.StartTimer("initialStat");
-
-                Fail();
-
-                timer.Bucket = "changedValue";
-            }
 #pragma warning disable CA1031
-            catch (InvalidOperationException)
+        catch (InvalidOperationException)
 #pragma warning restore CA1031
-            {
-                failCount++;
-            }
-
-            failCount.ShouldBe(1);
-            PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
-        }
-
-        private static void Delay()
         {
-            const int standardDelayMillis = 200;
-            Thread.Sleep(standardDelayMillis);
+            failCount++;
         }
 
-        private static void Fail()
-        {
-            throw new InvalidOperationException("Deliberate fail");
-        }
+        failCount.ShouldBe(1);
+        PublisherAssertions.SingleStatNameIs(publisher, "initialStat");
+    }
+
+    private static void Delay()
+    {
+        const int standardDelayMillis = 200;
+        Thread.Sleep(standardDelayMillis);
+    }
+
+    private static void Fail()
+    {
+        throw new InvalidOperationException("Deliberate fail");
     }
 }

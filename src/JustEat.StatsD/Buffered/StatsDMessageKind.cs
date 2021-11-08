@@ -1,9 +1,8 @@
-namespace JustEat.StatsD.Buffered
+namespace JustEat.StatsD.Buffered;
+
+internal enum StatsDMessageKind
 {
-    internal enum StatsDMessageKind
-    {
-        Counter,
-        Timing,
-        Gauge
-    }
+    Counter,
+    Timing,
+    Gauge
 }

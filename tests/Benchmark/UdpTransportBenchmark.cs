@@ -4,79 +4,78 @@ using BenchmarkDotNet.Jobs;
 using JustEat.StatsD;
 using JustEat.StatsD.EndpointLookups;
 
-namespace Benchmark
+namespace Benchmark;
+
+[MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.NetCoreApp31)]
+[SimpleJob(RuntimeMoniker.Net50)]
+[SimpleJob(RuntimeMoniker.Net60)]
+public class UdpTransportBenchmark
 {
-    [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
-    [SimpleJob(RuntimeMoniker.Net50)]
-    [SimpleJob(RuntimeMoniker.Net60)]
-    public class UdpTransportBenchmark
+    private const string MetricName = "this.is.a.metric:1|c";
+
+    private SocketTransport? _transport;
+    private SocketTransport? _transportSwitched;
+
+    private class MillisecondSwitcher : IEndPointSource
     {
-        private const string MetricName = "this.is.a.metric:1|c";
+        private readonly IEndPointSource _endpointSource1;
+        private readonly IEndPointSource _endpointSource2;
 
-        private SocketTransport? _transport;
-        private SocketTransport? _transportSwitched;
-
-        private class MillisecondSwitcher : IEndPointSource
+        public MillisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
         {
-            private readonly IEndPointSource _endpointSource1;
-            private readonly IEndPointSource _endpointSource2;
-
-            public MillisecondSwitcher(IEndPointSource endpointSource1, IEndPointSource endpointSource2)
-            {
-                _endpointSource1 = endpointSource1;
-                _endpointSource2 = endpointSource2;
-            }
-
-            public EndPoint GetEndpoint()
-            {
-                return DateTime.Now.Millisecond % 2 == 0 ?
-                    _endpointSource1.GetEndpoint() :
-                    _endpointSource2.GetEndpoint();
-            }
+            _endpointSource1 = endpointSource1;
+            _endpointSource2 = endpointSource2;
         }
 
-        [GlobalSetup]
-        public void Setup()
+        public EndPoint GetEndpoint()
         {
-            var config = new StatsDConfiguration
-            {
-                Host = "127.0.0.1",
-            };
-
-            var endpointSource1 = EndPointFactory.MakeEndPointSource(
-                config.Host,
-                config.Port,
-                config.DnsLookupInterval);
-
-            var endpointSource2 = EndPointFactory.MakeEndPointSource(
-                config.Host,
-                config.Port + 1,
-                config.DnsLookupInterval);
-
-            var switcher = new MillisecondSwitcher(endpointSource1, endpointSource2);
-
-            _transport = new SocketTransport(endpointSource1, SocketProtocol.Udp);
-            _transportSwitched = new SocketTransport(switcher, SocketProtocol.Udp);
+            return DateTime.Now.Millisecond % 2 == 0 ?
+                _endpointSource1.GetEndpoint() :
+                _endpointSource2.GetEndpoint();
         }
+    }
 
-        [GlobalCleanup]
-        public void Cleanup()
+    [GlobalSetup]
+    public void Setup()
+    {
+        var config = new StatsDConfiguration
         {
-            _transport?.Dispose();
-            _transportSwitched?.Dispose();
-        }
+            Host = "127.0.0.1",
+        };
 
-        [Benchmark]
-        public void Send()
-        {
-            _transport!.Send(MetricName);
-        }
+        var endpointSource1 = EndPointFactory.MakeEndPointSource(
+            config.Host,
+            config.Port,
+            config.DnsLookupInterval);
 
-        [Benchmark]
-        public void SendWithSwitcher()
-        {
-            _transportSwitched!.Send(MetricName);
-        }
+        var endpointSource2 = EndPointFactory.MakeEndPointSource(
+            config.Host,
+            config.Port + 1,
+            config.DnsLookupInterval);
+
+        var switcher = new MillisecondSwitcher(endpointSource1, endpointSource2);
+
+        _transport = new SocketTransport(endpointSource1, SocketProtocol.Udp);
+        _transportSwitched = new SocketTransport(switcher, SocketProtocol.Udp);
+    }
+
+    [GlobalCleanup]
+    public void Cleanup()
+    {
+        _transport?.Dispose();
+        _transportSwitched?.Dispose();
+    }
+
+    [Benchmark]
+    public void Send()
+    {
+        _transport!.Send(MetricName);
+    }
+
+    [Benchmark]
+    public void SendWithSwitcher()
+    {
+        _transportSwitched!.Send(MetricName);
     }
 }
