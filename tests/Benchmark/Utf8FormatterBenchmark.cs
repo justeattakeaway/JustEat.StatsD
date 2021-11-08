@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using JustEat.StatsD;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.TagsFormatters;
@@ -7,6 +7,9 @@ using JustEat.StatsD.TagsFormatters;
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RuntimeMoniker.Net50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class Utf8FormatterBenchmark
     {
         private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", new NoOpTagsFormatter());

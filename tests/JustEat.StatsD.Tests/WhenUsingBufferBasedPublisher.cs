@@ -1,7 +1,4 @@
-using System;
 using JustEat.StatsD.Buffered;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD
 {

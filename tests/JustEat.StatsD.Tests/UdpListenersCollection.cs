@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace JustEat.StatsD
 {
     [CollectionDefinition("ActiveUdpListeners")]

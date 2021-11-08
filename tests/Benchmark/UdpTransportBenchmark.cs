@@ -1,12 +1,15 @@
-using System;
 using System.Net;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using JustEat.StatsD;
 using JustEat.StatsD.EndpointLookups;
 
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RuntimeMoniker.Net50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class UdpTransportBenchmark
     {
         private const string MetricName = "this.is.a.metric:1|c";

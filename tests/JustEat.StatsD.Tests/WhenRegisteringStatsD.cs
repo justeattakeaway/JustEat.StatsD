@@ -1,9 +1,6 @@
-using System;
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD
 {

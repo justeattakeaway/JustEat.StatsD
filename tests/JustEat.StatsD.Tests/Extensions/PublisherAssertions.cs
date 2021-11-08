@@ -1,6 +1,3 @@
-﻿using System;
-using Shouldly;
-
 namespace JustEat.StatsD.Extensions
 {
     public static class PublisherAssertions

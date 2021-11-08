@@ -1,5 +1,3 @@
-using System;
-
 namespace JustEat.StatsD.Buffered
 {
     internal ref struct Buffer<T>

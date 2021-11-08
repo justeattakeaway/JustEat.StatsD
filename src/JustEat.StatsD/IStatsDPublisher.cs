@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace JustEat.StatsD
 {
     /// <summary>

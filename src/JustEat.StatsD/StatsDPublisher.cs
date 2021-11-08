@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
 

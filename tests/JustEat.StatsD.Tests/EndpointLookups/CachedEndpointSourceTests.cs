@@ -1,9 +1,5 @@
-using System;
 using System.Net;
-using System.Threading.Tasks;
 using Moq;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {

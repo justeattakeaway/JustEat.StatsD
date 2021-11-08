@@ -1,7 +1,4 @@
-using System;
 using System.Net;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {

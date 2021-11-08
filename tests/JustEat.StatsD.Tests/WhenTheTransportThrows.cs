@@ -1,10 +1,5 @@
-using System;
 using System.Net.Sockets;
 using JustEat.StatsD.Buffered;
-using Shouldly;
-using Xunit;
-
-#pragma warning disable xUnit1026 // Theory methods should use all of their parameters disabled to render test case name
 
 namespace JustEat.StatsD
 {

@@ -1,8 +1,5 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD.EndpointLookups
 {

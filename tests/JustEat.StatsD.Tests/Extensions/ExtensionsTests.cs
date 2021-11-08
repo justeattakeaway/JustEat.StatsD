@@ -1,8 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Shouldly;
-using Xunit;
-
 namespace JustEat.StatsD.Extensions
 {
     public static class ExtensionsTests

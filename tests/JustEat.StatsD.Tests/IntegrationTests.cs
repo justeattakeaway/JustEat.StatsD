@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Shouldly;
-using Xunit;
 
 namespace JustEat.StatsD
 {
@@ -99,7 +94,7 @@ namespace JustEat.StatsD
 
             using (var client = new TcpClient())
             {
-                client.Connect("localhost", 8126);
+                await client.ConnectAsync("localhost", 8126);
 
                 byte[] input = Encoding.UTF8.GetBytes(command);
                 byte[] output = new byte[client.ReceiveBufferSize];

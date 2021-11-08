@@ -1,5 +1,5 @@
-using System;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using JustEat.StatsD;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.EndpointLookups;
@@ -7,6 +7,9 @@ using JustEat.StatsD.EndpointLookups;
 namespace Benchmark
 {
     [MemoryDiagnoser]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [SimpleJob(RuntimeMoniker.Net50)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     public class StatSendingBenchmark : IDisposable
     {
         private bool _disposed;
