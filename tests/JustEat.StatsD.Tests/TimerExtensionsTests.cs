@@ -129,7 +129,24 @@ public static class TimerExtensionsTests
         bool timed = false;
 
         // Act
-        publisher.Time(bucket, () => { timed = true; });
+        publisher.Time(bucket, () => timed = true);
+
+        // Assert
+        timed.ShouldBeTrue();
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket);
+    }
+
+    [Fact]
+    public static void CanTimeActionWithTags()
+    {
+        // Arrange
+        var publisher = Substitute.For<IStatsDPublisherWithTags>();
+        string bucket = "bucket";
+
+        bool timed = false;
+
+        // Act
+        publisher.Time(bucket, () => timed = true, null);
 
         // Assert
         timed.ShouldBeTrue();
@@ -153,6 +170,30 @@ public static class TimerExtensionsTests
 
                 return 42;
             });
+
+        // Assert
+        actual.ShouldBe(42);
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket);
+    }
+
+    [Fact]
+    public static void CanTimeActionWithTimerOfTWithTags()
+    {
+        // Arrange
+        var publisher = Substitute.For<IStatsDPublisherWithTags>();
+        string bucket = "bucket";
+
+        // Act
+        int actual = publisher.Time(
+            bucket,
+            (timer) =>
+            {
+                timer.ShouldNotBeNull();
+                timer.Bucket.ShouldBe(bucket);
+
+                return 42;
+            },
+            null);
 
         // Assert
         actual.ShouldBe(42);
@@ -183,6 +224,34 @@ public static class TimerExtensionsTests
 
         // Assert
         timed.ShouldBeTrue();
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket);
+    }
+
+    [Fact]
+    public static async Task CanTimeAsyncActionWithTimerOfTWithTags()
+    {
+        // Arrange
+        var publisher = Substitute.For<IStatsDPublisherWithTags>();
+        string bucket = "bucket";
+
+        bool timed = false;
+
+        // Act
+        await publisher.Time(
+            bucket,
+            (timer) =>
+            {
+                timer.ShouldNotBeNull();
+                timer.Bucket.ShouldBe(bucket);
+
+                timed = true;
+
+                return Task.CompletedTask;
+            },
+            null);
+
+        // Assert
+        timed.ShouldBeTrue();
         publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket, Arg.Any<Dictionary<string, string?>>());
     }
 
@@ -203,6 +272,30 @@ public static class TimerExtensionsTests
 
                 return Task.FromResult(42);
             });
+
+        // Assert
+        actual.ShouldBe(42);
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket);
+    }
+
+    [Fact]
+    public static async Task CanTimeAsyncFuncWithTimerOfTWithTags()
+    {
+        // Arrange
+        var publisher = Substitute.For<IStatsDPublisherWithTags>();
+        string bucket = "bucket";
+
+        // Act
+        int actual = await publisher.Time(
+            bucket,
+            (timer) =>
+            {
+                timer.ShouldNotBeNull();
+                timer.Bucket.ShouldBe(bucket);
+
+                return Task.FromResult(42);
+            },
+            null);
 
         // Assert
         actual.ShouldBe(42);

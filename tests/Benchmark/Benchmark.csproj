@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1001;CA1014;CA1822</NoWarn>
+    <NoWarn>$(NoWarn);CA1001;CA1014;CA1812;CA1822</NoWarn>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
