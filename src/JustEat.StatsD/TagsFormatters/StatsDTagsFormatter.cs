@@ -120,24 +120,20 @@ public abstract class StatsDTagsFormatter : IStatsDTagsFormatter
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool TryWriteTagsSeparator(ref Buffer<char> buffer, int index, in Dictionary<string, string?> tags) =>
-        !IsLastTag(index, tags)
-            ? buffer.TryWrite(_tagsSeparator)
-            : true;
+        IsLastTag(index, tags) || buffer.TryWrite(_tagsSeparator);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IsLastTag(int index, in Dictionary<string, string?> tags) =>
         index == tags.Count - 1;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryWriteTag(ref Buffer<char> buffer, in KeyValuePair<string, string?> tag) =>
+    private bool TryWriteTag(ref Buffer<char> buffer, KeyValuePair<string, string?> tag) =>
         buffer.TryWriteString(tag.Key)
         && TryWriteTagValueIfNeeded(ref buffer, tag);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool TryWriteTagValueIfNeeded(ref Buffer<char> buffer, KeyValuePair<string, string?> tag) =>
-        tag.Value != null
-            ? buffer.TryWrite(_keyValueSeparator) && buffer.TryWriteString(tag.Value!)
-            : true;
+        tag.Value == null || buffer.TryWrite(_keyValueSeparator) && buffer.TryWriteString(tag.Value!);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool AreTagsPresent(in Dictionary<string, string?>? tags) =>
