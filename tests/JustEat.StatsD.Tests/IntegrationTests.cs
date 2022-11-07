@@ -82,10 +82,10 @@ public static class IntegrationTests
         result.Value<int>(config.Prefix + ".dog").ShouldBe(42, result.ToString());
 
         result = await SendCommandAsync("timers");
-        result[config.Prefix + ".elephant"].Values<int>().ShouldBe(new[] { 123 }, result.ToString());
-        result[config.Prefix + ".fox"].Values<int>().ShouldBe(new[] { 2000 }, result.ToString());
-        result[config.Prefix + ".goose"].Values<int>().ShouldBe(new[] { 456 }, result.ToString());
-        result[config.Prefix + ".hen"].Values<int>().ShouldBe(new[] { 3500 }, result.ToString());
+        result[config.Prefix + ".elephant"]!.Values<int>().ShouldBe(new[] { 123 }, result.ToString());
+        result[config.Prefix + ".fox"]!.Values<int>().ShouldBe(new[] { 2000 }, result.ToString());
+        result[config.Prefix + ".goose"]!.Values<int>().ShouldBe(new[] { 456 }, result.ToString());
+        result[config.Prefix + ".hen"]!.Values<int>().ShouldBe(new[] { 3500 }, result.ToString());
     }
 
     private static async Task<JObject> SendCommandAsync(string command)
