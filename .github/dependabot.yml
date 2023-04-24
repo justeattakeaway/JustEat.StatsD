@@ -7,7 +7,7 @@ updates:
     time: "05:30"
     timezone: Europe/London
   reviewers:
-    - "justeat/statsd"
+    - "justeattakeaway/statsd"
 - package-ecosystem: nuget
   directory: "/"
   schedule:
@@ -15,12 +15,10 @@ updates:
     time: "05:30"
     timezone: Europe/London
   reviewers:
-    - "justeat/statsd"
+    - "justeattakeaway/statsd"
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: Microsoft.Extensions.DependencyInjection.Abstractions
-    versions:
-    - "> 2.0.0"
-  - dependency-name: System.Memory
-    versions:
-    - "> 4.5.1, < 4.6"
+    - dependency-name: "Microsoft.Extensions.DependencyInjection"
+      update-types: ["version-update:semver-minor"]
+    - dependency-name: Microsoft.Extensions.DependencyInjection.Abstractions
+    - dependency-name: System.Memory

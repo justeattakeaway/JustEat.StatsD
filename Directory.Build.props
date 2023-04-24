@@ -22,7 +22,7 @@
     <Nullable>enable</Nullable>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/justeat/JustEat.StatsD</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/justeattakeaway/JustEat.StatsD</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
