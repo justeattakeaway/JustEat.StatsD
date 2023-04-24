@@ -2,9 +2,9 @@
 
 [![NuGet version](https://buildstats.info/nuget/JustEat.StatsD?includePreReleases=false)](http://www.nuget.org/packages/JustEat.StatsD)
 
-[![Build status](https://github.com/justeat/JustEat.StatsD/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeat/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+[![Build status](https://github.com/justeattakeaway/JustEat.StatsD/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
-[![codecov](https://codecov.io/gh/justeat/JustEat.StatsD/branch/main/graph/badge.svg)](https://codecov.io/gh/justeat/JustEat.StatsD)
+[![codecov](https://codecov.io/gh/justeattakeaway/JustEat.StatsD/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/JustEat.StatsD)
 
 ## Summary
 
@@ -77,7 +77,7 @@ IStatsDPublisher statsDPublisher = new StatsDPublisher(statsDConfig);
 
 ### IoC Examples
 
-#### .NET Core
+#### .NET (Core)
 
 An example of registering StatsD dependencies using `IServiceCollection`:
 
