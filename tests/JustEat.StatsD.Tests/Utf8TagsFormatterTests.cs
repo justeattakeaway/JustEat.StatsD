@@ -298,6 +298,6 @@ public static class Utf8TagsFormatterTests
 
         public int GetTagsBufferSize(in Dictionary<string, string?> tags) => 0;
 
-        public ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags) => null;
+        public ReadOnlySpan<char> FormatTags(scoped in Dictionary<string, string?> tags) => null;
     }
 }
