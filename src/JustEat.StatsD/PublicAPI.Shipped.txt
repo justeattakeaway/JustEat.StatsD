@@ -57,7 +57,7 @@ JustEat.StatsD.TagsFormatter
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.AreTrailing.get -> bool
 JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.GetTagsBufferSize(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> int
-JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.FormatTags(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>
+JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.FormatTags(scoped in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatter
 virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.AreTrailing.get -> bool
 JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.StatsDTagsFormatter(JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration! configuration) -> void
@@ -116,4 +116,4 @@ static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublish
 static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisher! publisher, string! bucket, System.Func<System.Threading.Tasks.Task<T>!>! func, System.Collections.Generic.Dictionary<string!, string?>? tags = null) -> System.Threading.Tasks.Task<T>!
 static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisher! publisher, string! bucket, System.Func<T>! func, System.Collections.Generic.Dictionary<string!, string?>? tags = null) -> T
 virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.GetTagsBufferSize(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> int
-virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.FormatTags(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>
+virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.FormatTags(scoped in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>

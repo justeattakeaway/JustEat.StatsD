@@ -116,16 +116,16 @@ internal sealed class StatsDUtf8Formatter
             : 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryWriteBucketNameTagsIfNeeded(ref Buffer<byte> buffer, in Dictionary<string, string?>? tags) =>
-        AreTagsPresent(tags) && !_tagsFormatter.AreTrailing
-            ? buffer.TryWriteUtf8Chars(_tagsFormatter.FormatTags(tags!))
-            : true;
+    private bool TryWriteBucketNameTagsIfNeeded(scoped ref Buffer<byte> buffer, in Dictionary<string, string?>? tags) =>
+        !AreTagsPresent(tags) ||
+        _tagsFormatter.AreTrailing ||
+        buffer.TryWriteUtf8Chars(_tagsFormatter.FormatTags(tags!));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryWriteTrailingTagsIfNeeded(ref Buffer<byte> buffer, in Dictionary<string, string?>? tags) =>
-        AreTagsPresent(tags) && _tagsFormatter.AreTrailing
-            ? buffer.TryWriteUtf8Chars(_tagsFormatter.FormatTags(tags!))
-            : true;
+    private bool TryWriteTrailingTagsIfNeeded(scoped ref Buffer<byte> buffer, in Dictionary<string, string?>? tags) =>
+        !AreTagsPresent(tags) ||
+        !_tagsFormatter.AreTrailing ||
+        buffer.TryWriteUtf8Chars(_tagsFormatter.FormatTags(tags!));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool AreTagsPresent(in Dictionary<string, string?>? tags) =>
