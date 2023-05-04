@@ -17,7 +17,7 @@ public class UdpTransportBenchmark
     private SocketTransport? _transport;
     private SocketTransport? _transportSwitched;
 
-    private class MillisecondSwitcher : IEndPointSource
+    private sealed class MillisecondSwitcher : IEndPointSource
     {
         private readonly IEndPointSource _endpointSource1;
         private readonly IEndPointSource _endpointSource2;

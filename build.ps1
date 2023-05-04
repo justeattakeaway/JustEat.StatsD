@@ -4,7 +4,6 @@
 #Requires -Version 7
 
 param(
-    [Parameter(Mandatory = $false)][string] $Configuration = "Release",
     [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
     [Parameter(Mandatory = $false)][switch] $SkipTests
@@ -13,7 +12,7 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
+$solutionPath = $PSScriptRoot
 $sdkFile = Join-Path $solutionPath "global.json"
 
 $libraryProject = Join-Path $solutionPath "src\JustEat.StatsD\JustEat.StatsD.csproj"
@@ -95,7 +94,6 @@ function DotNetPack {
     & $dotnet `
       pack $Project `
       --output (Join-Path $OutputPath "packages") `
-      --configuration $Configuration `
       --include-symbols `
       --include-source `
       $additionalArgs
@@ -115,7 +113,7 @@ function DotNetTest {
         $additionalArgs += "GitHubActions;report-warnings=false"
     }
 
-    & $dotnet test $Project --output $OutputPath --configuration $Configuration $additionalArgs
+    & $dotnet test $Project --output $OutputPath --configuration "Release" $additionalArgs
 
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"

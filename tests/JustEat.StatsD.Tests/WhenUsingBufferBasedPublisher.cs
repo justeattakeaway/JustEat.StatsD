@@ -30,7 +30,7 @@ public class WhenUsingBufferBasedPublisher
         fakeTransport.TimesCalled.ShouldBe(1);
     }
 
-    private class FakeTransport : IStatsDTransport
+    private sealed class FakeTransport : IStatsDTransport
     {
         public int TimesCalled { get; private set; }
 

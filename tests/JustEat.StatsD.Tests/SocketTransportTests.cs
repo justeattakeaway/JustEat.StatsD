@@ -74,8 +74,6 @@ public static class SocketTransportTests
         transport.Send("teststat:1|c");
     }
 
-    private static IEndPointSource LocalStatsEndpoint()
-    {
-        return new SimpleEndpointSource(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
-    }
+    private static SimpleEndpointSource LocalStatsEndpoint()
+        => new(new IPEndPoint(IPAddress.Loopback, StatsDConfiguration.DefaultPort));
 }

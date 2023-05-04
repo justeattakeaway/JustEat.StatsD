@@ -7,7 +7,7 @@ namespace JustEat.StatsD;
 public static class Utf8TagsFormatterTests
 {
     private static readonly byte[] Buffer = new byte[512];
-    private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
+    private static readonly Dictionary<string, string?> AnyValidTags = new()
     {
         ["foo"] = "bar",
         ["empty"] = null,
@@ -292,12 +292,12 @@ public static class Utf8TagsFormatterTests
         SignalFx,
     }
 
-    private class AlwaysNullStatsDTagsFormatter : IStatsDTagsFormatter
+    private sealed class AlwaysNullStatsDTagsFormatter : IStatsDTagsFormatter
     {
         public bool AreTrailing { get; }
 
         public int GetTagsBufferSize(in Dictionary<string, string?> tags) => 0;
 
-        public ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags) => null;
+        public ReadOnlySpan<char> FormatTags(scoped in Dictionary<string, string?> tags) => null;
     }
 }
