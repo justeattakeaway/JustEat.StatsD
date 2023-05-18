@@ -319,7 +319,7 @@ public static class WhenRegisteringStatsD
         Assert.Throws<ArgumentNullException>("services", () => services!.AddStatsD());
     }
 
-    private static IServiceProvider Configure(Action<IServiceCollection> registration)
+    private static ServiceProvider Configure(Action<IServiceCollection> registration)
     {
         var services = new ServiceCollection();
 

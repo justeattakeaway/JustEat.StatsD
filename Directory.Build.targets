@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup Condition=" '$(CollectCoverage)' == 'true' ">
+    <CoverletOutput>$([System.IO.Path]::Combine($(OutputPath), 'coverage', 'coverage'))</CoverletOutput>
     <ReportGeneratorOutputMarkdown Condition=" '$(ReportGeneratorOutputMarkdown)' == '' AND '$(GITHUB_SHA)' != '' ">true</ReportGeneratorOutputMarkdown>
     <ReportGeneratorReportTypes>HTML</ReportGeneratorReportTypes>
     <ReportGeneratorReportTypes Condition=" '$(ReportGeneratorOutputMarkdown)' == 'true' ">$(ReportGeneratorReportTypes);MarkdownSummaryGitHub</ReportGeneratorReportTypes>

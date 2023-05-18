@@ -5,8 +5,8 @@ namespace JustEat.StatsD;
 
 public class BufferBasedStatsDPublisherTests
 {
-    private readonly FakeTransport _transport = new FakeTransport();
-    private readonly StatsDConfiguration _configuration = new StatsDConfiguration { Prefix = "test" };
+    private readonly FakeTransport _transport = new();
+    private readonly StatsDConfiguration _configuration = new() { Prefix = "test" };
     private readonly BufferBasedStatsDPublisher _sut;
 
     public BufferBasedStatsDPublisherTests()
@@ -48,7 +48,7 @@ public class BufferBasedStatsDPublisherTests
         _transport.Messages.ShouldHaveSingleItem("test.timing:1234|ms|@0.99");
     }
 
-    private class FakeTransport : IStatsDTransport
+    private sealed class FakeTransport : IStatsDTransport
     {
         public List<string> Messages { get; } = new List<string>();
 
