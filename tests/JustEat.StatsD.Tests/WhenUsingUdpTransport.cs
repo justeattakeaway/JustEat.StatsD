@@ -103,7 +103,7 @@ public class WhenUsingUdpTransport
             });
     }
 
-    private class MillisecondSwitcher : IEndPointSource
+    private sealed class MillisecondSwitcher : IEndPointSource
     {
         private readonly IEndPointSource _endpointSource1;
         private readonly IEndPointSource _endpointSource2;
