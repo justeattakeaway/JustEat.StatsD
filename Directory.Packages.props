@@ -8,8 +8,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageVersion Include="NSubstitute" Version="5.0.0" />
+    <PackageVersion Include="Moq" Version="4.20.0" />
     <PackageVersion Include="ReportGenerator" Version="5.1.25" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="xunit" Version="2.5.0" />
@@ -29,7 +28,6 @@
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
     <PackageReference Include="GitHubActionsTestLogger" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
     <PackageReference Include="ReportGenerator" PrivateAssets="All" />
   </ItemGroup>
 </Project>
