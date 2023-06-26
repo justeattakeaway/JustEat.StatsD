@@ -4,7 +4,7 @@
 [![Build status](https://github.com/justeattakeaway/JustEat.StatsD/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
 [![codecov](https://codecov.io/gh/justeattakeaway/JustEat.StatsD/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/JustEat.StatsD)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/JustEat.StatsD/badge)](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/JustEat.StatsD)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/justeattakeaway/JustEat.StatsD/badge)](https://securityscorecards.dev/viewer/?uri=github.com/justeattakeaway/JustEat.StatsD)
 
 ## Summary
 
