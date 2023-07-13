@@ -43,7 +43,6 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
     <Exclude>[Benchmark]*,[*.Tests]*,[xunit.*]*</Exclude>
-    <ExcludeByAttribute>System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
     <Threshold>85</Threshold>
   </PropertyGroup>
   <ItemGroup>
