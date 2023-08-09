@@ -1,6 +1,6 @@
 using JustEat.StatsD.EndpointLookups;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD;
 
@@ -189,9 +189,9 @@ public static class WhenRegisteringStatsD
     {
         // Arrange
         var existingConfig = new StatsDConfiguration();
-        var existingSource = Mock.Of<IEndPointSource>();
-        var existingTransport = Mock.Of<IStatsDTransport>();
-        var existingPublisher = Mock.Of<IStatsDPublisher>();
+        var existingSource = Substitute.For<IEndPointSource>();
+        var existingTransport = Substitute.For<IStatsDTransport>();
+        var existingPublisher = Substitute.For<IStatsDPublisher>();
 
         var provider = Configure(services =>
             {

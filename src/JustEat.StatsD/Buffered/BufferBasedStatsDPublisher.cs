@@ -48,7 +48,7 @@ internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
 
     private void SendMessage(double sampleRate, in StatsDMessage msg)
     {
-        bool shouldSendMessage = (sampleRate >= DefaultSampleRate || sampleRate > Random.NextDouble()) && msg.StatBucket != null;
+        bool shouldSendMessage = (sampleRate >= DefaultSampleRate || sampleRate > Random.NextDouble()) && msg.StatBucket != null && msg.StatBucket.Length > 0;
 
         if (!shouldSendMessage)
         {
