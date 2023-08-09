@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD;
 
@@ -30,7 +30,7 @@ public static class IStatsDTransportExtensionsTests
     public static void SendThrowsIfTransportIfMetricIsNull()
     {
         // Arrange
-        var transport = Mock.Of<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         string? metric = null;
 
         // Act and Assert
@@ -41,7 +41,7 @@ public static class IStatsDTransportExtensionsTests
     public static void SendThrowsIfMetricsIsNull()
     {
         // Arrange
-        var transport = Mock.Of<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         IEnumerable<string>? metrics = null;
 
         // Act and Assert
@@ -52,27 +52,27 @@ public static class IStatsDTransportExtensionsTests
     public static void SendSendsStringMetric()
     {
         // Arrange
-        var transport = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         string metric = "metric";
 
         // Act
-        transport.Object.Send(metric);
+        transport.Send(metric);
 
         // Assert
-        transport.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Once());
+        transport.ReceivedWithAnyArgs(1).Send(default);
     }
 
     [Fact]
     public static void SendSendsStringMetrics()
     {
         // Arrange
-        var transport = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         var metrics = new[] { "a", "b", "c" };
 
         // Act
-        transport.Object.Send(metrics);
+        transport.Send(metrics);
 
         // Assert
-        transport.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(3));
+        transport.ReceivedWithAnyArgs(3).Send(default);
     }
 }

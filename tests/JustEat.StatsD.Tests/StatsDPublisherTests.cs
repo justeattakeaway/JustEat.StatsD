@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD;
 
@@ -8,14 +8,14 @@ public static class StatsDPublisherTests
     public static void Decrement_Sends_Multiple_Metrics()
     {
         // Arrange
-        var mock = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
         var config = new StatsDConfiguration
         {
             Prefix = "red",
         };
 
-        using (var publisher = new StatsDPublisher(config, mock.Object))
+        using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
             publisher.Decrement(10, "black");
@@ -27,21 +27,21 @@ public static class StatsDPublisherTests
         }
 
         // Assert
-        mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(8));
+        transport.ReceivedWithAnyArgs(8).Send(default);
     }
 
     [Fact]
     public static void Increment_Sends_Multiple_Metrics()
     {
         // Arrange
-        var mock = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
         var config = new StatsDConfiguration
         {
             Prefix = "red",
         };
 
-        using (var publisher = new StatsDPublisher(config, mock.Object))
+        using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
             publisher.Increment(10, "black");
@@ -53,21 +53,21 @@ public static class StatsDPublisherTests
         }
 
         // Assert
-        mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(8));
+        transport.ReceivedWithAnyArgs(8).Send(default);
     }
 
     [Fact]
     public static void Metrics_Sent_If_Tags_Are_Null()
     {
         // Arrange
-        var mock = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
         var config = new StatsDConfiguration
         {
             Prefix = "red",
         };
 
-        using (var publisher = new StatsDPublisher(config, mock.Object))
+        using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
             publisher.Increment(10, 1.0, "black");
@@ -76,14 +76,14 @@ public static class StatsDPublisherTests
         }
 
         // Assert
-        mock.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Exactly(3));
+        transport.ReceivedWithAnyArgs(3).Send(default);
     }
 
     [Fact]
     public static void Metrics_Not_Sent_If_Array_Is_Null_Or_Empty()
     {
         // Arrange
-        var mock = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         var config = new StatsDConfiguration();
         var anyValidTags = new Dictionary<string, string?>
         {
@@ -92,7 +92,7 @@ public static class StatsDPublisherTests
             ["lorem"] = "ipsum",
         };
 
-        using (var publisher = new StatsDPublisher(config, mock.Object))
+        using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
 #nullable disable
@@ -120,17 +120,17 @@ public static class StatsDPublisherTests
         }
 
         // Assert
-        mock.Verify((p) => p.Send(It.IsAny<ArraySegment<byte>>()), Times.Never());
+        transport.DidNotReceiveWithAnyArgs().Send(default);
     }
 
     [Fact]
     public static void Metrics_Not_Sent_If_No_Metrics()
     {
         // Arrange
-        var mock = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
         var config = new StatsDConfiguration();
 
-        using (var publisher = new StatsDPublisher(config, mock.Object))
+        using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
             publisher.Decrement(1, 0, new[] { "foo" });
@@ -138,7 +138,7 @@ public static class StatsDPublisherTests
         }
 
         // Assert
-        mock.Verify((p) => p.Send(It.IsAny<ArraySegment<byte>>()), Times.Never());
+        transport.DidNotReceiveWithAnyArgs().Send(default);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public static class StatsDPublisherTests
     {
         // Arrange
         StatsDConfiguration? configuration = null;
-        var transport = Mock.Of<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
         // Act and Assert
         Assert.Throws<ArgumentNullException>(
@@ -175,7 +175,7 @@ public static class StatsDPublisherTests
         {
             TagsFormatter = null!,
         };
-        var transport = Mock.Of<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
         // Act
         using var publisher = new StatsDPublisher(configuration, transport);

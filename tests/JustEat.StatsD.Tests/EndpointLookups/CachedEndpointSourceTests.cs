@@ -1,5 +1,5 @@
 using System.Net;
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD.EndpointLookups;
 
@@ -8,25 +8,25 @@ public static class CachedEndpointSourceTests
     [Fact]
     public static void CachedValueIsReturnedFromInner()
     {
-        var mockInner = new Mock<IEndPointSource>();
-        mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
+        var inner = Substitute.For<IEndPointSource>();
+        inner.GetEndpoint().Returns(MakeTestIpEndPoint());
 
-        var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
+        var cachedEndpoint = new CachedEndpointSource(inner, TimeSpan.FromMinutes(5));
 
         var value = cachedEndpoint.GetEndpoint();
         value.ShouldNotBeNull();
         value.ShouldBe(MakeTestIpEndPoint());
 
-        mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(1));
+        inner.Received(1).GetEndpoint();
     }
 
     [Fact]
     public static void CachedValueIsReturnedOnce()
     {
-        var mockInner = new Mock<IEndPointSource>();
-        mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
+        var inner = Substitute.For<IEndPointSource>();
+        inner.GetEndpoint().Returns(MakeTestIpEndPoint());
 
-        var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromMinutes(5));
+        var cachedEndpoint = new CachedEndpointSource(inner, TimeSpan.FromMinutes(5));
 
         var value1 = cachedEndpoint.GetEndpoint();
         var value2 = cachedEndpoint.GetEndpoint();
@@ -36,26 +36,26 @@ public static class CachedEndpointSourceTests
         value1.ShouldBe(value2);
         value1.ShouldBe(value3);
 
-        mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(1));
+        inner.Received(1).GetEndpoint();
     }
 
     [Fact]
     public static async Task CachedValueIsReturnedAgainAfterExpiry()
     {
-        var mockInner = new Mock<IEndPointSource>();
-        mockInner.Setup(x => x.GetEndpoint()).Returns(MakeTestIpEndPoint());
+        var inner = Substitute.For<IEndPointSource>();
+        inner.GetEndpoint().Returns(MakeTestIpEndPoint());
 
-        var cachedEndpoint = new CachedEndpointSource(mockInner.Object, TimeSpan.FromSeconds(1));
+        var cachedEndpoint = new CachedEndpointSource(inner, TimeSpan.FromSeconds(1));
 
-        var value1 = cachedEndpoint.GetEndpoint();
-        var value2 = cachedEndpoint.GetEndpoint();
+        cachedEndpoint.GetEndpoint();
+        cachedEndpoint.GetEndpoint();
 
         await Task.Delay(1500);
 
-        var value3 = cachedEndpoint.GetEndpoint();
-        var value4 = cachedEndpoint.GetEndpoint();
+        cachedEndpoint.GetEndpoint();
+        cachedEndpoint.GetEndpoint();
 
-        mockInner.Verify(x => x.GetEndpoint(), Times.Exactly(2));
+        inner.Received(2).GetEndpoint();
     }
 
     [Theory]
@@ -64,7 +64,7 @@ public static class CachedEndpointSourceTests
     public static void ConstructorThrowsIfCacheDurationIsInvalid(long ticks)
     {
         // Arrange
-        var inner = Mock.Of<IEndPointSource>();
+        var inner = Substitute.For<IEndPointSource>();
         var cacheDuration = TimeSpan.FromTicks(ticks);
 
         // Act and Assert

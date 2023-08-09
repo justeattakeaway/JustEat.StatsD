@@ -1,6 +1,6 @@
 using System.Net;
 using JustEat.StatsD.EndpointLookups;
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD;
 
@@ -68,7 +68,8 @@ public static class SocketTransportTests
     [Fact]
     public static void SocketTransportIsNoopForNullEndpoint()
     {
-        var endpointSource = Mock.Of<IEndPointSource>();
+        var endpointSource = Substitute.For<IEndPointSource>();
+        endpointSource.GetEndpoint().Returns(null as EndPoint);
 
         using var transport = new SocketTransport(endpointSource, SocketProtocol.IP);
         transport.Send("teststat:1|c");

@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD.Buffered;
 
@@ -9,15 +9,15 @@ public static class BufferBasedStatsDPublisherTests
     {
         // Arrange
         var configuration = new StatsDConfiguration();
-        var transport = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
-        var publisher = new BufferBasedStatsDPublisher(configuration, transport.Object);
+        var publisher = new BufferBasedStatsDPublisher(configuration, transport);
 
         // Act
         publisher.Increment(1, 1, null!, null);
 
         // Assert
-        transport.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Never());
+        transport.DidNotReceiveWithAnyArgs().Send(default);
     }
 
     [Fact]
@@ -25,14 +25,14 @@ public static class BufferBasedStatsDPublisherTests
     {
         // Arrange
         var configuration = new StatsDConfiguration() { Prefix = new string('a', 513) };
-        var transport = new Mock<IStatsDTransport>();
+        var transport = Substitute.For<IStatsDTransport>();
 
-        var publisher = new BufferBasedStatsDPublisher(configuration, transport.Object);
+        var publisher = new BufferBasedStatsDPublisher(configuration, transport);
 
         // Act
         publisher.Increment(1, 1, "foo");
 
         // Assert
-        transport.Verify((p) => p.Send(It.Ref<ArraySegment<byte>>.IsAny), Times.Once());
+        transport.ReceivedWithAnyArgs(1).Send(default);
     }
 }

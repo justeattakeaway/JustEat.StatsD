@@ -1,4 +1,4 @@
-using Moq;
+using NSubstitute;
 
 namespace JustEat.StatsD;
 
@@ -19,7 +19,7 @@ public static class TimerExtensionsTests
     public static void TimeThrowsIfActionIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Action? action = null;
@@ -32,7 +32,7 @@ public static class TimerExtensionsTests
     public static void TimeThrowsIfActionForTimerIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Action<IDisposableTimer>? action = null;
@@ -45,7 +45,7 @@ public static class TimerExtensionsTests
     public static async Task TimeThrowsIfFuncForTaskIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<Task>? action = null;
@@ -58,7 +58,7 @@ public static class TimerExtensionsTests
     public static async Task TimeThrowsIfFuncForTaskWithTimerIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<IDisposableTimer, Task>? action = null;
@@ -71,7 +71,7 @@ public static class TimerExtensionsTests
     public static void TimeThrowsIfFuncOfTIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<int>? func = null;
@@ -84,7 +84,7 @@ public static class TimerExtensionsTests
     public static void TimeThrowsIfFuncOfTWithTimerIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<IDisposableTimer, int>? func = null;
@@ -97,7 +97,7 @@ public static class TimerExtensionsTests
     public static async Task TimeThrowsIfFuncForTaskOfTIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<Task<int>>? func = null;
@@ -110,7 +110,7 @@ public static class TimerExtensionsTests
     public static async Task TimeThrowsIfFuncForTaskOfTWithTimerIsNull()
     {
         // Arrange
-        var publisher = Mock.Of<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         Func<IDisposableTimer, Task<int>>? func = null;
@@ -123,31 +123,28 @@ public static class TimerExtensionsTests
     public static void CanTimeAction()
     {
         // Arrange
-        var publisher = new Mock<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         bool timed = false;
 
         // Act
-        publisher.Object.Time(bucket, () => { timed = true; });
+        publisher.Time(bucket, () => { timed = true; });
 
         // Assert
         timed.ShouldBeTrue();
-        publisher.Verify(
-            (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                It.IsAny<Dictionary<string, string?>>()),
-                Times.Once());
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket, Arg.Any<Dictionary<string, string?>>());
     }
 
     [Fact]
     public static void CanTimeActionWithTimerOfT()
     {
         // Arrange
-        var publisher = new Mock<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         // Act
-        int actual = publisher.Object.Time(
+        int actual = publisher.Time(
             bucket,
             (timer) =>
             {
@@ -159,23 +156,20 @@ public static class TimerExtensionsTests
 
         // Assert
         actual.ShouldBe(42);
-        publisher.Verify(
-            (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                It.IsAny<Dictionary<string, string?>>()),
-                Times.Once());
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket, Arg.Any<Dictionary<string, string?>>());
     }
 
     [Fact]
     public static async Task CanTimeAsyncActionWithTimerOfT()
     {
         // Arrange
-        var publisher = new Mock<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         bool timed = false;
 
         // Act
-        await publisher.Object.Time(
+        await publisher.Time(
             bucket,
             (timer) =>
             {
@@ -189,21 +183,18 @@ public static class TimerExtensionsTests
 
         // Assert
         timed.ShouldBeTrue();
-        publisher.Verify(
-            (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                It.IsAny<Dictionary<string, string?>>()),
-                Times.Once());
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket, Arg.Any<Dictionary<string, string?>>());
     }
 
     [Fact]
     public static async Task CanTimeAsyncFuncWithTimerOfT()
     {
         // Arrange
-        var publisher = new Mock<IStatsDPublisher>();
+        var publisher = Substitute.For<IStatsDPublisher>();
         string bucket = "bucket";
 
         // Act
-        int actual = await publisher.Object.Time(
+        int actual = await publisher.Time(
             bucket,
             (timer) =>
             {
@@ -215,9 +206,6 @@ public static class TimerExtensionsTests
 
         // Assert
         actual.ShouldBe(42);
-        publisher.Verify(
-            (p) => p.Timing(It.IsAny<long>(), 1, bucket,
-                It.IsAny<Dictionary<string, string?>>()),
-                Times.Once());
+        publisher.Received(1).Timing(Arg.Any<long>(), 1, bucket, Arg.Any<Dictionary<string, string?>>());
     }
 }
