@@ -6,5 +6,5 @@ internal sealed class NoOpTagsFormatter : IStatsDTagsFormatter
 
     public int GetTagsBufferSize(in Dictionary<string, string?> tags) => 0;
 
-    public ReadOnlySpan<char> FormatTags(scoped in Dictionary<string, string?> tags) => ReadOnlySpan<char>.Empty;
+    public ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags) => ReadOnlySpan<char>.Empty;
 }

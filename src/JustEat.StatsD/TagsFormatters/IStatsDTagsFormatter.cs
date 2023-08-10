@@ -22,5 +22,5 @@ public interface IStatsDTagsFormatter
     /// </summary>
     /// <param name="tags">The tag(s) included.</param>
     /// <returns>The tag(s) formatted.</returns>
-    ReadOnlySpan<char> FormatTags(scoped in Dictionary<string, string?> tags);
+    ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags);
 }
