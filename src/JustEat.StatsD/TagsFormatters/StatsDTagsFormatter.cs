@@ -65,7 +65,7 @@ public abstract class StatsDTagsFormatter : IStatsDTagsFormatter
     }
 
     /// <inheritdoc />
-    public virtual ReadOnlySpan<char> FormatTags(scoped in Dictionary<string, string?> tags)
+    public virtual ReadOnlySpan<char> FormatTags(in Dictionary<string, string?> tags)
     {
         if (!AreTagsPresent(tags))
         {
