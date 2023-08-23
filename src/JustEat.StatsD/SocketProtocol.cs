@@ -17,5 +17,10 @@ public enum SocketProtocol
     /// <summary>
     /// Transport stats over IP sockets.
     /// </summary>
-    IP
+    IP,
+
+    /// <summary>
+    /// Transport stats over TCP sockets.
+    /// </summary>
+    Tcp
 }

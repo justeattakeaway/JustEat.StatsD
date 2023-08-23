@@ -1,1 +1,2 @@
 #nullable enable
+JustEat.StatsD.SocketProtocol.Tcp = 2 -> JustEat.StatsD.SocketProtocol

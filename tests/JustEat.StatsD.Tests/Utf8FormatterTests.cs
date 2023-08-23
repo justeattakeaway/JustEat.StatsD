@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.TagsFormatters;
@@ -8,54 +9,69 @@ public static class Utf8FormatterTests
 {
     private static readonly byte[] Buffer = new byte[512];
     private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix", new NoOpTagsFormatter());
+    private static readonly StatsDUtf8Formatter LineFeedEndFormatter = new StatsDUtf8Formatter("prefix", new NoOpTagsFormatter(), true);
 
-    [Fact]
-    public static void CounterSampled()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128|c|@0.5")]
+    [InlineData(true, "prefix.bucket:128|c|@0.5\n")]
+    public static void CounterSampled(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Counter(128, "bucket", null);
-        Check(message, 0.5, "prefix.bucket:128|c|@0.5");
+        Check(message, 0.5, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void CounterRegular()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128|c")]
+    [InlineData(true, "prefix.bucket:128|c\n")]
+    public static void CounterRegular(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Counter(128, "bucket", null);
-        Check(message, "prefix.bucket:128|c");
+        Check(message, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void CounterNegative()
+    [Theory]
+    [InlineData(false, "prefix.bucket:-128|c")]
+    [InlineData(true, "prefix.bucket:-128|c\n")]
+    public static void CounterNegative(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Counter(-128, "bucket", null);
-        Check(message, "prefix.bucket:-128|c");
+        Check(message, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void Timing()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128|ms")]
+    [InlineData(true, "prefix.bucket:128|ms\n")]
+    public static void Timing(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Timing(128, "bucket", null);
-        Check(message, "prefix.bucket:128|ms");
+        Check(message, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void TimingSampled()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128|ms|@0.5")]
+    [InlineData(true, "prefix.bucket:128|ms|@0.5\n")]
+    public static void TimingSampled(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Timing(128, "bucket", null);
-        Check(message, 0.5, "prefix.bucket:128|ms|@0.5");
+        Check(message, 0.5, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void GaugeIntegral()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128|g")]
+    [InlineData(true, "prefix.bucket:128|g\n")]
+    public static void GaugeIntegral(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Gauge(128, "bucket", null);
-        Check(message, "prefix.bucket:128|g");
+        Check(message, formatterEndWithLineFeedSymbol, expected);
     }
 
-    [Fact]
-    public static void GaugeFloat()
+    [Theory]
+    [InlineData(false, "prefix.bucket:128.5|g")]
+    [InlineData(true, "prefix.bucket:128.5|g\n")]
+    public static void GaugeFloat(bool formatterEndWithLineFeedSymbol, string expected)
     {
         var message = StatsDMessage.Gauge(128.5, "bucket", null);
-        Check(message, "prefix.bucket:128.5|g");
+        Check(message, formatterEndWithLineFeedSymbol, expected);
     }
 
     [Fact]
@@ -97,24 +113,35 @@ public static class Utf8FormatterTests
     {
         var hugeBucket = new string(ch, bucketSize);
         var message = StatsDMessage.Gauge(128.5, hugeBucket, null);
-        var expected = $"prefix.{hugeBucket}:128.5|g";
 
-        var buffer = new byte[Formatter.GetMaxBufferSize(message)];
-
-        Formatter.TryFormat(message, 1.0, buffer, out int written).ShouldBe(true);
-        var actual = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
-        actual.ShouldBe(expected);
+        CheckWithBufferCalculation(message, 1.0, false, $"prefix.{hugeBucket}:128.5|g");
+        CheckWithBufferCalculation(message, 1.0, true, $"prefix.{hugeBucket}:128.5|g\n");
     }
 
-    private static void Check(StatsDMessage message, string expected)
+    private static void CheckWithBufferCalculation(StatsDMessage message, double sampleRate, bool formatterEndWithLineFeedSymbol, string expected)
     {
-        Check(message, 1, expected);
+        Check(message, sampleRate, formatterEndWithLineFeedSymbol, null, expected);
     }
 
-    private static void Check(StatsDMessage message, double sampleRate, string expected)
+    private static void Check(StatsDMessage message, bool formatterEndWithLineFeedSymbol, string expected)
     {
-        Formatter.TryFormat(message, sampleRate, Buffer, out int written).ShouldBe(true);
-        var result = Encoding.UTF8.GetString(Buffer.AsSpan(0, written));
+        Check(message, 1, formatterEndWithLineFeedSymbol, expected);
+    }
+
+    private static void Check(StatsDMessage message, double sampleRate, bool formatterEndWithLineFeedSymbol, string expected)
+    {
+        Check(message, sampleRate, formatterEndWithLineFeedSymbol, Buffer, expected);
+    }
+
+    private static void Check(StatsDMessage message, double sampleRate, bool formatterEndWithLineFeedSymbol, byte[]? buffer, string expected)
+    {
+        var formatter = SelectFormatter(formatterEndWithLineFeedSymbol);
+        buffer ??= new byte[formatter.GetMaxBufferSize(message)];
+        formatter.TryFormat(message, sampleRate, buffer, out int written).ShouldBe(true);
+        var result = Encoding.UTF8.GetString(buffer.AsSpan(0, written));
         result.ShouldBe(expected);
     }
+
+    private static StatsDUtf8Formatter SelectFormatter(bool formatterEndWithLineFeedSymbol) =>
+        formatterEndWithLineFeedSymbol ? LineFeedEndFormatter : Formatter;
 }

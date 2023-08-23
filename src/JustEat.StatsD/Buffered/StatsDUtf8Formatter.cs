@@ -8,13 +8,15 @@ internal sealed class StatsDUtf8Formatter
 {
     private readonly byte[] _utf8Prefix;
     private readonly IStatsDTagsFormatter _tagsFormatter;
+    private readonly bool _endWithLineFeedSymbol;
 
-    public StatsDUtf8Formatter(string prefix, IStatsDTagsFormatter tagsFormatter)
+    public StatsDUtf8Formatter(string prefix, IStatsDTagsFormatter tagsFormatter, bool endWithLineFeedSymbol = false)
     {
         _utf8Prefix = string.IsNullOrWhiteSpace(prefix) ?
             Array.Empty<byte>() :
             Encoding.UTF8.GetBytes(prefix + ".");
         _tagsFormatter = tagsFormatter ?? new NoOpTagsFormatter();
+        _endWithLineFeedSymbol = endWithLineFeedSymbol;
     }
 
     public int GetMaxBufferSize(in StatsDMessage msg)
@@ -32,7 +34,8 @@ internal sealed class StatsDUtf8Formatter
                + MaxMessageKindSuffixSize
                + MaxSamplingSuffixSize
                + MaxSerializedDoubleSymbols
-               + GetTagsBufferSize(msg.Tags);
+               + GetTagsBufferSize(msg.Tags)
+               + Convert.ToInt32(_endWithLineFeedSymbol);
     }
 
     public bool TryFormat(in StatsDMessage msg, double sampleRate, Span<byte> destination, out int written)
@@ -43,7 +46,8 @@ internal sealed class StatsDUtf8Formatter
               TryWriteBucketNameWithColon(ref buffer, msg)
            && TryWritePayloadWithMessageKindSuffix(ref buffer, msg)
            && TryWriteSampleRateIfNeeded(ref buffer, sampleRate)
-           && TryWriteTrailingTagsIfNeeded(ref buffer, msg.Tags);
+           && TryWriteTrailingTagsIfNeeded(ref buffer, msg.Tags)
+           && TryWriteLineFeedSymbolIfNeeded(ref buffer);
 
         written = isFormattingSuccessful ? buffer.Written : 0;
         return isFormattingSuccessful;
@@ -130,4 +134,8 @@ internal sealed class StatsDUtf8Formatter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool AreTagsPresent(in Dictionary<string, string?>? tags) =>
         tags != null && tags.Count > 0;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool TryWriteLineFeedSymbolIfNeeded(ref Buffer<byte> buffer) =>
+        !_endWithLineFeedSymbol || buffer.TryWrite((byte)'\n');
 }

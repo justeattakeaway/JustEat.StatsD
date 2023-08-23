@@ -13,6 +13,8 @@ internal static class SocketFactory
 
             SocketProtocol.Udp => ForUdp(),
 
+            SocketProtocol.Tcp => ForTcp(),
+
             _ => throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified."),
         };
     }
@@ -33,5 +35,10 @@ internal static class SocketFactory
     internal static Socket ForIp()
     {
         return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
+    }
+
+    internal static Socket ForTcp()
+    {
+        return new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
     }
 }
