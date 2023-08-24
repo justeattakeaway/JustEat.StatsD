@@ -35,7 +35,7 @@ public static class SocketTransportTests
     [Fact]
     public static void SocketTransportCanSendOverTcpWithError()
     {
-        using var transport = new SocketTransport(LocalStatsEndpoint(), SocketProtocol.Tcp);
+        using var transport = new SocketTransport(new SimpleEndpointSource(new IPEndPoint(IPAddress.Loopback, 404)), SocketProtocol.Tcp);
         Assert.ThrowsAny<SocketException>(() => transport.Send("teststat:1|c"));
     }
 

@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using System.Text;
 using JustEat.StatsD.Buffered;
 using JustEat.StatsD.TagsFormatters;
