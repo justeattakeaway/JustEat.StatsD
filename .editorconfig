@@ -13,6 +13,9 @@ indent_size = 2
 csharp_style_namespace_declarations = file_scoped:warning
 indent_size = 4
 
+[*.{csproj,json,props,ruleset,targets}]
+indent_size = 2
+
 [*.lock]
 end_of_line = lf
 
