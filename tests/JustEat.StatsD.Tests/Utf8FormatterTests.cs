@@ -7,7 +7,7 @@ namespace JustEat.StatsD;
 public static class Utf8FormatterTests
 {
     private static readonly byte[] Buffer = new byte[512];
-    private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix", new NoOpTagsFormatter());
+    private static readonly StatsDUtf8Formatter Formatter = new("prefix", new NoOpTagsFormatter());
 
     [Fact]
     public static void CounterSampled()

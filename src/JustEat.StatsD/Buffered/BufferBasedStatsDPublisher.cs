@@ -79,9 +79,7 @@ internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
                 }
             }
         }
-#pragma warning disable CA2201
         catch (Exception ex)
-#pragma warning restore CA2201
         {
             var handled = _onError?.Invoke(ex) ?? true;
             if (!handled)

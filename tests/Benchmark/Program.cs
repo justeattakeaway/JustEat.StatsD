@@ -1,5 +1,3 @@
-#pragma warning disable CA1812
-
 using BenchmarkDotNet.Running;
 
 BenchmarkSwitcher
