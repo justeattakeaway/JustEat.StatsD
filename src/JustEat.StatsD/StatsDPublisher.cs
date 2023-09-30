@@ -12,7 +12,7 @@ namespace JustEat.StatsD;
 /// </remarks>
 public sealed class StatsDPublisher : IStatsDPublisher, IDisposable
 {
-    private readonly IStatsDPublisher _inner;
+    private readonly BufferBasedStatsDPublisher _inner;
     private readonly IStatsDTransport _transport;
     private readonly bool _disposeTransport;
 

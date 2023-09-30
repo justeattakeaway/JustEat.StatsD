@@ -49,10 +49,7 @@ public class DnsLookupIpEndpointSource : IEndPointSource
             result = endpoints.FirstOrDefault(p => p.AddressFamily == AddressFamily.InterNetwork);
         }
 
-        if (result == null)
-        {
-            result = endpoints[0];
-        }
+        result ??= endpoints[0];
 
         return result;
     }

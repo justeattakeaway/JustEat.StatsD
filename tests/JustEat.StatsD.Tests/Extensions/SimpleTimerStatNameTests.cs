@@ -86,9 +86,7 @@ public static class SimpleTimerStatNameTests
 
             timer.Bucket = "changedValue";
         }
-#pragma warning disable CA1031
         catch (InvalidOperationException)
-#pragma warning restore CA1031
         {
             failCount++;
         }

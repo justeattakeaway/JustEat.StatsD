@@ -78,10 +78,8 @@ public static class TimerExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        using (var timer = StartTimer(publisher, bucket, tags))
-        {
-            action(timer);
-        }
+        using var timer = StartTimer(publisher, bucket, tags);
+        action(timer);
     }
 
     /// <summary>
@@ -140,10 +138,8 @@ public static class TimerExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        using (var timer = StartTimer(publisher, bucket, tags))
-        {
-            await action(timer).ConfigureAwait(false);
-        }
+        using var timer = StartTimer(publisher, bucket, tags);
+        await action(timer).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -204,10 +200,8 @@ public static class TimerExtensions
             throw new ArgumentNullException(nameof(func));
         }
 
-        using (var timer = StartTimer(publisher, bucket, tags))
-        {
-            return func(timer);
-        }
+        using var timer = StartTimer(publisher, bucket, tags);
+        return func(timer);
     }
 
     /// <summary>
@@ -268,9 +262,7 @@ public static class TimerExtensions
             throw new ArgumentNullException(nameof(func));
         }
 
-        using (var timer = StartTimer(publisher, bucket, tags))
-        {
-            return await func(timer).ConfigureAwait(false);
-        }
+        using var timer = StartTimer(publisher, bucket, tags);
+        return await func(timer).ConfigureAwait(false);
     }
 }

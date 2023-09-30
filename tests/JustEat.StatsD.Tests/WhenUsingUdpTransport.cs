@@ -6,12 +6,9 @@ namespace JustEat.StatsD;
 [Collection("ActiveUdpListeners")]
 public class WhenUsingUdpTransport
 {
-
-#pragma warning disable CA1801 // Used to force the creation of the collection
     public WhenUsingUdpTransport(UdpListeners _)
     {
     }
-#pragma warning restore CA1801
 
     [Fact]
     public void AMetricCanBeSentWithoutAnExceptionBeingThrown()

@@ -12,11 +12,11 @@ namespace Benchmark;
 [SimpleJob(RuntimeMoniker.Net60)]
 public class Utf8FormatterBenchmark
 {
-    private static readonly StatsDUtf8Formatter FormatterBuffer = new StatsDUtf8Formatter("hello.world", new NoOpTagsFormatter());
-    private static readonly StatsDUtf8Formatter FormatterWithTagsBuffer = new StatsDUtf8Formatter("hello.world", TagsFormatter.DataDog);
+    private static readonly StatsDUtf8Formatter FormatterBuffer = new("hello.world", new NoOpTagsFormatter());
+    private static readonly StatsDUtf8Formatter FormatterWithTagsBuffer = new("hello.world", TagsFormatter.DataDog);
 
-    private static readonly Dictionary<string, string?> EmptyTags = new Dictionary<string, string?>();
-    private static readonly Dictionary<string, string?> AnyValidTags = new Dictionary<string, string?>
+    private static readonly Dictionary<string, string?> EmptyTags = new();
+    private static readonly Dictionary<string, string?> AnyValidTags = new()
     {
         ["key"] = "value",
         ["key2"] = "value2",

@@ -124,9 +124,7 @@ public static class IStatsDPublisherExtensions
         Dictionary<string, string?>? tags,
         params string[] buckets)
     {
-#pragma warning disable CA1508
         if (buckets == null || buckets.Length == 0)
-#pragma warning restore CA1508
         {
             return;
         }
@@ -237,9 +235,7 @@ public static class IStatsDPublisherExtensions
         Dictionary<string, string?>? tags,
         params string[] buckets)
     {
-#pragma warning disable CA1508
         if (buckets == null || buckets.Length == 0)
-#pragma warning restore CA1508
         {
             return;
         }
