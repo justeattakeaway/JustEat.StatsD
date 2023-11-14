@@ -10,9 +10,7 @@ internal static class SocketFactory
         return socketProtocol switch
         {
             SocketProtocol.IP => ForIp(),
-
             SocketProtocol.Udp => ForUdp(),
-
             _ => throw new InvalidOperationException($"Unknown {nameof(SocketProtocol)} value {socketProtocol} specified."),
         };
     }
@@ -31,7 +29,5 @@ internal static class SocketFactory
     }
 
     internal static Socket ForIp()
-    {
-        return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
-    }
+        => new(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP);
 }

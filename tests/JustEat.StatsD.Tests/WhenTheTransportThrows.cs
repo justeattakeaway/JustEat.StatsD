@@ -130,8 +130,7 @@ public class WhenTheTransportThrows
         }
     }
 
-    public static TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>> Publishers =>
-        new TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>>
+    public static TheoryData<string, Func<StatsDConfiguration, IStatsDPublisher>> Publishers => new()
     {
         {
             "BufferBasedStatsDPublisher",

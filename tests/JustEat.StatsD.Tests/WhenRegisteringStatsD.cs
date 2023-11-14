@@ -336,13 +336,10 @@ public static class WhenRegisteringStatsD
 #pragma warning disable CA1812 // Instantiated via DI
     private sealed class MyTransport : IStatsDTransport
     {
-
-#pragma warning disable CA1801 // Used to validate that IEndPointSource is in DI
 #pragma warning disable IDE0060
         public MyTransport(IEndPointSource endpointSource)
         {
         }
-#pragma warning restore CA1801
 
         public void Send(in ArraySegment<byte> metrics)
         {
