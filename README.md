@@ -14,10 +14,9 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 `JustEat.StatsD` version 4.2.0 is built for these target frameworks:
 
-* `net461`
+* `net462`
 * `netstandard2.0`
-* `netstandard2.1`
-* `net5.0`
+* `net6.0`
 
 ### Features
 
