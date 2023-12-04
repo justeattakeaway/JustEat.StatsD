@@ -10,9 +10,9 @@ namespace JustEat.StatsD;
 /// <remarks>
 /// Metrics are published synchronously immediately and are not batched.
 /// </remarks>
-public sealed class StatsDPublisher : IStatsDPublisher, IDisposable
+public sealed class StatsDPublisher : IStatsDPublisher, IStatsDPublisherWithTags, IDisposable
 {
-    private readonly IStatsDPublisher _inner;
+    private readonly BufferBasedStatsDPublisher _inner;
     private readonly IStatsDTransport _transport;
     private readonly bool _disposeTransport;
 
@@ -81,22 +81,28 @@ public sealed class StatsDPublisher : IStatsDPublisher, IDisposable
     }
 
     /// <inheritdoc />
+    public void Increment(long value, double sampleRate, string bucket)
+        => _inner.Increment(value, sampleRate, bucket);
+
+    /// <inheritdoc />
+    public void Gauge(double value, string bucket)
+        => _inner.Gauge(value, bucket);
+
+    /// <inheritdoc />
+    public void Timing(long duration, double sampleRate, string bucket)
+        => _inner.Timing(duration, sampleRate, bucket);
+
+    /// <inheritdoc />
     public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)
-    {
-        _inner.Increment(value, sampleRate, bucket, tags);
-    }
+        => _inner.Increment(value, sampleRate, bucket, tags);
 
     /// <inheritdoc />
     public void Gauge(double value, string bucket, Dictionary<string, string?>? tags)
-    {
-        _inner.Gauge(value, bucket, tags);
-    }
+        => _inner.Gauge(value, bucket, tags);
 
     /// <inheritdoc />
     public void Timing(long duration, double sampleRate, string bucket, Dictionary<string, string?>? tags)
-    {
-        _inner.Timing(duration, sampleRate, bucket, tags);
-    }
+        => _inner.Timing(duration, sampleRate, bucket, tags);
 
     /// <inheritdoc />
     public void Dispose()

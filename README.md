@@ -1,6 +1,6 @@
 # JustEat.StatsD
 
-[![NuGet version](https://buildstats.info/nuget/JustEat.StatsD?includePreReleases=false)](http://www.nuget.org/packages/JustEat.StatsD)
+[![NuGet version](https://buildstats.info/nuget/JustEat.StatsD?includePreReleases=false)](https://www.nuget.org/packages/JustEat.StatsD)
 [![Build status](https://github.com/justeattakeaway/JustEat.StatsD/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
 [![codecov](https://codecov.io/gh/justeattakeaway/JustEat.StatsD/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/JustEat.StatsD)
@@ -14,10 +14,9 @@ We use this library within our components to publish [StatsD](http://github.com/
 
 `JustEat.StatsD` version 4.2.0 is built for these target frameworks:
 
-* `net461`
+* `net462`
 * `netstandard2.0`
-* `netstandard2.1`
-* `net5.0`
+* `net6.0`
 
 ### Features
 

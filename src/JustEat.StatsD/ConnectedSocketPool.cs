@@ -7,7 +7,7 @@ namespace JustEat.StatsD;
 internal sealed class ConnectedSocketPool : IDisposable
 {
     private bool _disposed;
-    private readonly ConcurrentBag<Socket> _pool = new ConcurrentBag<Socket>();
+    private readonly ConcurrentBag<Socket> _pool = new();
     private readonly SocketProtocol _socketProtocol;
 
     public EndPoint EndPoint { get; }

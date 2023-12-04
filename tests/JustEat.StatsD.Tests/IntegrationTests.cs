@@ -33,7 +33,7 @@ public static class IntegrationTests
         await AssertMetrics(config, publisher);
     }
 
-    private static async Task AssertMetrics(StatsDConfiguration config, IStatsDPublisher publisher)
+    private static async Task AssertMetrics(StatsDConfiguration config, StatsDPublisher publisher)
     {
         // Act - Create a counter
         publisher.Increment("apple");

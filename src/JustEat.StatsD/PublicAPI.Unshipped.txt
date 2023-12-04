@@ -1,2 +1,61 @@
 #nullable enable
+JustEat.StatsD.IStatsDPublisherWithTags
+JustEat.StatsD.IStatsDPublisherWithTags.Gauge(double value, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.IStatsDPublisherWithTags.Increment(long value, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.IStatsDPublisherWithTags.Timing(long duration, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.IStatsDPublisherWithTagsExtensions
 JustEat.StatsD.SocketProtocol.Tcp = 2 -> JustEat.StatsD.SocketProtocol
+JustEat.StatsD.StatsDConfiguration.TagsFormatter.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+JustEat.StatsD.StatsDConfiguration.TagsFormatter.set -> void
+JustEat.StatsD.StatsDPublisher.Gauge(double value, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.StatsDPublisher.Increment(long value, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.StatsDPublisher.Timing(long duration, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+JustEat.StatsD.TagsFormatter
+JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter
+JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.AreTrailing.get -> bool
+JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.GetTagsBufferSize(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> int
+JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter.FormatTags(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatter
+virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.AreTrailing.get -> bool
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.StatsDTagsFormatter(JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration! configuration) -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.StatsDTagsFormatterConfiguration() -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.AreTrailing.get -> bool
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.AreTrailing.set -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.KeyValueSeparator.get -> string!
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.KeyValueSeparator.set -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Prefix.get -> string!
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Prefix.set -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Suffix.get -> string!
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.Suffix.set -> void
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.TagsSeparator.get -> string!
+JustEat.StatsD.TagsFormatters.StatsDTagsFormatterConfiguration.TagsSeparator.set -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Decrement(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Decrement(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, double sampleRate, System.Collections.Generic.Dictionary<string!, string?>? tags, params string![]! buckets) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Decrement(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string!>! buckets, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Decrement(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Decrement(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Increment(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, double sampleRate, System.Collections.Generic.Dictionary<string!, string?>? tags, params string![]! buckets) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Increment(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, double sampleRate, System.Collections.Generic.IEnumerable<string!>! buckets, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Increment(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long value, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Increment(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Timing(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, long duration, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Timing(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, System.TimeSpan duration, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.IStatsDPublisherWithTagsExtensions.Timing(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, System.TimeSpan duration, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.TagsFormatter.CloudWatch.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.DataDog.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.InfluxDb.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.Librato.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.SignalFx.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.Splunk.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TimerExtensions.StartTimer(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> JustEat.StatsD.IDisposableTimer!
+static JustEat.StatsD.TimerExtensions.Time(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Action! action, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.TimerExtensions.Time(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Action<JustEat.StatsD.IDisposableTimer!>! action, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
+static JustEat.StatsD.TimerExtensions.Time(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<JustEat.StatsD.IDisposableTimer!, System.Threading.Tasks.Task!>! action, System.Collections.Generic.Dictionary<string!, string?>? tags) -> System.Threading.Tasks.Task!
+static JustEat.StatsD.TimerExtensions.Time(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<System.Threading.Tasks.Task!>! action, System.Collections.Generic.Dictionary<string!, string?>? tags) -> System.Threading.Tasks.Task!
+static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<JustEat.StatsD.IDisposableTimer!, System.Threading.Tasks.Task<T>!>! func, System.Collections.Generic.Dictionary<string!, string?>? tags) -> System.Threading.Tasks.Task<T>!
+static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<JustEat.StatsD.IDisposableTimer!, T>! func, System.Collections.Generic.Dictionary<string!, string?>? tags) -> T
+static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<System.Threading.Tasks.Task<T>!>! func, System.Collections.Generic.Dictionary<string!, string?>? tags) -> System.Threading.Tasks.Task<T>!
+static JustEat.StatsD.TimerExtensions.Time<T>(this JustEat.StatsD.IStatsDPublisherWithTags! publisher, string! bucket, System.Func<T>! func, System.Collections.Generic.Dictionary<string!, string?>? tags) -> T
+virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.GetTagsBufferSize(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> int
+virtual JustEat.StatsD.TagsFormatters.StatsDTagsFormatter.FormatTags(in System.Collections.Generic.Dictionary<string!, string?>! tags) -> System.ReadOnlySpan<char>

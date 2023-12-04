@@ -1,6 +1,6 @@
 namespace JustEat.StatsD.Buffered;
 
-internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
+internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher, IStatsDPublisherWithTags
 {
     private const double DefaultSampleRate = 1.0;
     private const int SafeUdpPacketSize = 512;
@@ -30,6 +30,15 @@ internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
         _transport = transport;
         _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsFormatter, configuration.SocketProtocol == SocketProtocol.Tcp);
     }
+
+    public void Increment(long value, double sampleRate, string bucket)
+        => Increment(value, sampleRate, bucket, null);
+
+    public void Gauge(double value, string bucket)
+        => Gauge(value, bucket, null);
+
+    public void Timing(long duration, double sampleRate, string bucket)
+        => Timing(duration, sampleRate, bucket, null);
 
     public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)
     {
@@ -79,9 +88,7 @@ internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher
                 }
             }
         }
-#pragma warning disable CA2201
         catch (Exception ex)
-#pragma warning restore CA2201
         {
             var handled = _onError?.Invoke(ex) ?? true;
             if (!handled)

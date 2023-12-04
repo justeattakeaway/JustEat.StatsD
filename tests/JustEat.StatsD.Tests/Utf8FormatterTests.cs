@@ -7,8 +7,8 @@ namespace JustEat.StatsD;
 public static class Utf8FormatterTests
 {
     private static readonly byte[] Buffer = new byte[512];
-    private static readonly StatsDUtf8Formatter Formatter = new StatsDUtf8Formatter("prefix", new NoOpTagsFormatter());
-    private static readonly StatsDUtf8Formatter LineFeedEndFormatter = new StatsDUtf8Formatter("prefix", new NoOpTagsFormatter(), true);
+    private static readonly StatsDUtf8Formatter Formatter = new("prefix", new NoOpTagsFormatter());
+    private static readonly StatsDUtf8Formatter LineFeedEndFormatter = new("prefix", new NoOpTagsFormatter(), true);
 
     [Theory]
     [InlineData(false, "prefix.bucket:128|c|@0.5")]

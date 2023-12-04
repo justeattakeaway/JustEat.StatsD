@@ -29,7 +29,7 @@ internal static class BufferExtensions
             return true;
         }
 
-#if NETSTANDARD2_0 || NET461
+#if NETSTANDARD2_0 || NETFRAMEWORK
         var bucketBytes = Encoding.UTF8.GetBytes(str);
         return src.TryWrite(bucketBytes);
 #else
@@ -58,7 +58,7 @@ internal static class BufferExtensions
             return true;
         }
 
-#if NETSTANDARD2_0 || NET461
+#if NETSTANDARD2_0 || NETFRAMEWORK
         var bytes = Encoding.UTF8.GetBytes(chars.ToArray());
         return src.TryWrite(bytes);
 #else
