@@ -9,9 +9,11 @@ public static class IntegrationTests
     [SkippableTheory]
     [InlineData("localhost", SocketProtocol.IP)]
     [InlineData("localhost", SocketProtocol.Udp)]
+    [InlineData("localhost", SocketProtocol.Tcp)]
     [InlineData("127.0.0.1", SocketProtocol.IP)]
     [InlineData("127.0.0.1", SocketProtocol.Udp)]
-    public static async Task Can_Send_Metrics_To_StatsD_Using_Udp(
+    [InlineData("127.0.0.1", SocketProtocol.Tcp)]
+    public static async Task Can_Send_Metrics_To_StatsD(
         string host,
         SocketProtocol socketProtocol)
     {
@@ -22,7 +24,7 @@ public static class IntegrationTests
         {
             Host = host,
             Prefix = Guid.NewGuid().ToString().Replace("-", string.Empty, StringComparison.Ordinal),
-            SocketProtocol = socketProtocol,
+            SocketProtocol = socketProtocol
         };
 
         using var publisher = new StatsDPublisher(config);

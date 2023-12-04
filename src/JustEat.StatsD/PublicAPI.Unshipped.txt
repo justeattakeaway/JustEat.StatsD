@@ -4,6 +4,7 @@ JustEat.StatsD.IStatsDPublisherWithTags.Gauge(double value, string! bucket, Syst
 JustEat.StatsD.IStatsDPublisherWithTags.Increment(long value, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
 JustEat.StatsD.IStatsDPublisherWithTags.Timing(long duration, double sampleRate, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void
 JustEat.StatsD.IStatsDPublisherWithTagsExtensions
+JustEat.StatsD.SocketProtocol.Tcp = 2 -> JustEat.StatsD.SocketProtocol
 JustEat.StatsD.StatsDConfiguration.TagsFormatter.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 JustEat.StatsD.StatsDConfiguration.TagsFormatter.set -> void
 JustEat.StatsD.StatsDPublisher.Gauge(double value, string! bucket, System.Collections.Generic.Dictionary<string!, string?>? tags) -> void

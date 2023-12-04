@@ -17,6 +17,8 @@ public class StatSendingBenchmark : IDisposable
     private BufferBasedStatsDPublisher? _udpSender;
     private SocketTransport? _ipTransport;
     private BufferBasedStatsDPublisher? _ipSender;
+    private SocketTransport? _tcpTransport;
+    private BufferBasedStatsDPublisher? _tcpSender;
 
     private static readonly TimeSpan Timed = TimeSpan.FromMinutes(1);
 
@@ -39,6 +41,7 @@ public class StatSendingBenchmark : IDisposable
             {
                 _udpTransport?.Dispose();
                 _ipTransport?.Dispose();
+                _tcpTransport?.Dispose();
             }
 
             _disposed = true;
@@ -56,16 +59,39 @@ public class StatSendingBenchmark : IDisposable
             Prefix = "testmetric"
         };
 
+        var ipConfig = new StatsDConfiguration
+        {
+            Host = config.Host,
+            Prefix = config.Prefix,
+            SocketProtocol = SocketProtocol.IP
+        };
+        var udpConfig = new StatsDConfiguration
+        {
+            Host = config.Host,
+            Prefix = config.Prefix,
+            SocketProtocol = SocketProtocol.Udp
+        };
+        var tcpConfig = new StatsDConfiguration
+        {
+            Host = config.Host,
+            Prefix = config.Prefix,
+            SocketProtocol = SocketProtocol.Tcp
+        };
+
         var endpointSource = EndPointFactory.MakeEndPointSource(
             config.Host, config.Port, config.DnsLookupInterval);
 
         _ipTransport = new SocketTransport(endpointSource, SocketProtocol.IP);
-        _ipSender = new BufferBasedStatsDPublisher(config, _ipTransport);
+        _ipSender = new BufferBasedStatsDPublisher(ipConfig, _ipTransport);
         _ipSender.Increment("startup.i");
 
         _udpTransport = new SocketTransport(endpointSource, SocketProtocol.Udp);
-        _udpSender = new BufferBasedStatsDPublisher(config, _udpTransport);
+        _udpSender = new BufferBasedStatsDPublisher(udpConfig, _udpTransport);
         _udpSender.Increment("startup.u");
+
+        _tcpTransport = new SocketTransport(endpointSource, SocketProtocol.Tcp);
+        _tcpSender = new BufferBasedStatsDPublisher(tcpConfig, _tcpTransport);
+        _tcpSender.Increment("startup.t");
     }
 
 
@@ -101,5 +127,22 @@ public class StatSendingBenchmark : IDisposable
     {
         _udpSender!.Increment(2, 0.2, "increment.u");
         _udpSender!.Timing(2, 0.2, "increment.u");
+    }
+
+    [Benchmark]
+    public void RunTcp()
+    {
+        _tcpSender!.Increment("hello.t");
+        _tcpSender!.Increment(20, "increment.t");
+        _tcpSender!.Timing(Timed, "timer.t");
+        _tcpSender!.Gauge(354654, "gauge.t");
+        _tcpSender!.Gauge(25.1, "free-space.t");
+    }
+
+    [Benchmark]
+    public void RunTcpWithSampling()
+    {
+        _tcpSender!.Increment(2, 0.2, "increment.t");
+        _tcpSender!.Timing(2, 0.2, "increment.t");
     }
 }

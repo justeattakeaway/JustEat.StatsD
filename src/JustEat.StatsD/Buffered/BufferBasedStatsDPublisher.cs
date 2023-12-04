@@ -28,7 +28,7 @@ internal sealed class BufferBasedStatsDPublisher : IStatsDPublisher, IStatsDPubl
 
         _onError = configuration.OnError;
         _transport = transport;
-        _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsFormatter);
+        _formatter = new StatsDUtf8Formatter(configuration.Prefix, configuration.TagsFormatter, configuration.SocketProtocol == SocketProtocol.Tcp);
     }
 
     public void Increment(long value, double sampleRate, string bucket)
