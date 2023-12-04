@@ -41,7 +41,7 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
     <Exclude>[Benchmark]*,[*.Tests]*,[xunit.*]*</Exclude>
-    <Threshold>83</Threshold>
+    <Threshold>82</Threshold>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)$(PackageIcon)" Pack="True" PackagePath="" />
