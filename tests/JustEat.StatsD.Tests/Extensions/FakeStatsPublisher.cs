@@ -1,6 +1,6 @@
 namespace JustEat.StatsD.Extensions;
 
-public class FakeStatsPublisher : IStatsDPublisher
+public class FakeStatsPublisher : IStatsDPublisher, IStatsDPublisherWithTags
 {
     public FakeStatsPublisher()
     {
@@ -18,6 +18,25 @@ public class FakeStatsPublisher : IStatsDPublisher
     public void Dispose()
     {
         DisposeCount++;
+    }
+
+    public void Increment(long value, double sampleRate, string bucket)
+    {
+        CallCount++;
+        BucketNames.Add(bucket);
+    }
+
+    public void Gauge(double value, string bucket)
+    {
+        CallCount++;
+        BucketNames.Add(bucket);
+    }
+
+    public void Timing(long duration, double sampleRate, string bucket)
+    {
+        CallCount++;
+        LastDuration = TimeSpan.FromMilliseconds(duration);
+        BucketNames.Add(bucket);
     }
 
     public void Increment(long value, double sampleRate, string bucket, Dictionary<string, string?>? tags)

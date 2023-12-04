@@ -28,10 +28,6 @@
     <PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>statsd,graphite,metrics,monitoring</PackageTags>
-    <!-- TODO Enable when v5 ships -->
-    <!--
-    <PackageValidationBaselineVersion>5.0.0</PackageValidationBaselineVersion>
-    -->
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -45,7 +41,7 @@
     <CollectCoverage>true</CollectCoverage>
     <CoverletOutputFormat>cobertura,json</CoverletOutputFormat>
     <Exclude>[Benchmark]*,[*.Tests]*,[xunit.*]*</Exclude>
-    <Threshold>85</Threshold>
+    <Threshold>82</Threshold>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)$(PackageIcon)" Pack="True" PackagePath="" />

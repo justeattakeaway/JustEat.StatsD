@@ -4,7 +4,8 @@ namespace JustEat.StatsD;
 
 internal sealed class DisposableTimer : IDisposableTimer
 {
-    private readonly IStatsDPublisher _publisher;
+    private readonly IStatsDPublisher? _publisher;
+    private readonly IStatsDPublisherWithTags? _publisherWithTags;
     private readonly Stopwatch _stopwatch;
 
     private bool _disposed;
@@ -14,13 +15,21 @@ internal sealed class DisposableTimer : IDisposableTimer
     public Dictionary<string, string?>? Tags { get; set; }
 
     public DisposableTimer(IStatsDPublisher publisher, string bucket)
-        : this(publisher, bucket, null)
-    {
-    }
-
-    public DisposableTimer(IStatsDPublisher publisher, string bucket, Dictionary<string, string?>? tags)
     {
         _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+
+        if (string.IsNullOrEmpty(bucket))
+        {
+            throw new ArgumentNullException(nameof(bucket));
+        }
+
+        Bucket = bucket;
+        _stopwatch = Stopwatch.StartNew();
+    }
+
+    public DisposableTimer(IStatsDPublisherWithTags publisher, string bucket, Dictionary<string, string?>? tags)
+    {
+        _publisherWithTags = publisher ?? throw new ArgumentNullException(nameof(publisher));
 
         if (string.IsNullOrEmpty(bucket))
         {
@@ -44,7 +53,14 @@ internal sealed class DisposableTimer : IDisposableTimer
                 throw new InvalidOperationException($"The {nameof(Bucket)} property must have a value.");
             }
 
-            _publisher.Timing(_stopwatch.Elapsed, Bucket, Tags);
+            if (_publisherWithTags is not null)
+            {
+                _publisherWithTags.Timing(_stopwatch.Elapsed, Bucket, Tags);
+            }
+            else
+            {
+                _publisher!.Timing(_stopwatch.Elapsed, Bucket);
+            }
         }
     }
 }
