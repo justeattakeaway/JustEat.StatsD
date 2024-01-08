@@ -205,7 +205,7 @@ var success = DoSomething();
 stopWatch.Stop();
 
 var statName = "DoSomething." + success ? "Success" : "Failure";
-stats.Timing(statName, stopWatch.Elapsed);
+stats.Timing(stopWatch.Elapsed, statName);
 ```
 
 ### Simple timers
