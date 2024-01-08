@@ -200,13 +200,12 @@ Given an existing instance of `IStatsDPublisher` called `stats` you can do for e
 ```csharp
 stats.Increment("DoSomething.Attempt");
 var stopWatch = Stopwatch.StartNew();
-var sampleRate = 1;
 var success = DoSomething();
 
 stopWatch.Stop();
 
 var statName = "DoSomething." + success ? "Success" : "Failure";
-stats.Timing(stopWatch.Elapsed, sampleRate, statName);
+stats.Timing(stopWatch.Elapsed, statName);
 ```
 
 ### Simple timers
