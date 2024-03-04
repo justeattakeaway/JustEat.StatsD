@@ -8,7 +8,7 @@
 
 ## Summary
 
-We use this library within our components to publish [StatsD](http://github.com/etsy/statsd) metrics from .NET code to a server. We've been using this in most of our things, since around 2013.
+We use this library within our components to publish [StatsD](https://github.com/etsy/statsd) metrics from .NET code to a server. We've been using this in most of our things, since around 2013.
 
 ### Supported platforms
 
