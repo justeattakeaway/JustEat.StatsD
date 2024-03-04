@@ -6,7 +6,7 @@ Please submit any feature requests or bugs as an [issue](https://github.com/just
 
 ## Pull requests
 
-The easier your PRs are to review and merge, the more likely your contribution will be accepted. :-)
+The easier your PRs are to review and merge, the more likely your contribution will be accepted.
 
 If you wish to contribute code, please consider the guidelines below:
 
@@ -14,7 +14,7 @@ If you wish to contribute code, please consider the guidelines below:
 1. Fork the repository to your GitHub account.
 1. Create a branch to work on your changes.
 1. Try to commit changes in a logical manner. Messy histories will be squashed if merged.
-1. Please follow the existing code style and [EditorConfig](http://editorconfig.org/) formatting settings so that your file touches are consistent with ours and the diff is reduced.
+1. Please follow the existing code style and [EditorConfig](https://editorconfig.org/) formatting settings so that your file touches are consistent with ours and the diff is reduced.
 1. If fixing a bug or adding new functionality, add any tests you deem appropriate.
 1. Test coverage should not go down.
 1. Note any breaking changes in your PR description.
@@ -27,7 +27,7 @@ If the project maintainers are satisfied that your contribution is appropriate i
 
 ## Releases
 
-* Check the version number has been updated since the last release - follow [SemVer rules](http://semver.org)
+* Check the version number has been updated since the last release - follow [SemVer rules](https://semver.org)
   * Bump the version in `version.props` if neccessary.
 * Update the CHANGELOG.md
 * Create a new release in [GitHub](https://github.com/justeattakeaway/JustEat.StatsD/releases) with appropriate release notes and tagged version number (for example `v1.2.3`).
