@@ -15,39 +15,35 @@ public static class WhenRegisteringStatsD
             Host = "localhost"
         };
 
-        var provider = Configure(services =>
-            {
-                services.AddSingleton(config);
-
-                // Act
-                services.AddStatsD();
-            });
-
-        try
+        using var provider = Configure(services =>
         {
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.ShouldBe(config);
+            services.AddSingleton(config);
 
-            var source = provider.GetRequiredService<IEndPointSource>();
-            source.ShouldNotBeNull();
+            // Act
+            services.AddStatsD();
+        });
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<SocketTransport>();
+        // Assert
+        var configuration = provider.GetRequiredService<StatsDConfiguration>();
+        configuration.ShouldNotBeNull();
+        configuration.ShouldBe(config);
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
-        }
-        finally
-        {
-            if (provider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+        var source = provider.GetRequiredService<IEndPointSource>();
+        source.ShouldNotBeNull();
+
+        var transport = provider.GetRequiredService<IStatsDTransport>();
+        transport.ShouldNotBeNull();
+        transport.ShouldBeOfType<SocketTransport>();
+
+        var publisher = provider.GetRequiredService<IStatsDPublisher>();
+        publisher.ShouldNotBeNull();
+        publisher.ShouldBeOfType<StatsDPublisher>();
+
+        var publisherWithTags = provider.GetRequiredService<IStatsDPublisherWithTags>();
+        publisherWithTags.ShouldNotBeNull();
+        publisherWithTags.ShouldBeOfType<StatsDPublisher>();
+
+        publisherWithTags.ShouldBeSameAs(publisher);
     }
 
     [Fact]
@@ -56,38 +52,28 @@ public static class WhenRegisteringStatsD
         // Arrange
         string host = "localhost";
 
-        var provider = Configure(services =>
-            {
-                // Act
-                services.AddStatsD(host);
-            });
-
-        try
+        using var provider = Configure(services =>
         {
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(host);
-            configuration.Prefix.ShouldBeEmpty();
+            // Act
+            services.AddStatsD(host);
+        });
 
-            var source = provider.GetRequiredService<IEndPointSource>();
-            source.ShouldNotBeNull();
+        // Assert
+        var configuration = provider.GetRequiredService<StatsDConfiguration>();
+        configuration.ShouldNotBeNull();
+        configuration.Host.ShouldBe(host);
+        configuration.Prefix.ShouldBeEmpty();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<SocketTransport>();
+        var source = provider.GetRequiredService<IEndPointSource>();
+        source.ShouldNotBeNull();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
-        }
-        finally
-        {
-            if (provider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+        var transport = provider.GetRequiredService<IStatsDTransport>();
+        transport.ShouldNotBeNull();
+        transport.ShouldBeOfType<SocketTransport>();
+
+        var publisher = provider.GetRequiredService<IStatsDPublisher>();
+        publisher.ShouldNotBeNull();
+        publisher.ShouldBeOfType<StatsDPublisher>();
     }
 
     [Fact]
@@ -97,38 +83,28 @@ public static class WhenRegisteringStatsD
         string host = "localhost";
         string prefix = "myprefix";
 
-        var provider = Configure(services =>
-            {
-                // Act
-                services.AddStatsD(host, prefix);
-            });
-
-        try
+        using var provider = Configure(services =>
         {
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(host);
-            configuration.Prefix.ShouldBe(prefix);
+            // Act
+            services.AddStatsD(host, prefix);
+        });
 
-            var source = provider.GetRequiredService<IEndPointSource>();
-            source.ShouldNotBeNull();
+        // Assert
+        var configuration = provider.GetRequiredService<StatsDConfiguration>();
+        configuration.ShouldNotBeNull();
+        configuration.Host.ShouldBe(host);
+        configuration.Prefix.ShouldBe(prefix);
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<SocketTransport>();
+        var source = provider.GetRequiredService<IEndPointSource>();
+        source.ShouldNotBeNull();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
-        }
-        finally
-        {
-            if (provider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+        var transport = provider.GetRequiredService<IStatsDTransport>();
+        transport.ShouldNotBeNull();
+        transport.ShouldBeOfType<SocketTransport>();
+
+        var publisher = provider.GetRequiredService<IStatsDPublisher>();
+        publisher.ShouldNotBeNull();
+        publisher.ShouldBeOfType<StatsDPublisher>();
     }
 
     [Fact]
@@ -140,48 +116,38 @@ public static class WhenRegisteringStatsD
             StatsDHost = "localhost"
         };
 
-        var provider = Configure(services =>
+        using var provider = Configure(services =>
+        {
+            services.AddSingleton(options);
+
+            // Act
+            services.AddStatsD(serviceProvider =>
             {
-                services.AddSingleton(options);
+                var myOptions = serviceProvider.GetRequiredService<MyOptions>();
 
-                // Act
-                services.AddStatsD(serviceProvider =>
-                    {
-                        var myOptions = serviceProvider.GetRequiredService<MyOptions>();
-
-                        return new StatsDConfiguration
-                        {
-                            Host = myOptions.StatsDHost
-                        };
-                    });
+                return new StatsDConfiguration
+                {
+                    Host = myOptions.StatsDHost
+                };
             });
+        });
 
-        try
-        {
-            // Assert
-            var configuration = provider.GetRequiredService<StatsDConfiguration>();
-            configuration.ShouldNotBeNull();
-            configuration.Host.ShouldBe(options.StatsDHost);
-            configuration.Prefix.ShouldBeEmpty();
+        // Assert
+        var configuration = provider.GetRequiredService<StatsDConfiguration>();
+        configuration.ShouldNotBeNull();
+        configuration.Host.ShouldBe(options.StatsDHost);
+        configuration.Prefix.ShouldBeEmpty();
 
-            var source = provider.GetRequiredService<IEndPointSource>();
-            source.ShouldNotBeNull();
+        var source = provider.GetRequiredService<IEndPointSource>();
+        source.ShouldNotBeNull();
 
-            var transport = provider.GetRequiredService<IStatsDTransport>();
-            transport.ShouldNotBeNull();
-            transport.ShouldBeOfType<SocketTransport>();
+        var transport = provider.GetRequiredService<IStatsDTransport>();
+        transport.ShouldNotBeNull();
+        transport.ShouldBeOfType<SocketTransport>();
 
-            var publisher = provider.GetRequiredService<IStatsDPublisher>();
-            publisher.ShouldNotBeNull();
-            publisher.ShouldBeOfType<StatsDPublisher>();
-        }
-        finally
-        {
-            if (provider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
+        var publisher = provider.GetRequiredService<IStatsDPublisher>();
+        publisher.ShouldNotBeNull();
+        publisher.ShouldBeOfType<StatsDPublisher>();
     }
 
     [Fact]
@@ -192,17 +158,19 @@ public static class WhenRegisteringStatsD
         var existingSource = Substitute.For<IEndPointSource>();
         var existingTransport = Substitute.For<IStatsDTransport>();
         var existingPublisher = Substitute.For<IStatsDPublisher>();
+        var existingPublisherWithTags = Substitute.For<IStatsDPublisherWithTags>();
 
-        var provider = Configure(services =>
-            {
-                services.AddSingleton(existingConfig);
-                services.AddSingleton(existingSource);
-                services.AddSingleton(existingTransport);
-                services.AddSingleton(existingPublisher);
+        using var provider = Configure(services =>
+        {
+            services.AddSingleton(existingConfig);
+            services.AddSingleton(existingSource);
+            services.AddSingleton(existingTransport);
+            services.AddSingleton(existingPublisher);
+            services.AddSingleton(existingPublisherWithTags);
 
-                // Act
-                services.AddStatsD();
-            });
+            // Act
+            services.AddStatsD();
+        });
 
         // Assert
         var configuration = provider.GetRequiredService<StatsDConfiguration>();
@@ -216,6 +184,9 @@ public static class WhenRegisteringStatsD
 
         var publisher = provider.GetRequiredService<IStatsDPublisher>();
         publisher.ShouldBe(existingPublisher);
+
+        var publisherWithTags = provider.GetRequiredService<IStatsDPublisherWithTags>();
+        publisherWithTags.ShouldBe(existingPublisherWithTags);
     }
 
     [Fact]
@@ -251,13 +222,13 @@ public static class WhenRegisteringStatsD
         // Arrange
         string host = "localhost";
 
-        var provider = Configure(services =>
-            {
-                services.AddSingleton<IStatsDTransport, MyTransport>();
+        using var provider = Configure(services =>
+        {
+            services.AddSingleton<IStatsDTransport, MyTransport>();
 
-                // Act
-                services.AddStatsD(host);
-            });
+            // Act
+            services.AddStatsD(host);
+        });
 
         // Assert
         var configuration = provider.GetRequiredService<StatsDConfiguration>();
@@ -283,13 +254,13 @@ public static class WhenRegisteringStatsD
         // Arrange
         string host = "127.0.0.1";
 
-        var provider = Configure(services =>
-            {
-                // Act
-                services.AddSingleton<IStatsDTransport>(
-                    ctx => new SocketTransport(ctx.GetRequiredService<IEndPointSource>(), SocketProtocol.IP));
-                services.AddStatsD(host);
-            });
+        using var provider = Configure(services =>
+        {
+            // Act
+            services.AddSingleton<IStatsDTransport>(
+                ctx => new SocketTransport(ctx.GetRequiredService<IEndPointSource>(), SocketProtocol.IP));
+            services.AddStatsD(host);
+        });
 
         // Assert
         var configuration = provider.GetRequiredService<StatsDConfiguration>();

@@ -33,7 +33,9 @@ We use this library within our components to publish [StatsD](https://github.com
 
 #### Publishing statistics
 
-`IStatsDPublisher` is the interface that you will use to send stats. The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The `StatsDPublisher` constructor takes an instance of `StatsDConfiguration`.
+`IStatsDPublisher` is the interface that you will use to send stats. There is also a `IStatsDPublisherWithTags` interface that can be used to send stats with tags.
+
+The concrete class that implements `IStatsDPublisher` is `StatsDPublisher`. The `StatsDPublisher` constructor takes an instance of `StatsDConfiguration`.
 
 For the configuration's values, you will always need the StatsD server host name or IP address. Optionally, you can also change the port from the default (`8125`). You can also prepend a prefix to all stats. These values often come from configuration as the host name and/or prefix may vary between test and production environments.
 

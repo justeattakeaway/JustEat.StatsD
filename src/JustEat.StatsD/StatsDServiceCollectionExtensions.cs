@@ -100,7 +100,10 @@ public static class StatsDServiceCollectionExtensions
     {
         services.TryAddSingleton(ResolveEndPointSource);
         services.TryAddSingleton(ResolveStatsDTransport);
+
         services.TryAddSingleton(ResolveStatsDPublisher);
+        services.TryAddSingleton<IStatsDPublisher>((p) => p.GetRequiredService<StatsDPublisher>());
+        services.TryAddSingleton<IStatsDPublisherWithTags>((p) => p.GetRequiredService<StatsDPublisher>());
 
         return services;
     }
@@ -115,7 +118,7 @@ public static class StatsDServiceCollectionExtensions
             config.DnsLookupInterval);
     }
 
-    private static IStatsDPublisher ResolveStatsDPublisher(IServiceProvider provider)
+    private static StatsDPublisher ResolveStatsDPublisher(IServiceProvider provider)
     {
         var config = provider.GetRequiredService<StatsDConfiguration>();
         var socketProtocol = provider.GetRequiredService<IStatsDTransport>();
