@@ -26,17 +26,22 @@ jobs:
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
 
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+
     strategy:
       fail-fast: false
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
         include:
           - os: macos-latest
-            os_name: macos
+            os-name: macos
           - os: ubuntu-latest
-            os_name: linux
+            os-name: linux
           - os: windows-latest
-            os_name: windows
+            os-name: windows
 
     steps:
 
@@ -69,19 +74,38 @@ jobs:
       uses: codecov/codecov-action@125fc84a9a348dbcf27191600683ec096ec9021c # v4.4.1
       with:
         file: ./artifacts/coverage/coverage.net8.0.cobertura.xml
-        flags: ${{ matrix.os_name }}
+        flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Generate SBOM
+      uses: anchore/sbom-action@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
+      with:
+        artifact-name: build-${{ matrix.os-name }}.spdx.json
+        output-file: ./artifacts/build.spdx.json
+        path: ./artifacts/bin
+        upload-release-assets: ${{ runner.os == 'Windows' }}
+
+    - name: Attest artifacts
+      uses: actions/attest-build-provenance@951c0c5f8e375ad4efad33405ab77f7ded2358e4 # v1.1.1
+      if: |
+        runner.os == 'Windows' &&
+        github.event.repository.fork == false &&
+        (github.ref_name == github.event.repository.default_branch || startsWith(github.ref, 'refs/tags/v'))
+      with:
+        subject-path: |
+          ./artifacts/bin/JustEat.StatsD/release*/JustEat.StatsD.dll
+          ./artifacts/package/release/*
 
     - name: Publish artifacts
       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       with:
-        name: artifacts-${{ matrix.os_name }}
+        name: artifacts-${{ matrix.os-name }}
         path: ./artifacts
 
     - name: Publish NuGet packages
       uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
       with:
-        name: packages-${{ matrix.os_name }}
+        name: packages-${{ matrix.os-name }}
         path: ./artifacts/package/release
         if-no-files-found: error
 
