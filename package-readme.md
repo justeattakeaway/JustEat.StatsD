@@ -1,7 +1,7 @@
 # JustEat.StatsD
 
 [![NuGet version](https://img.shields.io/nuget/v/JustEat.StatsD?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/JustEat.StatsD)
-[![Build status](https://github.com/justeattakeaway/JustEat.StatsD/workflows/build/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/JustEat.StatsD/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+[![Build status](https://github.com/justeattakeaway/JustEat.StatsD/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/justeattakeaway/JustEat.StatsD/actions/workflows/build.yml?query=branch%3Amain+event%3Apush)
 [![codecov](https://codecov.io/gh/justeattakeaway/JustEat.StatsD/branch/main/graph/badge.svg)](https://codecov.io/gh/justeattakeaway/JustEat.StatsD)
 
 ## Summary
