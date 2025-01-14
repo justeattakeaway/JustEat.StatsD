@@ -3,6 +3,7 @@
     <Description>A .NET library for publishing metrics to StatsD.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <LangVersion>10</LangVersion>
     <OutputType>Library</OutputType>
     <PackageId>JustEat.StatsD</PackageId>
     <PackageValidationBaselineVersion>5.0.0</PackageValidationBaselineVersion>

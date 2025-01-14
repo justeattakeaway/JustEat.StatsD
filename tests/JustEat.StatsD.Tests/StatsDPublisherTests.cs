@@ -22,7 +22,7 @@ public static class StatsDPublisherTests
             publisher.Decrement(-10, "yellow");
             publisher.Decrement(10, 1, "pink");
             publisher.Decrement(-10, 1, "orange");
-            publisher.Decrement(10, 1, new[] { "white", "blue" });
+            publisher.Decrement(10, 1, ["white", "blue"]);
             publisher.Decrement(10, 1, new List<string>() { "green", "red" });
         }
 
@@ -48,7 +48,7 @@ public static class StatsDPublisherTests
             publisher.Increment(-10, "yellow");
             publisher.Increment(10, 1, "pink");
             publisher.Increment(-10, 1, "orange");
-            publisher.Increment(10, 1, new[] { "white", "blue" });
+            publisher.Increment(10, 1, ["white", "blue"]);
             publisher.Increment(10, 1, new List<string>() { "green", "red" });
         }
 
@@ -108,12 +108,12 @@ public static class StatsDPublisherTests
             publisher.Increment(-1, 1, new List<string>());
             publisher.Decrement(1, 1, null as IEnumerable<string>);
             publisher.Increment(1, 1, null as IEnumerable<string>);
-            publisher.Decrement(1, 1, new[] { string.Empty });
-            publisher.Increment(1, 1, new[] { string.Empty });
-            publisher.Decrement(1, 1, new[] { string.Empty }, anyValidTags);
-            publisher.Increment(1, 1, new[] { string.Empty }, anyValidTags);
-            publisher.Decrement(1, 1, anyValidTags, new[] { string.Empty });
-            publisher.Increment(1, 1, anyValidTags, new[] { string.Empty });
+            publisher.Decrement(1, 1, [string.Empty]);
+            publisher.Increment(1, 1, [string.Empty]);
+            publisher.Decrement(1, 1, [string.Empty], anyValidTags);
+            publisher.Increment(1, 1, [string.Empty], anyValidTags);
+            publisher.Decrement(1, 1, anyValidTags, [string.Empty]);
+            publisher.Increment(1, 1, anyValidTags, [string.Empty]);
             publisher.Decrement(1, 1, anyValidTags, null as string[]);
             publisher.Increment(1, 1, anyValidTags, null as string[]);
 #nullable enable
@@ -133,8 +133,8 @@ public static class StatsDPublisherTests
         using (var publisher = new StatsDPublisher(config, transport))
         {
             // Act
-            publisher.Decrement(1, 0, new[] { "foo" });
-            publisher.Increment(1, 0, new[] { "bar" });
+            publisher.Decrement(1, 0, ["foo"]);
+            publisher.Increment(1, 0, ["bar"]);
         }
 
         // Assert

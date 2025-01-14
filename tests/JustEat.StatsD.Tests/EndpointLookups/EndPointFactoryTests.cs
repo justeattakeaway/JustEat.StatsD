@@ -11,7 +11,7 @@ public static class EndPointFactoryTests
 
         parsed.ShouldNotBeNull();
 
-        var expected = new IPEndPoint(new IPAddress(new byte[] { 11, 12, 13, 14 }), 8125);
+        var expected = new IPEndPoint(new IPAddress([11, 12, 13, 14]), 8125);
         parsed.GetEndpoint().ShouldBe(expected);
     }
 

@@ -33,6 +33,6 @@ public static class SimpleEndpointTests
 
     private static IPEndPoint MakeTestIpEndPoint()
     {
-        return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);
+        return new IPEndPoint(new IPAddress([1, 2, 3, 4]), 8125);
     }
 }
