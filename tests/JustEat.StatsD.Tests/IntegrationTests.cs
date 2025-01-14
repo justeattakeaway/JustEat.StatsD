@@ -6,7 +6,7 @@ namespace JustEat.StatsD;
 
 public static class IntegrationTests
 {
-    [SkippableTheory]
+    [Theory]
     [InlineData("localhost", SocketProtocol.IP)]
     [InlineData("localhost", SocketProtocol.Udp)]
     [InlineData("localhost", SocketProtocol.Tcp)]
@@ -17,7 +17,7 @@ public static class IntegrationTests
         string host,
         SocketProtocol socketProtocol)
     {
-        Skip.If(Environment.GetEnvironmentVariable("CI") == null, "By default, this test is only run during continuous integration.");
+        Assert.SkipWhen(Environment.GetEnvironmentVariable("CI") is null, "By default, this test is only run during continuous integration.");
 
         // Arrange
         var config = new StatsDConfiguration
@@ -63,9 +63,9 @@ public static class IntegrationTests
         publisher.Timing(TimeSpan.FromSeconds(3.5), 1, "hen");
 
         // Act - Increment multiple counters
-        publisher.Increment(7, 1, new string[] { "green", "red" });       // 7
+        publisher.Increment(7, 1, ["green", "red"]);       // 7
         publisher.Increment(2, 0, new List<string>() { "green", "red" }); // 7
-        publisher.Decrement(1, 0, new string[] { "red", "green" });       // 7
+        publisher.Decrement(1, 0, ["red", "green"]);       // 7
         publisher.Decrement(4, 1, new List<string>() { "red", "green" }); // 3
 
         // Allow enough time for metrics to be registered
@@ -84,10 +84,10 @@ public static class IntegrationTests
         result.Value<int>(config.Prefix + ".dog").ShouldBe(42, result.ToString());
 
         result = await SendCommandAsync("timers");
-        result[config.Prefix + ".elephant"]!.Values<int>().ShouldBe(new[] { 123 }, result.ToString());
-        result[config.Prefix + ".fox"]!.Values<int>().ShouldBe(new[] { 2000 }, result.ToString());
-        result[config.Prefix + ".goose"]!.Values<int>().ShouldBe(new[] { 456 }, result.ToString());
-        result[config.Prefix + ".hen"]!.Values<int>().ShouldBe(new[] { 3500 }, result.ToString());
+        result[config.Prefix + ".elephant"]!.Values<int>().ShouldBe([123], result.ToString());
+        result[config.Prefix + ".fox"]!.Values<int>().ShouldBe([2000], result.ToString());
+        result[config.Prefix + ".goose"]!.Values<int>().ShouldBe([456], result.ToString());
+        result[config.Prefix + ".hen"]!.Values<int>().ShouldBe([3500], result.ToString());
     }
 
     private static async Task<JObject> SendCommandAsync(string command)

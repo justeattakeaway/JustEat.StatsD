@@ -50,7 +50,7 @@ public static class CachedEndpointSourceTests
         cachedEndpoint.GetEndpoint();
         cachedEndpoint.GetEndpoint();
 
-        await Task.Delay(1500);
+        await Task.Delay(TimeSpan.FromSeconds(1.5), TestContext.Current.CancellationToken);
 
         cachedEndpoint.GetEndpoint();
         cachedEndpoint.GetEndpoint();
@@ -86,6 +86,6 @@ public static class CachedEndpointSourceTests
 
     private static IPEndPoint MakeTestIpEndPoint()
     {
-        return new IPEndPoint(new IPAddress(new byte[] { 1, 2, 3, 4 }), 8125);
+        return new IPEndPoint(new IPAddress([1, 2, 3, 4]), 8125);
     }
 }
