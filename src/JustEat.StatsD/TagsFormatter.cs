@@ -18,6 +18,11 @@ public static class TagsFormatter
     public static IStatsDTagsFormatter DataDog => new TrailingTagsFormatter();
 
     /// <summary>
+    /// Gets a GraphiteDB tags formatter.
+    /// </summary>
+    public static IStatsDTagsFormatter GraphiteDb => new GraphiteDbTagsFormatter();
+
+    /// <summary>
     /// Gets an InfluxDB tags formatter.
     /// </summary>
     public static IStatsDTagsFormatter InfluxDb => new InfluxDbTagsFormatter();

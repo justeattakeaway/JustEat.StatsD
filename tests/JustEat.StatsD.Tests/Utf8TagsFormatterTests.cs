@@ -18,11 +18,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|c|@0.5")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c|@0.5")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|c|@0.5")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c|@0.5")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c|@0.5")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|c|@0.5\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|c|@0.5|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c|@0.5\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|c|@0.5\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c|@0.5\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c|@0.5\n")]
     public static void CounterSampled(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -35,11 +37,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|c")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|c")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|c\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|c|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|c\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|c\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|c\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|c\n")]
     public static void CounterRegular(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -52,11 +56,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:-128|c")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:-128|c")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:-128|c")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:-128|c")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:-128|c")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:-128|c\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:-128|c|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:-128|c\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:-128|c\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:-128|c\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:-128|c\n")]
     public static void CounterNegative(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -69,11 +75,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|c")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|c")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket:128|c")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket:128|c")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket:128|c")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket:128|c")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|c\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|c\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket:128|c\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket:128|c\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket:128|c\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket:128|c\n")]
     public static void CounterWithoutTags(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -86,11 +94,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|ms")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|ms")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|ms\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|ms|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|ms\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms\n")]
     public static void Timing(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -103,11 +113,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|ms|@0.5")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|ms|@0.5")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms|@0.5")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms|@0.5")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|ms|@0.5\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|ms|@0.5|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|ms|@0.5\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|ms|@0.5\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|ms|@0.5\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|ms|@0.5\n")]
     public static void TimingSampled(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -120,11 +132,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128|g")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|g")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|g")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|g")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|g")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128|g\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128|g|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128|g\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128|g\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128|g\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128|g\n")]
     public static void GaugeIntegral(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -137,11 +151,13 @@ public static class Utf8TagsFormatterTests
     [InlineData(false, TagsFormatter.NoOp, "prefix.bucket:128.5|g")]
     [InlineData(false, TagsFormatter.Trailing, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum")]
     [InlineData(false, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128.5|g")]
+    [InlineData(false, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128.5|g")]
     [InlineData(false, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128.5|g")]
     [InlineData(false, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128.5|g")]
     [InlineData(true, TagsFormatter.NoOp, "prefix.bucket:128.5|g\n")]
     [InlineData(true, TagsFormatter.Trailing, "prefix.bucket:128.5|g|#foo:bar,empty,lorem:ipsum\n")]
     [InlineData(true, TagsFormatter.InfluxDb, "prefix.bucket,foo=bar,empty,lorem=ipsum:128.5|g\n")]
+    [InlineData(true, TagsFormatter.GraphiteDb, "prefix.bucket;foo=bar;empty;lorem=ipsum:128.5|g\n")]
     [InlineData(true, TagsFormatter.Librato, "prefix.bucket#foo=bar,empty,lorem=ipsum:128.5|g\n")]
     [InlineData(true, TagsFormatter.SignalFx, "prefix.bucket[foo=bar,empty,lorem=ipsum]:128.5|g\n")]
     public static void GaugeFloat(bool formatterEndWithLineFeedSymbol, TagsFormatter tagsFormatter, string expected)
@@ -303,6 +319,7 @@ public static class Utf8TagsFormatterTests
             TagsFormatter.NoOp => new NoOpTagsFormatter(),
             TagsFormatter.Trailing => JustEat.StatsD.TagsFormatter.CloudWatch,
             TagsFormatter.InfluxDb => JustEat.StatsD.TagsFormatter.InfluxDb,
+            TagsFormatter.GraphiteDb => JustEat.StatsD.TagsFormatter.GraphiteDb,
             TagsFormatter.Librato => JustEat.StatsD.TagsFormatter.Librato,
             TagsFormatter.SignalFx => JustEat.StatsD.TagsFormatter.SignalFx,
             _ => throw new ArgumentOutOfRangeException(nameof(tagsFormatter))
@@ -321,6 +338,7 @@ public static class Utf8TagsFormatterTests
         NoOp,
         Trailing,
         InfluxDb,
+        GraphiteDb,
         Librato,
         SignalFx,
     }

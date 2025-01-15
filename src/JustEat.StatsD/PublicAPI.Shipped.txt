@@ -118,6 +118,7 @@ static JustEat.StatsD.StatsDServiceCollectionExtensions.AddStatsD(this Microsoft
 static JustEat.StatsD.TagsFormatter.CloudWatch.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 static JustEat.StatsD.TagsFormatter.DataDog.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 static JustEat.StatsD.TagsFormatter.InfluxDb.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
+static JustEat.StatsD.TagsFormatter.GraphiteDb.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 static JustEat.StatsD.TagsFormatter.Librato.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 static JustEat.StatsD.TagsFormatter.SignalFx.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
 static JustEat.StatsD.TagsFormatter.Splunk.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
