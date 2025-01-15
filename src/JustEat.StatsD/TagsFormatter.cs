@@ -10,35 +10,35 @@ public static class TagsFormatter
     /// <summary>
     /// Gets an AWS CloudWatch tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter CloudWatch => new TrailingTagsFormatter();
+    public static IStatsDTagsFormatter CloudWatch => TrailingTagsFormatter.Instance;
 
     /// <summary>
     /// Gets a DataDog tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter DataDog => new TrailingTagsFormatter();
+    public static IStatsDTagsFormatter DataDog => TrailingTagsFormatter.Instance;
 
     /// <summary>
     /// Gets a GraphiteDB tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter GraphiteDb => new GraphiteDbTagsFormatter();
+    public static IStatsDTagsFormatter GraphiteDb { get; } = new GraphiteDbTagsFormatter();
 
     /// <summary>
     /// Gets an InfluxDB tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter InfluxDb => new InfluxDbTagsFormatter();
+    public static IStatsDTagsFormatter InfluxDb { get; } = new InfluxDbTagsFormatter();
 
     /// <summary>
     /// Gets a Librato tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter Librato => new LibratoTagsFormatter();
+    public static IStatsDTagsFormatter Librato { get; } = new LibratoTagsFormatter();
 
     /// <summary>
     /// Gets a SignalFX dimensions formatter.
     /// </summary>
-    public static IStatsDTagsFormatter SignalFx => new SignalFxTagsFormatter();
+    public static IStatsDTagsFormatter SignalFx { get; } = new SignalFxTagsFormatter();
 
     /// <summary>
     /// Gets a Splunk tags formatter.
     /// </summary>
-    public static IStatsDTagsFormatter Splunk => new TrailingTagsFormatter();
+    public static IStatsDTagsFormatter Splunk => TrailingTagsFormatter.Instance;
 }
