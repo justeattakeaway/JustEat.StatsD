@@ -25,4 +25,9 @@ internal sealed class TrailingTagsFormatter : StatsDTagsFormatter
         })
     {
     }
+
+    /// <summary>
+    /// Gets the singleton instance of the <see cref="TrailingTagsFormatter"/> class.
+    /// </summary>
+    public static TrailingTagsFormatter Instance { get; } = new TrailingTagsFormatter();
 }
