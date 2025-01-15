@@ -1,1 +1,2 @@
 #nullable enable
+static JustEat.StatsD.TagsFormatter.GraphiteDb.get -> JustEat.StatsD.TagsFormatters.IStatsDTagsFormatter!
