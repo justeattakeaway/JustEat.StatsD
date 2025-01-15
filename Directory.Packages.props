@@ -24,8 +24,8 @@
     <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.StatsD' ">
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-    <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" PrivateAssets="All" />
