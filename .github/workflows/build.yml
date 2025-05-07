@@ -56,14 +56,14 @@ jobs:
       shell: pwsh
       if: ${{ runner.os == 'Windows' }}
       run: |
-        git clone https://github.com/etsy/statsd.git ./_statsd
+        git clone https://github.com/statsd/statsd.git ./_statsd
         Start-Process "node" -ArgumentList "./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js" -WindowStyle Hidden
 
     - name: Install StatsD
       shell: bash
       if: ${{ runner.os != 'Windows' }}
       run: |
-        git clone https://github.com/etsy/statsd.git ./_statsd
+        git clone https://github.com/statsd/statsd.git ./_statsd
         node ./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js &
 
     - name: Build, Test and Package
