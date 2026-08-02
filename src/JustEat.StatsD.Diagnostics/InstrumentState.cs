@@ -11,7 +11,11 @@ namespace JustEat.StatsD.Diagnostics;
 /// </summary>
 internal sealed class InstrumentState
 {
-    private ConcurrentDictionary<string, CumulativeValue>? _values;
+    // The maximum number of measurement tags for which the order used
+    // to build a lookup key is computed without allocating an array.
+    private const int MaxStackAllocTags = 16;
+
+    private readonly ConcurrentDictionary<string, CumulativeValue>? _values;
 
     private InstrumentState(
         StatsDMetricKind kind,
@@ -110,7 +114,18 @@ internal sealed class InstrumentState
             return null;
         }
 
+        // Sanitized regardless of where the name came from so that a custom bucket name
+        // cannot contain characters that the StatsD protocol treats as separators.
+        bucket = Sanitize(bucket);
+
         double sampleRate = options.SampleRateProvider?.Invoke(instrument) ?? 1;
+
+        // A sample rate outside the range that StatsD supports would cause the
+        // instrument's measurements to be silently discarded, so ignore it.
+        if (double.IsNaN(sampleRate) || sampleRate <= 0 || sampleRate > 1)
+        {
+            sampleRate = 1;
+        }
 
         // Tags supplied when the instrument was created are not delivered in the measurement
         // callback, so capture them here to merge with the per-measurement tags when publishing.
@@ -183,15 +198,73 @@ internal sealed class InstrumentState
 
         var builder = new StringBuilder();
 
-        foreach (var tag in tags)
+        if (tags.Length == 1)
         {
-            builder.Append(tag.Key)
-                   .Append('\u001e')
-                   .Append(FormatTagValue(tag.Value))
-                   .Append('\u001f');
+            return AppendTag(builder, tags[0]).ToString();
+        }
+
+        // The same logical set of tags can be recorded with the tags in a different order by
+        // different call sites, so they are ordered by name to prevent such measurements being
+        // tracked as if they belonged to two different time series.
+        Span<int> order = stackalloc int[MaxStackAllocTags];
+
+        if (tags.Length > MaxStackAllocTags)
+        {
+            order = new int[tags.Length];
+        }
+        else
+        {
+            order = order.Slice(0, tags.Length);
+        }
+
+        for (int i = 0; i < order.Length; i++)
+        {
+            order[i] = i;
+        }
+
+        // An insertion sort is used as instruments have few tags in practice.
+        for (int i = 1; i < order.Length; i++)
+        {
+            int current = order[i];
+            int j = i - 1;
+
+            while (j > -1 && string.CompareOrdinal(tags[order[j]].Key, tags[current].Key) > 0)
+            {
+                order[j + 1] = order[j];
+                j--;
+            }
+
+            order[j + 1] = current;
+        }
+
+        foreach (int index in order)
+        {
+            AppendTag(builder, tags[index]);
         }
 
         return builder.ToString();
+    }
+
+    private static StringBuilder AppendTag(StringBuilder builder, KeyValuePair<string, object?> tag)
+    {
+        string? value = FormatTagValue(tag.Value);
+
+        builder.Append(tag.Key)
+               .Append('\u001e');
+
+        // A null tag value is marked explicitly so that it does not produce
+        // the same key as a tag whose value is an empty string.
+        if (value is null)
+        {
+            builder.Append('\u0000');
+        }
+        else
+        {
+            builder.Append('\u0001')
+                   .Append(value);
+        }
+
+        return builder.Append('\u001f');
     }
 
     internal static string? FormatTagValue(object? value)
@@ -208,11 +281,9 @@ internal sealed class InstrumentState
 
     private static string DefaultBucketName(Instrument instrument)
     {
-        string name = instrument.Meter.Name.Length > 0 ?
+        return instrument.Meter.Name.Length > 0 ?
             instrument.Meter.Name + "." + instrument.Name :
             instrument.Name;
-
-        return Sanitize(name);
     }
 
     private static string Sanitize(string bucket)

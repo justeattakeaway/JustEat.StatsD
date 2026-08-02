@@ -396,6 +396,167 @@ public static class StatsDMetricsListenerTests
     }
 
     [Fact]
+    public static void Custom_Bucket_Names_Are_Sanitized()
+    {
+        // Arrange
+        var options = new StatsDMetricsOptions()
+        {
+            BucketNameProvider = (instrument) => "custom bucket:" + instrument.Name + "|total@host",
+        };
+
+        using var listener = CreateListener(out var publisher, options);
+        using var meter = new Meter("TestMeter.CustomSanitizedBuckets");
+        var counter = meter.CreateCounter<int>("requests");
+
+        // Act
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        listener.GetMeasurementHandlers().IntHandler!(counter, 1, default, state);
+
+        // Assert
+        var metric = publisher.Metrics.ShouldHaveSingleItem();
+        metric.Bucket.ShouldBe("custom_bucket_requests_total_host");
+    }
+
+    [Theory]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity)]
+    [InlineData(0)]
+    [InlineData(-0.5)]
+    [InlineData(1.5)]
+    public static void Invalid_Sample_Rates_Are_Ignored(double sampleRate)
+    {
+        // Arrange
+        var options = new StatsDMetricsOptions()
+        {
+            SampleRateProvider = (_) => sampleRate,
+        };
+
+        using var listener = CreateListener(out var publisher, options);
+        using var meter = new Meter("TestMeter.InvalidSampleRates");
+        var counter = meter.CreateCounter<int>("requests");
+
+        // Act
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        listener.GetMeasurementHandlers().IntHandler!(counter, 1, default, state);
+
+        // Assert
+        var metric = publisher.Metrics.ShouldHaveSingleItem();
+        metric.SampleRate.ShouldBe(1);
+    }
+
+    [Fact]
+    public static void Counter_Residuals_Are_Tracked_Per_Tag_Set_Regardless_Of_Tag_Order()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.ReorderedCounterTags");
+        var counter = meter.CreateCounter<double>("requests");
+
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        var handler = listener.GetMeasurementHandlers().DoubleHandler!;
+
+        var tags = new[]
+        {
+            new KeyValuePair<string, object?>("host", "server1"),
+            new KeyValuePair<string, object?>("region", "eu"),
+        };
+
+        var reordered = new[] { tags[1], tags[0] };
+
+        // Act - the same tags recorded in a different order are the same time series
+        handler(counter, 0.5, tags, state);
+        handler(counter, 0.5, reordered, state);
+
+        // Assert
+        var metric = publisher.Metrics.ShouldHaveSingleItem();
+        metric.Value.ShouldBe(1);
+    }
+
+    [Fact]
+    public static void ObservableCounter_Deltas_Are_Tracked_Per_Tag_Set_Regardless_Of_Tag_Order()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.ReorderedObservableCounterTags");
+        var counter = meter.CreateObservableCounter("bytes", () => 0L);
+
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        var handler = listener.GetMeasurementHandlers().LongHandler!;
+
+        var tags = new[]
+        {
+            new KeyValuePair<string, object?>("host", "server1"),
+            new KeyValuePair<string, object?>("region", "eu"),
+        };
+
+        var reordered = new[] { tags[1], tags[0] };
+
+        // Act
+        handler(counter, 10, tags, state);
+        handler(counter, 25, reordered, state);
+
+        // Assert - the second observation is a delta, not a new time series
+        var metrics = publisher.Metrics.ToArray();
+        metrics.Length.ShouldBe(2);
+        metrics[0].Value.ShouldBe(10);
+        metrics[1].Value.ShouldBe(15);
+    }
+
+    [Fact]
+    public static void Null_And_Empty_Tag_Values_Are_Tracked_Separately()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.NullAndEmptyTags");
+        var counter = meter.CreateObservableCounter("bytes", () => 0L);
+
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        var handler = listener.GetMeasurementHandlers().LongHandler!;
+
+        var nullValue = new[] { new KeyValuePair<string, object?>("region", null) };
+        var emptyValue = new[] { new KeyValuePair<string, object?>("region", string.Empty) };
+
+        // Act
+        handler(counter, 10, nullValue, state);
+        handler(counter, 20, emptyValue, state);
+
+        // Assert - the two tag sets are different time series, so both totals are published in full
+        var metrics = publisher.Metrics.ToArray();
+        metrics.Length.ShouldBe(2);
+        metrics[0].Value.ShouldBe(10);
+        metrics[1].Value.ShouldBe(20);
+    }
+
+    [Fact]
+    public static void Tag_Sets_Larger_Than_The_Stack_Allocation_Threshold_Are_Tracked_Correctly()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.ManyTags");
+        var counter = meter.CreateObservableCounter("bytes", () => 0L);
+
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        var handler = listener.GetMeasurementHandlers().LongHandler!;
+
+        var tags = Enumerable.Range(0, 20)
+            .Select((i) => new KeyValuePair<string, object?>($"tag{i:00}", i))
+            .ToArray();
+
+        var reordered = tags.Reverse().ToArray();
+
+        // Act
+        handler(counter, 10, tags, state);
+        handler(counter, 25, reordered, state);
+
+        // Assert
+        var metrics = publisher.Metrics.ToArray();
+        metrics.Length.ShouldBe(2);
+        metrics[0].Value.ShouldBe(10);
+        metrics[1].Value.ShouldBe(15);
+    }
+
+    [Fact]
     public static void Sample_Rates_Can_Be_Customized()
     {
         // Arrange
