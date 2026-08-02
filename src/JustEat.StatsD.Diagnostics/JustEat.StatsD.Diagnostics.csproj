@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A .NET library for publishing System.Diagnostics.Metrics measurements to StatsD.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <LangVersion>12</LangVersion>
+    <OutputType>Library</OutputType>
+    <PackageId>JustEat.StatsD.Diagnostics</PackageId>
+    <RootNamespace>JustEat.StatsD.Diagnostics</RootNamespace>
+    <Summary>A .NET library for publishing System.Diagnostics.Metrics measurements to StatsD.</Summary>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JustEat.StatsD\JustEat.StatsD.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <PropertyGroup Condition=" $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) ">
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+</Project>

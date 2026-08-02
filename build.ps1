@@ -13,10 +13,14 @@ $ProgressPreference = "SilentlyContinue"
 $solutionPath = $PSScriptRoot
 $sdkFile = Join-Path $solutionPath "global.json"
 
-$libraryProject = Join-Path $solutionPath "src" "JustEat.StatsD" "JustEat.StatsD.csproj"
+$libraryProjects = @(
+    (Join-Path $solutionPath "src" "JustEat.StatsD" "JustEat.StatsD.csproj"),
+    (Join-Path $solutionPath "src" "JustEat.StatsD.Diagnostics" "JustEat.StatsD.Diagnostics.csproj")
+)
 
 $testProjects = @(
-    (Join-Path $solutionPath "tests" "JustEat.StatsD.Tests" "JustEat.StatsD.Tests.csproj")
+    (Join-Path $solutionPath "tests" "JustEat.StatsD.Tests" "JustEat.StatsD.Tests.csproj"),
+    (Join-Path $solutionPath "tests" "JustEat.StatsD.Diagnostics.Tests" "JustEat.StatsD.Diagnostics.Tests.csproj")
 )
 
 $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
@@ -110,11 +114,13 @@ function DotNetTest {
 }
 
 
-Write-Host "Packaging library..." -ForegroundColor Green
-DotNetPack $libraryProject
+Write-Host "Packaging libraries..." -ForegroundColor Green
+ForEach ($libraryProject in $libraryProjects) {
+    DotNetPack $libraryProject
+}
 
 Write-Host "Running tests..." -ForegroundColor Green
-Remove-Item -Path (Join-Path $solutionPath "artifacts" "coverage" "coverage.*.json") -Force -ErrorAction SilentlyContinue | Out-Null
+Get-ChildItem -Path (Join-Path $solutionPath "artifacts" "coverage") -Filter "coverage.*.json" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue | Out-Null
 ForEach ($testProject in $testProjects) {
     DotNetTest $testProject
 }
