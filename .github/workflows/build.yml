@@ -52,6 +52,13 @@ jobs:
       uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
       id: setup-dotnet
 
+    # StatsD uses util.log(), which was removed in Node.js 24, so pin to a
+    # version it still works with rather than whatever the runner image ships.
+    - name: Setup Node.js
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version: '22'
+
     - name: Install StatsD
       shell: pwsh
       if: ${{ runner.os == 'Windows' }}
@@ -65,6 +72,23 @@ jobs:
       run: |
         git clone https://github.com/statsd/statsd.git ./_statsd
         node ./_statsd/stats.js ./tests/JustEat.StatsD.Tests/statsdconfig.js &
+
+    - name: Wait for StatsD
+      shell: pwsh
+      run: |
+        $deadline = (Get-Date).AddSeconds(30)
+        while ((Get-Date) -lt $deadline) {
+          try {
+            $client = [System.Net.Sockets.TcpClient]::new("localhost", 8126)
+            $client.Close()
+            Write-Output "StatsD is listening on the management port."
+            exit 0
+          } catch {
+            Start-Sleep -Seconds 1
+          }
+        }
+        Write-Output "::error::StatsD did not start listening on port 8126 within 30 seconds."
+        exit 1
 
     - name: Build, Test and Package
       shell: pwsh
