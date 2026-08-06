@@ -87,6 +87,24 @@ public static class StatsDMetricsListenerTests
     }
 
     [Fact]
+    public static void Integral_Histogram_Measurements_In_Seconds_Are_Published_As_Timers_In_Milliseconds()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.IntegralHistograms");
+        var histogram = meter.CreateHistogram<long>("duration", unit: "s");
+
+        // Act
+        listener.InstrumentPublished(histogram, out object? state).ShouldBeTrue();
+        listener.GetMeasurementHandlers().LongHandler!(histogram, 3, default, state);
+
+        // Assert
+        var metric = publisher.Metrics.ShouldHaveSingleItem();
+        metric.Kind.ShouldBe("timing");
+        metric.IntegralValue.ShouldBe(3000);
+    }
+
+    [Fact]
     public static void Histogram_Measurements_Not_In_Seconds_Are_Not_Converted()
     {
         // Arrange
@@ -236,6 +254,64 @@ public static class StatsDMetricsListenerTests
         metrics[1].Value.ShouldBe(100);
         metrics[2].Value.ShouldBe(5);
         metrics[3].Value.ShouldBe(50);
+    }
+
+    [Fact]
+    public static void ObservableCounter_Deltas_Are_Exact_For_Totals_Larger_Than_A_Double_Can_Represent()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.LargeObservableCounters");
+        var counter = meter.CreateObservableCounter("bytes", () => 0L);
+
+        listener.InstrumentPublished(counter, out object? state).ShouldBeTrue();
+        var handler = listener.GetMeasurementHandlers().LongHandler!;
+
+        // 2^53 is the largest integer for which every smaller integer is exactly
+        // representable as a double, so deltas either side of it would otherwise
+        // be quantized or lost entirely.
+        const long Threshold = 1L << 53;
+
+        // Act
+        handler(counter, Threshold, default, state);
+        handler(counter, Threshold + 1, default, state);
+        handler(counter, Threshold + 4, default, state);
+
+        // Assert
+        var metrics = publisher.Metrics.ToArray();
+        metrics.Length.ShouldBe(3);
+        metrics[0].IntegralValue.ShouldBe(Threshold);
+        metrics[1].IntegralValue.ShouldBe(1);
+        metrics[2].IntegralValue.ShouldBe(3);
+    }
+
+    [Fact]
+    public static void Integral_Measurements_Are_Published_Without_Loss_Of_Precision()
+    {
+        // Arrange
+        using var listener = CreateListener(out var publisher);
+        using var meter = new Meter("TestMeter.LargeIntegrals");
+        var counter = meter.CreateCounter<long>("bytes");
+        var histogram = meter.CreateHistogram<long>("size", unit: "By");
+
+        const long Value = long.MaxValue - 1;
+
+        // Act
+        listener.InstrumentPublished(counter, out object? counterState).ShouldBeTrue();
+        listener.InstrumentPublished(histogram, out object? histogramState).ShouldBeTrue();
+
+        var handler = listener.GetMeasurementHandlers().LongHandler!;
+
+        handler(counter, Value, default, counterState);
+        handler(histogram, Value, default, histogramState);
+
+        // Assert
+        var metrics = publisher.Metrics.ToArray();
+        metrics.Length.ShouldBe(2);
+        metrics[0].Kind.ShouldBe("counter");
+        metrics[0].IntegralValue.ShouldBe(Value);
+        metrics[1].Kind.ShouldBe("timing");
+        metrics[1].IntegralValue.ShouldBe(Value);
     }
 
     [Fact]

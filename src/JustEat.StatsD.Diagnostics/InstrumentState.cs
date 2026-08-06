@@ -159,6 +159,35 @@ internal sealed class InstrumentState
     }
 
     /// <summary>
+    /// Converts a cumulative integral total into the delta to publish, keyed by the measurement's tags.
+    /// </summary>
+    /// <remarks>
+    /// The total is tracked as a <see cref="long"/> rather than a <see cref="double"/> so that a
+    /// counter which grows beyond the range that a <see cref="double"/> can represent exactly
+    /// (2^53) continues to produce accurate deltas rather than quantized ones.
+    /// </remarks>
+    internal long NextDelta(string tagsKey, long value)
+    {
+        var cumulative = _values!.GetOrAdd(tagsKey, static (_) => new CumulativeValue());
+
+        lock (cumulative)
+        {
+            long delta = cumulative.HasValue ? value - cumulative.IntegralValue : value;
+
+            if (delta < 0)
+            {
+                // The counter appears to have been reset, so publish the new total.
+                delta = value;
+            }
+
+            cumulative.IntegralValue = value;
+            cumulative.HasValue = true;
+
+            return delta;
+        }
+    }
+
+    /// <summary>
     /// Converts a cumulative total into the delta to publish, keyed by the measurement's tags.
     /// </summary>
     internal long NextDelta(string tagsKey, double value)
@@ -304,9 +333,12 @@ internal sealed class InstrumentState
         return sanitized is null ? bucket : new string(sanitized);
     }
 
+    // An instrument's measurements are always of a single type, so only the value
+    // field matching that type's code path is ever used for a given instrument.
     private sealed class CumulativeValue
     {
         internal double Value;
+        internal long IntegralValue;
         internal double Residual;
         internal bool HasValue;
     }

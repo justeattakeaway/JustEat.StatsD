@@ -53,14 +53,17 @@ public sealed class StatsDMetricsListener : IMetricsListener, IDisposable
         _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
+        // Integral measurements are kept on a long code path so that values that cannot be
+        // represented exactly by a double (such as the cumulative byte counters reported by
+        // the built-in .NET meters in a long-running process) are published without loss.
         _handlers = new MeasurementHandlers()
         {
             ByteHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
             ShortHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
             IntHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
             LongHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
-            FloatHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
-            DoubleHandler = Record,
+            FloatHandler = (instrument, value, tags, state) => Record(instrument, (double)value, tags, state),
+            DoubleHandler = (instrument, value, tags, state) => Record(instrument, value, tags, state),
             DecimalHandler = (instrument, value, tags, state) => Record(instrument, (double)value, tags, state),
         };
     }
@@ -152,6 +155,47 @@ public sealed class StatsDMetricsListener : IMetricsListener, IDisposable
     }
 #pragma warning restore CA1031
 
+    private void Record(Instrument instrument, long value, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+    {
+        if (state is not InstrumentState instrumentState)
+        {
+            return;
+        }
+
+        var statsDTags = CreateTags(instrumentState, tags);
+
+        switch (instrumentState.Kind)
+        {
+            case StatsDMetricKind.Counter:
+                // An integral counter reports whole deltas, so there is no residual to accumulate.
+                _publisher.Increment(value, instrumentState.SampleRate, instrumentState.Bucket, statsDTags);
+                break;
+
+            case StatsDMetricKind.CumulativeCounter:
+                long delta = instrumentState.NextDelta(InstrumentState.TagsKey(tags), value);
+
+                if (delta != 0)
+                {
+                    _publisher.Increment(delta, instrumentState.SampleRate, instrumentState.Bucket, statsDTags);
+                }
+
+                break;
+
+            case StatsDMetricKind.Gauge:
+                // IStatsDPublisherWithTags.Gauge() accepts a double, so an integral
+                // measurement cannot be published any more precisely than this.
+                _publisher.Gauge(value, instrumentState.Bucket, statsDTags);
+                break;
+
+            case StatsDMetricKind.Timing:
+                _publisher.Timing(Scale(value, instrumentState.ScaleFactor), instrumentState.SampleRate, instrumentState.Bucket, statsDTags);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     private void Record(Instrument instrument, double value, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
     {
         if (state is not InstrumentState instrumentState)
@@ -205,6 +249,11 @@ public sealed class StatsDMetricsListener : IMetricsListener, IDisposable
 
     private static long RoundToLong(double value)
         => (long)Math.Round(value, MidpointRounding.AwayFromZero);
+
+    // An unscaled integral timing is published as-is so that it does not lose
+    // precision by being converted to a double just to be multiplied by one.
+    private static long Scale(long value, double scaleFactor)
+        => scaleFactor == 1 ? value : RoundToLong(value * scaleFactor);
 
     private static Dictionary<string, string?>? CreateTags(InstrumentState state, ReadOnlySpan<KeyValuePair<string, object?>> tags)
     {
