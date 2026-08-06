@@ -19,6 +19,7 @@ A library to publish [StatsD](https://github.com/etsy/statsd) metrics from .NET 
 * Helpers to make it easy to time a delegate such as a `Func<T>` or `Action<T>`, or a code block inside a `using` statement.
 * Send stats over UDP or IP.
 * Send stats to a server by name or IP address.
+* Publish measurements recorded with `System.Diagnostics.Metrics`, including .NET's built-in metrics, using the `JustEat.StatsD.Diagnostics` package.
 
 ## Feedback
 

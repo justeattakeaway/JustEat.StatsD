@@ -1,0 +1,23 @@
+#nullable enable
+const JustEat.StatsD.Diagnostics.StatsDMetricsListener.ListenerName = "JustEat.StatsD" -> string!
+JustEat.StatsD.Diagnostics.StatsDMetricsListener
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.Dispose() -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.GetMeasurementHandlers() -> Microsoft.Extensions.Diagnostics.Metrics.MeasurementHandlers!
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.Initialize(Microsoft.Extensions.Diagnostics.Metrics.IObservableInstrumentsSource! source) -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.InstrumentPublished(System.Diagnostics.Metrics.Instrument! instrument, out object? userState) -> bool
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.MeasurementsCompleted(System.Diagnostics.Metrics.Instrument! instrument, object? userState) -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.Name.get -> string!
+JustEat.StatsD.Diagnostics.StatsDMetricsListener.StatsDMetricsListener(JustEat.StatsD.IStatsDPublisherWithTags! publisher, Microsoft.Extensions.Options.IOptions<JustEat.StatsD.Diagnostics.StatsDMetricsOptions!>! options) -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.BucketNameProvider.get -> System.Func<System.Diagnostics.Metrics.Instrument!, string!>?
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.BucketNameProvider.set -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.ConvertSecondsToMilliseconds.get -> bool
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.ConvertSecondsToMilliseconds.set -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.ObservableInstrumentsPollingInterval.get -> System.TimeSpan
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.ObservableInstrumentsPollingInterval.set -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.SampleRateProvider.get -> System.Func<System.Diagnostics.Metrics.Instrument!, double>?
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.SampleRateProvider.set -> void
+JustEat.StatsD.Diagnostics.StatsDMetricsOptions.StatsDMetricsOptions() -> void
+JustEat.StatsD.StatsDMetricsBuilderExtensions
+static JustEat.StatsD.StatsDMetricsBuilderExtensions.AddStatsD(this Microsoft.Extensions.Diagnostics.Metrics.IMetricsBuilder! builder) -> Microsoft.Extensions.Diagnostics.Metrics.IMetricsBuilder!
+static JustEat.StatsD.StatsDMetricsBuilderExtensions.AddStatsD(this Microsoft.Extensions.Diagnostics.Metrics.IMetricsBuilder! builder, System.Action<JustEat.StatsD.Diagnostics.StatsDMetricsOptions!>? configureMetrics) -> Microsoft.Extensions.Diagnostics.Metrics.IMetricsBuilder!

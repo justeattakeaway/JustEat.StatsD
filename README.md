@@ -18,6 +18,11 @@ We use this library within our components to publish [StatsD](https://github.com
 * `netstandard2.0`
 * `net6.0`
 
+`JustEat.StatsD.Diagnostics` is built for these target frameworks:
+
+* `netstandard2.0`
+* `net8.0`
+
 ### Features
 
 * Easy to use.
@@ -30,6 +35,7 @@ We use this library within our components to publish [StatsD](https://github.com
 * Helpers to make it easy to time a delegate such as a `Func<T>` or `Action<T>`, or a code block inside a `using` statement.
 * Send stats over UDP or IP.
 * Send stats to a server by name or IP address.
+* Publish measurements recorded with `System.Diagnostics.Metrics`, including .NET's built-in metrics, using the `JustEat.StatsD.Diagnostics` package.
 
 #### Publishing statistics
 
@@ -267,6 +273,45 @@ In all these cases the function or delegate is supplied with an `IDisposableTime
 #### Credits
 
 The idea of "disposable timers" for using statements is an old one, see for example [this StatsD client](https://github.com/Pereingo/statsd-csharp-client) and [MiniProfiler](https://miniprofiler.com/dotnet/HowTo/ProfileCode).
+
+### System.Diagnostics.Metrics integration
+
+The `JustEat.StatsD.Diagnostics` package publishes measurements recorded with the [`System.Diagnostics.Metrics` APIs](https://learn.microsoft.com/dotnet/core/diagnostics/metrics) to StatsD. This includes the [metrics built into .NET itself](https://learn.microsoft.com/dotnet/core/diagnostics/built-in-metrics), such as those for ASP.NET Core, `HttpClient` and the .NET runtime, as well as any custom metrics recorded with a `Meter`.
+
+The package provides an implementation of [`IMetricsListener`](https://learn.microsoft.com/dotnet/api/microsoft.extensions.diagnostics.metrics.imetricslistener) that is registered with `IMetricsBuilder` and enabled for specific meters and instruments using the standard metrics rules, either in code with `EnableMetrics()` or from the `"Metrics"` section of the application's configuration.
+
+```csharp
+// Register the StatsD publisher and the metrics listener
+services.AddStatsD("metrics_server.mycompany.com");
+services.AddMetrics((metrics) =>
+    metrics.AddStatsD()
+           .EnableMetrics("Microsoft.AspNetCore.Hosting"));
+```
+
+Instruments are published as the following StatsD metrics:
+
+| Instrument | StatsD metric |
+|------------|---------------|
+| `Counter<T>` and `UpDownCounter<T>` | Counter |
+| `Histogram<T>` | Timer. Histograms whose unit is seconds (such as ASP.NET Core's `http.server.request.duration`) are converted to milliseconds. |
+| `Gauge<T>`, `ObservableGauge<T>` and `ObservableUpDownCounter<T>` | Gauge |
+| `ObservableCounter<T>` | Counter. The cumulative totals reported by the instrument are converted to deltas. |
+
+Bucket names default to `{meter-name}.{instrument-name}` and any tags recorded with a measurement are published using the `IStatsDTagsFormatter` configured for the publisher. Observable instruments are polled every 10 seconds by default.
+
+The behaviour can be customized with `StatsDMetricsOptions`:
+
+```csharp
+services.AddMetrics((metrics) =>
+    metrics.AddStatsD((options) =>
+    {
+        options.ObservableInstrumentsPollingInterval = TimeSpan.FromSeconds(30);
+        options.BucketNameProvider = (instrument) => "myservice." + instrument.Name;
+        options.SampleRateProvider = (instrument) => instrument.Name is "hot.path" ? 0.1 : 1;
+    })
+    .EnableMetrics("System.Net.Http")
+    .EnableMetrics("MyCompany.MyService"));
+```
 
 ### How to contribute
 
