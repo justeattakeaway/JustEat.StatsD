@@ -27,7 +27,7 @@
     <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(AssemblyName)' != 'JustEat.StatsD' and '$(AssemblyName)' != 'JustEat.StatsD.Diagnostics' ">
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.19" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.14" />
     <PackageVersion Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
     <PackageVersion Update="Microsoft.Extensions.Options" Version="9.0.14" />
